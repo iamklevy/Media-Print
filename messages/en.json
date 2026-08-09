@@ -1,0 +1,493 @@
+{
+  "top": {
+    "hours": "Sat–Thu, 10am – 6pm",
+    "sales": "Sales:",
+    "admin": "Admin:"
+  },
+  "brand": {
+    "name": "Media Print Pack",
+    "tag": "Printing &amp; Packaging"
+  },
+  "nav": {
+    "home": "Home",
+    "best": "Bestsellers",
+    "products": "Products",
+    "stickers": "Stickers",
+    "services": "Services",
+    "contact": "Contact",
+    "menu_arialabel": "Open menu",
+    "book": "Book a meeting"
+  },
+  "lang": {
+    "label": "العربية"
+  },
+  "cta": {
+    "book": "Book a meeting",
+    "quote": "Request a quote",
+    "whatsapp": "WhatsApp us",
+    "details": "Details",
+    "call": "Call us",
+    "askprice": "Ask for a price",
+    "products": "Browse products"
+  },
+  "hero": {
+    "badge": "The Alibaba of packaging in Egypt",
+    "h1a": "Packaging that makes",
+    "h1b": "your product",
+    "h1c": "look the part",
+    "lead": "We manufacture and print bags, sacks, cartons and labels from our workshop in Mohandessin, Giza. No importing from China, no middlemen — we design it, print it, and ship it anywhere in Egypt and the Arab world.",
+    "chip1": "A sample before production",
+    "chip2": "Printed runs from 1,000 bags",
+    "chip3": "Shipping to every governorate",
+    "art_alt": "Printed packaging produced by Media Print Pack",
+    "float1": {
+      "n": "1,000",
+      "l": "Minimum printed run"
+    },
+    "float2": {
+      "n": "6 days",
+      "l": "Open every week"
+    }
+  },
+  "mq": {
+    "1": "Printing up to 4 colours",
+    "2": "Two-ply lamination",
+    "3": "Die-cut shapes",
+    "4": "3 &amp; 5-ply corrugated",
+    "5": "Sample before production",
+    "6": "Artwork designed in-house",
+    "7": "Food-safe materials",
+    "8": "Shipping nationwide"
+  },
+  "prod": {
+    "eyebrow": "What we make",
+    "h2": "One workshop, every kind of packaging",
+    "lead": "From a zipper bag for a spice brand to five-ply corrugated cartons for a shipping line — printed, finished and delivered by the same team.",
+    "all": "See the full catalogue"
+  },
+  "p": {
+    "zipper": {
+      "t": "Zipper (Ziplock) Bags",
+      "d": "Zipper bags made plain or printed in one or two colours, in every size, as a single layer or two-ply lamination.",
+      "s1": "Any size, made to order",
+      "s2": "Printing up to two colours",
+      "s3": "Single layer or two-ply lamination"
+    },
+    "sacks": {
+      "t": "Paper Sacks",
+      "d": "High-quality printed paper sacks in three plies, with an optional inner plastic layer — and we take small runs.",
+      "s1": "Three kraft plies",
+      "s2": "Optional inner plastic layer",
+      "s3": "Small quantities accepted"
+    },
+    "apparel": {
+      "t": "Garment &amp; Apparel Bags",
+      "d": "Clear polyester garment bags with a frosted 3-mil zip lock, resealable and quick to pack — no extra tape or materials needed.",
+      "s1": "Clear polyester, 3 mil",
+      "s2": "Zip lock or snap close",
+      "s3": "Hanger version for display"
+    },
+    "nonwoven": {
+      "t": "Non-Woven Fabric Totes",
+      "d": "Sturdy fabric totes sized for shopping, storage and giveaways — completely food-safe and reusable.",
+      "s1": "Durable non-woven fabric",
+      "s2": "Food-safe",
+      "s3": "Reusable and eco-friendly"
+    },
+    "courier": {
+      "t": "Courier Bags with Docket Pouch",
+      "d": "Shipping bags in a strong material with a reliable seal, and a front pouch for the shipping label.",
+      "s1": "Strong permanent adhesive",
+      "s2": "Clear pouch for the waybill",
+      "s3": "E-commerce sizes in stock"
+    },
+    "paperbags": {
+      "t": "Printed Paper Bags",
+      "d": "Paper carriers in coated or kraft stock, printed or plain, finished to match your brand.",
+      "s1": "Coated or kraft stock",
+      "s2": "Printed or plain",
+      "s3": "Cotton or paper handles"
+    },
+    "cartons": {
+      "t": "Printed Carton Boxes",
+      "d": "Printed boxes for cosmetics and retail products, finished so the pack earns its place on the shelf.",
+      "s1": "Duplex or coated board",
+      "s2": "Gloss or matte lamination",
+      "s3": "UV and foil finishes"
+    },
+    "corrugated": {
+      "t": "Corrugated Shipping Boxes",
+      "d": "Treated kraft board that protects the product in transit — three or five plies.",
+      "s1": "Three or five plies",
+      "s2": "Treated kraft board",
+      "s3": "Logo and product details printed"
+    },
+    "tags": {
+      "t": "Hang Tags &amp; Cards",
+      "d": "Card stock in several weights, punched with string, printed one or two sides.",
+      "s1": "Card stock in several weights",
+      "s2": "Punched with string",
+      "s3": "One or two-sided printing"
+    },
+    "alu": {
+      "t": "Aluminium / Metallised Pouches",
+      "d": "Three-side seal pouches for coffee, supplements and dry food. Printed or plain."
+    },
+    "stickers": {
+      "t": "Self-Adhesive Stickers",
+      "d": "Printed adhesive stickers turn any surface into brand space — for packs, products and sealing.",
+      "s1": "Paper or plastic face",
+      "s2": "Die-cut to any shape",
+      "s3": "Large and short runs"
+    },
+    "sacks5": {
+      "t": "5kg Two-Ply Lunch-Box Sacks",
+      "d": "Two-ply sacks for fertilisers, pesticides, coffee, supplements, clothing and chemicals — with a zip, a base and gussets.",
+      "s1": "Printed up to 2 colours from 300 sacks",
+      "s2": "Plain from 100 sacks (black, white, yellow, green, red)",
+      "s3": "Zip, base and side gussets"
+    }
+  },
+  "why": {
+    "eyebrow": "Why work with us",
+    "h2": "Fewer people between you and the finished box",
+    "lead": "From the first sample to the pallet leaving our door, this is what actually changes when the workshop printing your packaging is the one that made it.",
+    "3": {
+      "tag": "Low minimums",
+      "t": "Quantities that suit you",
+      "d": "Printed bags start at 1,000 and printed sacks at 300 — you do not have to commit to a container to get your own packaging."
+    },
+    "1": {
+      "tag": "In-house",
+      "t": "One roof, start to finish",
+      "d": "Design, printing and finishing happen in the same place, so nobody can pass the blame and nothing gets lost between suppliers."
+    },
+    "2": {
+      "tag": "Approved by you",
+      "t": "A sample before the run",
+      "d": "You see and approve a physical sample before we produce the quantity. What you sign off on is what you get."
+    },
+    "4": {
+      "tag": "Nationwide",
+      "t": "Delivered wherever you are",
+      "d": "We ship to every governorate in Egypt, and to the Arab countries."
+    }
+  },
+  "clients": {
+    "eyebrow": "Trusted by",
+    "h2": "Brands that already print with us",
+    "lead": "From multinationals to growing local labels &mdash; a selection of the names we have produced packaging and print for.",
+    "food": "Food &amp; Beverage",
+    "cosmetics": "Cosmetics &amp; Personal Care",
+    "clothing": "Clothing &amp; Fashion"
+  },
+  "proc": {
+    "eyebrow": "How it works",
+    "h2": "Four steps from enquiry to delivery",
+    "1": {
+      "t": "Tell us what you need",
+      "d": "Message us on WhatsApp or call with the type of packaging, the sizes and roughly how many you want."
+    },
+    "2": {
+      "t": "Design and artwork",
+      "d": "Our team prepares the artwork, or reviews and print-proofs the design you already have."
+    },
+    "3": {
+      "t": "Sample and approval",
+      "d": "We produce a sample. You check the material, the colours and the finish, then approve it."
+    },
+    "4": {
+      "t": "Production and shipping",
+      "d": "The run is produced and shipped to your door anywhere in Egypt or the Arab world."
+    }
+  },
+  "ind": {
+    "eyebrow": "Who we pack for",
+    "h2": "Sectors we already supply",
+    "lead": "If your product needs to sit on a shelf, survive a courier, or carry your name — we have probably packed something like it.",
+    "1": "Food &amp; coffee roasters",
+    "2": "Fertilisers &amp; pesticides",
+    "3": "Clothing &amp; fashion",
+    "4": "Cosmetics &amp; personal care",
+    "5": "Nutritional supplements",
+    "6": "E-commerce &amp; shipping",
+    "7": "Animal feed",
+    "8": "Chemicals"
+  },
+  "srv": {
+    "eyebrow": "Beyond packaging",
+    "h2": "Commercial printing too",
+    "lead": "The same press that prints your packaging handles the rest of your printed material.",
+    "all": "All printing services",
+    "extra": {
+      "t": "Also included",
+      "d": "Professional design, a sample before final production, and shipping to Egypt's governorates and the Arab countries."
+    }
+  },
+  "s": {
+    "metalize": {
+      "t": "Metalized Stickers",
+      "d": "Strong-adhesive metalized stickers for polyethylene and polypropylene packs."
+    },
+    "notepad": {
+      "t": "Notepads",
+      "d": "Every size, made to your specification, printed inside in up to four colours."
+    },
+    "rollup": {
+      "t": "Roll-Up Banners",
+      "d": "Roll-up banners for exhibitions, showrooms and points of sale."
+    },
+    "letterhead": {
+      "t": "Letterheads &amp; Stationery",
+      "d": "Company stationery and notebooks, consistent with the rest of your identity."
+    },
+    "sticker": {
+      "t": "Paper &amp; Plastic Stickers",
+      "d": "Stickers on paper or plastic stock, for large runs and short ones alike."
+    },
+    "duplex": {
+      "t": "Duplex Boxes",
+      "d": "Printed duplex board boxes, sized and finished around the product they hold."
+    },
+    "flyer": {
+      "t": "Flyers, Brochures &amp; Catalogues",
+      "d": "Marketing print produced at high quality, in the quantity you actually need."
+    },
+    "promo": {
+      "t": "Promotional Bags",
+      "d": "Branded giveaway bags carrying your logo, for events and campaigns."
+    }
+  },
+  "band": {
+    "h2": "Send us your product, we will tell you how to pack it",
+    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: 01005750973."
+  },
+  "ft": {
+    "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
+    "fb_arialabel": "Facebook page",
+    "wa_arialabel": "WhatsApp",
+    "tel_arialabel": "Phone",
+    "nav": "Site",
+    "prod": "Products",
+    "contact": "Get in touch",
+    "rights": "© 2026 Media Print Pack. All rights reserved.",
+    "made": "323 Sudan Street, Mohandessin, Giza"
+  },
+  "c": {
+    "addr": {
+      "v": "323 Sudan Street, Mohandessin, Giza",
+      "t": "Address"
+    },
+    "hours": {
+      "v": "Every day 10am – 6pm, closed Friday",
+      "t": "Working hours"
+    },
+    "map_title": "Media Print Pack location on the map",
+    "sales": {
+      "t": "Sales",
+      "d": "Prices, quantities and samples"
+    },
+    "admin": {
+      "t": "Administration",
+      "d": "Orders and follow-up"
+    },
+    "mail": {
+      "t": "Email",
+      "d": "Artwork and enquiries"
+    },
+    "social": {
+      "t": "Follow us"
+    }
+  },
+  "crumb": {
+    "home": "Home"
+  },
+  "ph": {
+    "best": {
+      "h1": "Bestsellers",
+      "lead": "The packs our customers reorder most, with live pricing on every size and quantity."
+    },
+    "products": {
+      "h1": "Products",
+      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by material, or ask us and we will point you to the right one."
+    },
+    "stick": {
+      "h1": "Printed Stickers",
+      "lead": "Paper, plastic, transparent and metalized stickers, die-cut to any shape, for packs, products and sealing."
+    },
+    "services": {
+      "h1": "Printing Services",
+      "lead": "Commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+    },
+    "book": {
+      "h1": "Book a Meeting",
+      "lead": "Pick where you want to meet and when, then send the booking on WhatsApp — we confirm the same day."
+    },
+    "contact": {
+      "h1": "Contact Us",
+      "lead": "Call, message, or fill in the form and it goes straight to our sales line on WhatsApp."
+    }
+  },
+  "cat": {
+    "plastic": "Plastic &amp; flexible",
+    "paper": "Paper &amp; board",
+    "print": "Labels &amp; print",
+    "fabric": "Fabric",
+    "all": "Everything"
+  },
+  "best": {
+    "note": "Prices exclude VAT and are confirmed on the sample before production."
+  },
+  "stick": {
+    "browse": "Browse by sector",
+    "offers": "This week&rsquo;s offers",
+    "all": "Everything",
+    "material": "Material",
+    "size": "Size (cm)",
+    "from": "from",
+    "ask": "Price on request",
+    "offersEmpty": "No promotions are published right now. Message us on WhatsApp and we will quote the best price for the quantity you need.",
+    "moq": "Min.",
+    "each": "each"
+  },
+  "book": {
+    "mode": "Where would you like to meet?",
+    "online": {
+      "t": "Online meeting",
+      "d": "A video or WhatsApp call. Best for running through artwork and prices quickly.",
+      "m": "20&ndash;30 minutes"
+    },
+    "yours": {
+      "t": "We come to your office",
+      "d": "Our sales rep visits with physical samples of the materials and sizes.",
+      "m": "Cairo &amp; Giza"
+    },
+    "ours": {
+      "t": "You visit our office",
+      "d": "323 Sudan Street, Mohandessin, Giza. See the materials and printed work in person.",
+      "m": "Sat&ndash;Thu, 10am &ndash; 6pm"
+    },
+    "topic": "What is it about?",
+    "topic_choose": "Choose a topic",
+    "topic_new": "A new packaging order",
+    "topic_quote": "Reviewing a quote",
+    "topic_artwork": "Design and artwork",
+    "topic_samples": "Seeing samples and materials",
+    "topic_other": "Something else",
+    "date": "Preferred date",
+    "time": "Preferred time",
+    "notes": "Notes",
+    "notes_placeholder": "Anything you would like us to prepare before the meeting…",
+    "submit": "Send booking request",
+    "note": "Bookings are confirmed by a WhatsApp message from sales. We are open Saturday to Thursday, 10am to 6pm."
+  },
+  "f": {
+    "name": "Your name",
+    "name_placeholder": "e.g. Ahmed Mahmoud",
+    "company": "Company / brand",
+    "company_placeholder": "Optional",
+    "phone": "Phone number",
+    "phone_placeholder": "01xxxxxxxxx",
+    "h2": "Request a quote",
+    "lead": "Fill this in and it opens WhatsApp with your details ready to send — no account or sign-up needed.",
+    "qty": "Quantity required",
+    "qty_placeholder": "e.g. 5,000 bags",
+    "product": "Type of packaging",
+    "product_choose": "Choose a product",
+    "product_other": "Something else",
+    "msg": "Details of the request",
+    "msg_placeholder": "Sizes, number of print colours, material, delivery date…",
+    "submit": "Send on WhatsApp",
+    "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
+    "req": "required"
+  },
+  "meta": {
+    "title": {
+      "home": "Media Print Pack — Printed Packaging Manufacturer in Egypt",
+      "best": "Bestsellers — Media Print Pack",
+      "products": "Products — Media Print Pack",
+      "stick": "Printed Stickers — Media Print Pack",
+      "services": "Printing Services — Media Print Pack",
+      "book": "Book a Meeting — Media Print Pack",
+      "contact": "Contact Us — Media Print Pack"
+    },
+    "desc": {
+      "home": "Zipper bags, paper sacks, courier bags, non-woven totes, printed cartons and labels. Manufactured and printed in Mohandessin, Giza. Samples before production, shipping across Egypt and the Arab world.",
+      "best": "Our most reordered packaging: garment bags, kraft bags, corrugated boxes, hang tags, aluminium pouches and fabric totes — with live tiered pricing.",
+      "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
+      "stick": "Paper, plastic, transparent and metalized stickers for food, cafes, cosmetics, events and retail. Die-cut to any shape, large and short runs.",
+      "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
+      "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm."
+    }
+  },
+  "pricer": {
+    "open": "See tiered pricing",
+    "from": "from",
+    "size": "Size (cm)",
+    "colour": "Colour",
+    "finish": "Finishing",
+    "qty": "Quantity",
+    "pieces": "pieces",
+    "each": "each",
+    "unit": "Unit price",
+    "total": "Total",
+    "printing": "Add printing — one colour, one side",
+    "included": "One-colour printing included",
+    "moq": "Minimum order: {n} pieces",
+    "below": "Below the minimum of {n} pieces",
+    "perkg": "{price}/kg · {n} pieces per kg",
+    "send": "Send this spec on WhatsApp",
+    "novat": "Prices exclude VAT. Final price is confirmed on the sample."
+  },
+  "track": {
+    "gate": {
+      "title": "Confirm it's you",
+      "subtitle": "Enter the last 4 digits of the phone number on this order.",
+      "label": "Last 4 digits",
+      "placeholder": "1234",
+      "submit": "View my order",
+      "checking": "Checking…",
+      "error_mismatch": "That doesn't match — try again.",
+      "error_locked": "Too many tries. Please wait a few minutes and try again.",
+      "error_not_found": "We couldn't find that order."
+    },
+    "phase": {
+      "order_confirmed": "Order confirmed",
+      "artwork_pre_press": "Artwork & pre-press",
+      "artwork_approved": "Artwork approved",
+      "sample_produced": "Sample produced",
+      "sample_approved": "Sample approved",
+      "plates_tooling": "Plates & tooling",
+      "printing": "Printing",
+      "finishing_die_cut": "Finishing & die-cut",
+      "quality_check": "Quality check",
+      "packed": "Packed",
+      "out_for_delivery": "Out for delivery",
+      "delivered": "Delivered"
+    },
+    "in_progress": {
+      "estimated_delivery": "Estimated delivery",
+      "message_prefix": "Hi, I'd like an update on order",
+      "message_sales": "Message sales on WhatsApp"
+    },
+    "approval": {
+      "badge": "Your approval is needed",
+      "artwork_title": "The artwork is ready to review",
+      "sample_title": "The sample is ready to review",
+      "approve": "Approve",
+      "approving": "Approving…",
+      "request_changes": "Request changes",
+      "changes_placeholder": "What should we change?",
+      "changes_submit": "Send request",
+      "submitting": "Sending…",
+      "footer_note": "Production starts the moment you approve."
+    },
+    "delivered": {
+      "title": "Delivered",
+      "product": "Product",
+      "quantity": "Quantity",
+      "order_total": "Order total"
+    }
+  }
+}

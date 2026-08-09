@@ -1,26 +1,93 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*  Media Print Pack brand tokens.
+    Carried over from the static site so the two builds stay visually
+    comparable while we switch over.                                      */
+@theme inline {
+  --color-ink: #16130f;
+  --color-ink-2: #2c251d;
+  --color-muted: #6e645a;
+  --color-faint: #a8a098;
+  --color-line: #e9e2d7;
+  --color-paper: #fffdfa;
+  --color-paper-2: #f7f2ea;
+  --color-kraft: #eadcc5;
+  --color-accent: #dd6320;
+  --color-accent-2: #b3480f;
+  --color-accent-soft: #fdf1e7;
+  --color-leaf: #2f6b4f;
+  --color-leaf-soft: #e8f3ed;
+  --color-amber: #c67c08;
+  --color-amber-soft: #fff4e0;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fbeae9;
+
+  --font-sans: var(--font-manrope), "Segoe UI", system-ui, sans-serif;
+  --font-arabic: var(--font-plex-arabic), "Segoe UI", Tahoma, sans-serif;
+
+  --radius-card: 18px;
+  --radius-xl2: 30px;
+
+  --shadow-soft: 0 1px 2px rgb(38 28 18 / 0.05), 0 4px 14px rgb(38 28 18 / 0.05);
+  --shadow-lift: 0 2px 6px rgb(38 28 18 / 0.06), 0 18px 40px rgb(38 28 18 / 0.09);
+  --shadow-deep: 0 2px 4px rgb(38 28 18 / 0.06), 0 12px 24px rgb(38 28 18 / 0.09),
+    0 40px 80px rgb(38 28 18 / 0.18);
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffdfa;
+  --foreground: #16130f;
+  --radius: 0.625rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-line;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    /* contains the off-canvas drawer without making <html> a scroll container */
+    overflow-x: clip;
+  }
+  html {
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-bold tracking-tight;
+    line-height: 1.22;
+  }
+  html[lang="ar"] :is(h1, h2, h3, h4) {
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+  p {
+    text-wrap: pretty;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
