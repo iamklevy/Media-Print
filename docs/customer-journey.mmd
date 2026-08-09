@@ -1,0 +1,152 @@
+flowchart TB
+
+subgraph S1["1 - DISCOVER"]
+  direction LR
+  E1(["Google search
+Arabic or English"])
+  E2(["Facebook page"])
+  E3(["Referral / direct"])
+  HOME["HOME
+hero - benefits - clients
+process - sectors"]
+  E1 --> HOME
+  E2 --> HOME
+  E3 --> HOME
+end
+
+D1{"Knows exactly
+what they need?"}
+HOME --> D1
+
+subgraph S2["2 - BROWSE"]
+  direction LR
+  BEST["BESTSELLERS
+6 ranked products"]
+  CAT["PRODUCTS
+filter: plastic - paper
+fabric - labels"]
+  STK["STICKERS
+browse by sector"]
+  SRV["SERVICES
+commercial print"]
+end
+
+D1 -- "no, exploring" --> CAT
+D1 -- "wants proven sellers" --> BEST
+D1 -- "needs labels" --> STK
+D1 -- "needs marketing print" --> SRV
+D1 -- "yes" --> PRICER
+
+subgraph S3["3 - CONFIGURE AND PRICE"]
+  direction TB
+  PRICER["Open price calculator
+on the product card"]
+  SIZE["Choose size / variant"]
+  OPTS["Toggle printing
+or finishing option"]
+  QTY["Set quantity"]
+  CALC[["System resolves quantity tier
+then unit price and order total"]]
+  MOQ{"Quantity
+at or above minimum?"}
+  WARN[/"Below-minimum warning
+shown inline"/]
+  PRICER --> SIZE --> OPTS --> QTY --> CALC --> MOQ
+  MOQ -- "no" --> WARN
+  WARN --> QTY
+end
+
+BEST --> PRICER
+CAT --> PRICER
+STK --> ASK
+SRV --> ASK
+
+D2{"How do they
+want to proceed?"}
+MOQ -- "yes" --> D2
+
+subgraph S4["4 - CONVERT"]
+  direction LR
+  SPEC[/"WhatsApp - full spec
+prefilled from calculator"/]
+  ASK["Quote form
+name - phone - product - qty"]
+  BOOK["BOOK A MEETING"]
+  CALL(["Phone or email"])
+  MODE{"Meeting
+location"}
+  M1["Online call"]
+  M2["We visit
+customer office"]
+  M3["Customer visits
+our office, Mohandessin"]
+  BOOK --> MODE
+  MODE --> M1
+  MODE --> M2
+  MODE --> M3
+end
+
+D2 -- "fastest" --> SPEC
+D2 -- "wants a formal quote" --> ASK
+D2 -- "wants to meet" --> BOOK
+D2 -- "prefers to talk" --> CALL
+
+WA[["All routes arrive on one
+WhatsApp sales line
+01005750973"]]
+SPEC --> WA
+ASK --> WA
+M1 --> WA
+M2 --> WA
+M3 --> WA
+CALL --> WA
+
+subgraph S5["5 - SALES AND APPROVAL"]
+  direction TB
+  CONF["Sales confirms spec,
+price and lead time"]
+  ART["Artwork prepared
+or customer file checked"]
+  SAMP["Physical sample produced"]
+  D3{"Customer
+approves sample?"}
+  REV["Revise artwork
+or material"]
+  CONF --> ART --> SAMP --> D3
+  D3 -- "no" --> REV
+  REV --> ART
+end
+
+WA --> CONF
+
+subgraph S6["6 - PRODUCE AND DELIVER"]
+  direction LR
+  PROD["Production run
+print - finish - cut"]
+  SHIP["Shipped to any governorate
+or Arab country"]
+  DONE(["Order delivered"])
+  PROD --> SHIP --> DONE
+end
+
+D3 -- "yes" --> PROD
+DONE -- "reorder" --> BEST
+
+NOTE[/"On every page: Arabic and English toggle
+with the choice remembered, sticky header,
+contact details in the footer"/]
+NOTE -.- HOME
+
+classDef entry  fill:#FDF1E7,stroke:#DD6320,stroke-width:2px,color:#16130F
+classDef page   fill:#FFFDFA,stroke:#B3480F,stroke-width:1.5px,color:#16130F
+classDef sys    fill:#F7F2EA,stroke:#6E645A,stroke-width:1.5px,color:#16130F
+classDef auto   fill:#16130F,stroke:#16130F,color:#FFFDFA
+classDef choice fill:#FFFFFF,stroke:#DD6320,stroke-width:2px,color:#B3480F
+classDef done   fill:#2F6B4F,stroke:#2F6B4F,color:#FFFFFF
+
+class E1,E2,E3,CALL entry
+class HOME,BEST,CAT,STK,SRV,PRICER,SIZE,OPTS,QTY,ASK,BOOK,M1,M2,M3,CONF,ART,SAMP,REV,PROD,SHIP page
+class WARN,SPEC,NOTE sys
+class CALC,WA auto
+class D1,D2,D3,MOQ,MODE choice
+class DONE done

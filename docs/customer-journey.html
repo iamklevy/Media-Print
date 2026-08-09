@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer Journey — Media Print Pack</title>
+<style>
+  :root{
+    --ink:#16130F; --muted:#6E645A; --line:#E9E2D7; --paper:#FFFDFA; --paper-2:#F7F2EA;
+    --accent:#DD6320; --accent-2:#B3480F; --accent-soft:#FDF1E7; --leaf:#2F6B4F;
+    --pageH:396mm;          /* A3 portrait content height, set by JS */
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper-2); color:var(--ink);
+    font:15px/1.6 'Manrope','Segoe UI',system-ui,sans-serif;
+  }
+  .bar{
+    position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:.7rem;
+    align-items:center; padding:.85rem 1.2rem; background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .bar h1{font-size:1.05rem; margin:0 auto 0 0; letter-spacing:-.01em}
+  .bar h1 small{display:block; font-size:.72rem; font-weight:500; color:var(--muted)}
+  button,select{
+    font:inherit; font-size:.86rem; font-weight:600; cursor:pointer;
+    padding:.5rem .95rem; border:1.5px solid var(--line); border-radius:999px;
+    background:var(--paper); color:var(--ink);
+  }
+  button:hover{border-color:var(--ink)}
+  button.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+  button.primary:hover{background:var(--accent-2); border-color:var(--accent-2)}
+
+  .wrap{max-width:1500px; margin:0 auto; padding:1.6rem 1.2rem 4rem}
+  .legend{
+    display:flex; flex-wrap:wrap; gap:1.1rem; padding:1rem 1.2rem; margin-bottom:1.4rem;
+    background:var(--paper); border:1px solid var(--line); border-radius:14px; font-size:.84rem;
+  }
+  .legend b{display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted)}
+  .key{display:flex; align-items:center; gap:.5rem}
+  .chip{width:34px; height:20px; border:1.5px solid var(--accent-2); background:var(--paper); flex:none}
+  .chip.r{border-radius:999px; background:var(--accent-soft); border-color:var(--accent)}
+  .chip.d{transform:rotate(45deg) scale(.72); border-color:var(--accent)}
+  .chip.a{background:var(--ink); border-color:var(--ink)}
+  .chip.s{background:var(--paper-2); border-color:var(--muted); transform:skewX(-12deg)}
+  .chip.g{background:var(--leaf); border-color:var(--leaf); border-radius:999px}
+
+  #diagram{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:1rem; overflow:auto}
+  #diagram svg{width:100%; height:auto; display:block}
+  .msg{padding:2rem; text-align:center; color:var(--muted)}
+  .msg code{background:var(--paper-2); padding:.15rem .4rem; border-radius:4px}
+
+  /* ---- print: slice the tall diagram into page-height windows ---- */
+  .sheets{display:none}
+  @media print{
+    @page{ size:A3 portrait; margin:10mm; }
+    body{background:#fff}
+    .bar,.wrap{display:none !important}
+    .sheets{display:block}
+    .sheet{
+      position:relative; width:100%; height:var(--pageH);
+      overflow:hidden; break-after:page; page-break-after:always;
+    }
+    .sheet:last-child{break-after:auto; page-break-after:auto}
+    .sheet__in{position:absolute; left:0; right:0; top:0}
+    .sheet__in svg{width:100%; height:auto; display:block}
+    .sheet__no{
+      position:absolute; right:0; bottom:2mm; font-size:9pt; color:#6E645A;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>Media Print Pack — Customer Journey<small>UML-style activity diagram · source: <code>customer-journey.mmd</code></small></h1>
+  <label style="font-size:.8rem;color:var(--muted)">Paper
+    <select id="paper">
+      <option value="A3">A3 portrait</option>
+      <option value="A4">A4 portrait</option>
+    </select>
+  </label>
+  <button id="svg">Download SVG</button>
+  <button id="png">Download PNG</button>
+  <button id="print" class="primary">Print / Save as PDF</button>
+</div>
+
+<div class="wrap">
+  <div class="legend">
+    <div><b>Shapes</b></div>
+    <span class="key"><i class="chip r"></i> Entry point</span>
+    <span class="key"><i class="chip"></i> Page or screen</span>
+    <span class="key"><i class="chip d"></i> Decision</span>
+    <span class="key"><i class="chip a"></i> Automated step</span>
+    <span class="key"><i class="chip s"></i> System output</span>
+    <span class="key"><i class="chip g"></i> Outcome</span>
+  </div>
+  <div id="diagram"><div class="msg">Rendering diagram…</div></div>
+</div>
+
+<div class="sheets" id="sheets"></div>
+
+<script type="module">
+const PAGES = {                     // printable content area, mm (page minus 10mm margins)
+  A3: { w: 277, h: 400 },
+  A4: { w: 190, h: 277 }
+};
+let rendered = null;
+
+function fail(msg){
+  document.getElementById('diagram').innerHTML =
+    '<div class="msg"><p><b>Could not render the diagram.</b></p><p>' + msg + '</p>' +
+    '<p>This page loads Mermaid from a CDN, so it needs an internet connection the first time. ' +
+    'You can also paste <code>customer-journey.mmd</code> into <b>mermaid.live</b>.</p></div>';
+}
+
+try {
+  const mermaid = (await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')).default;
+  const src = await (await fetch('customer-journey.mmd')).text();
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    htmlLabels: false,              // native <text>, so the SVG opens cleanly in Illustrator/Inkscape
+    theme: 'base',
+    themeVariables: {
+      fontFamily: 'Manrope, Segoe UI, system-ui, sans-serif', fontSize: '15px',
+      primaryColor: '#FFFDFA', primaryTextColor: '#16130F', primaryBorderColor: '#B3480F',
+      lineColor: '#6E645A', clusterBkg: '#F7F2EA', clusterBorder: '#E9E2D7',
+      edgeLabelBackground: '#FFFDFA'
+    },
+    flowchart: { useMaxWidth: false, curve: 'basis', nodeSpacing: 40, rankSpacing: 52, padding: 12 }
+  });
+
+  const { svg } = await mermaid.render('journey', src);
+  document.getElementById('diagram').innerHTML = svg;
+  rendered = document.querySelector('#diagram svg');
+  rendered.removeAttribute('width');
+  rendered.removeAttribute('height');
+  buildSheets();
+} catch (e) {
+  fail(e.message);
+}
+
+/* Slice the tall diagram into page-height windows so printing never clips it. */
+function buildSheets(){
+  if (!rendered) return;
+  const page = PAGES[document.getElementById('paper').value];
+  const vb = rendered.getAttribute('viewBox').split(/\s+/).map(Number);
+  let renderedH = page.w * (vb[3] / vb[2]);          // mm, when scaled to page width
+  let n = Math.max(1, Math.ceil(renderedH / page.h - 0.02));
+  let scale = 1;
+
+  /* If the overflow onto the final page is small, shrink slightly to save a
+     near-empty sheet — 5% smaller type beats a page holding two boxes. */
+  if (n > 1) {
+    const spill = (renderedH - (n - 1) * page.h) / page.h;
+    if (spill < 0.25) {
+      scale = ((n - 1) * page.h) / renderedH;
+      renderedH *= scale;
+      n -= 1;
+    }
+  }
+
+  document.documentElement.style.setProperty('--pageH', page.h + 'mm');
+  const host = document.getElementById('sheets');
+  host.innerHTML = '';
+  for (let i = 0; i < n; i++){
+    const sheet = document.createElement('div');
+    sheet.className = 'sheet';
+    const inner = document.createElement('div');
+    inner.className = 'sheet__in';
+    inner.style.top = (-i * page.h) + 'mm';
+    inner.style.width = (scale * 100) + '%';
+    inner.style.marginInline = 'auto';
+    inner.appendChild(rendered.cloneNode(true));
+    sheet.appendChild(inner);
+    const no = document.createElement('span');
+    no.className = 'sheet__no';
+    no.textContent = 'Media Print Pack — customer journey · page ' + (i + 1) + ' of ' + n;
+    sheet.appendChild(no);
+    host.appendChild(sheet);
+  }
+  document.getElementById('print').title = 'Prints on ' + n + ' page(s)';
+}
+
+document.getElementById('paper').addEventListener('change', buildSheets);
+document.getElementById('print').addEventListener('click', () => window.print());
+
+function download(blob, name){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+document.getElementById('svg').addEventListener('click', () => {
+  if (!rendered) return;
+  const s = '<?xml version="1.0" encoding="UTF-8"?>\n' + rendered.outerHTML;
+  download(new Blob([s], { type: 'image/svg+xml' }), 'mediaprint-customer-journey.svg');
+});
+
+document.getElementById('png').addEventListener('click', () => {
+  if (!rendered) return;
+  const vb = rendered.getAttribute('viewBox').split(/\s+/).map(Number);
+  const scale = 2;
+  const img = new Image();
+  const blob = new Blob([rendered.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = vb[2] * scale; c.height = vb[3] * scale;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#FFFDFA'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    c.toBlob(b => download(b, 'mediaprint-customer-journey.png'), 'image/png');
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => alert('PNG export failed — use Download SVG instead.');
+  img.src = url;
+});
+</script>
+</body>
+</html>
