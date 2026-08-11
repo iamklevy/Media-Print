@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { Check, Copy } from "lucide-react";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
+import { trackingUrl } from "@/lib/orders/tracking";
 import { advancePhase, sendReminder, updateOrderFields, getOrderEvents } from "@/lib/orders/actions";
 import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
 
@@ -43,11 +45,13 @@ export function OrderDetailSheet({
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
   const [reminding, setReminding] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const status = deriveStatus(order);
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
+  const trackUrl = trackingUrl(order.tracking_slug, locale);
 
   useEffect(() => {
     getOrderEvents(order.id).then(setEvents);
@@ -90,6 +94,42 @@ export function OrderDetailSheet({
     onOpenChange(false);
   }
 
+  async function copyTrackingLink() {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(trackUrl);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+        return;
+      } catch {
+        // permission denied — fall through to the execCommand attempt below
+      }
+    }
+
+    // navigator.clipboard is undefined outside secure contexts (plain HTTP on
+    // a LAN IP) — execCommand isn't gated by secure context, so it can still
+    // copy silently here. Verify its return value before trusting it.
+    const textarea = document.createElement("textarea");
+    textarea.value = trackUrl;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+
+    if (copied) {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+      return;
+    }
+
+    // Last resort: the prompt dialog pre-selects its text, so one native
+    // Ctrl+C copies it, bypassing the browser's clipboard permissions entirely.
+    window.prompt(t("copy_manually"), trackUrl);
+  }
+
   async function remind() {
     setReminding(true);
     const res = await sendReminder(order.id);
@@ -109,7 +149,13 @@ export function OrderDetailSheet({
             {order.customer_name}
             {order.customer_company ? ` · ${order.customer_company}` : ""} · <span dir="ltr">{order.customer_phone}</span>
           </SheetDescription>
-          <StatusBadge status={status} className="mt-1" />
+          <div className="mt-1 flex items-center gap-2">
+            <StatusBadge status={status} />
+            <Button onClick={copyTrackingLink} variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
+              {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
+              {linkCopied ? t("link_copied") : t("copy_tracking_link")}
+            </Button>
+          </div>
         </SheetHeader>
 
         <div className="grid gap-5 p-4">
