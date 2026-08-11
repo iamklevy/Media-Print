@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 
 import { PRODUCTS } from "@/content/products";
@@ -8,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WhatsAppIcon } from "./brand-icons";
-import { waLink, SALES_PHONE } from "@/lib/contact";
+import { SALES_PHONE } from "@/lib/contact";
 import { createOrderFromQuote } from "@/lib/orders/actions";
 
 export function QuoteForm() {
@@ -18,47 +18,50 @@ export function QuoteForm() {
   const ar = locale === "ar";
   const [sent, setSent] = useState(false);
   const [trackingUrl, setTrackingUrl] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const searchParams = useSearchParams();
+  const reorderOf = searchParams.get("reorder");
+  const reorderProduct = searchParams.get("product") ?? "";
+  const reorderQty = searchParams.get("qty") ?? "";
+  const defaultMessage = reorderOf
+    ? ar
+      ? `إعادة طلب — زي طلب رقم ${reorderOf} (${reorderProduct})`
+      : `Reorder — same as order ${reorderOf} (${reorderProduct})`
+    : "";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
+    setError(false);
     const f = new FormData(e.currentTarget);
-    const g = (k: string) => (f.get(k) as string | null)?.trim() ?? "";
 
-    const L = ar
-      ? { head: "طلب عرض سعر من الموقع", name: "الاسم", company: "الشركة", phone: "الهاتف",
-          product: "المنتج", qty: "الكمية", msg: "التفاصيل", tracking: "متابعة الطلب" }
-      : { head: "Quote request from the website", name: "Name", company: "Company",
-          phone: "Phone", product: "Product", qty: "Quantity", msg: "Details", tracking: "Track your order" };
-
-    const lines = [`*${L.head}*`, ""];
-    (
-      [
-        ["name", L.name], ["company", L.company], ["phone", L.phone],
-        ["product", L.product], ["qty", L.qty], ["message", L.msg],
-      ] as const
-    ).forEach(([k, label]) => {
-      const v = g(k);
-      if (v) lines.push(`${label}: ${v}`);
-    });
-
-    // Best-effort: order tracking must never block the WhatsApp handoff below,
-    // which is the site's actual conversion path.
     try {
       const order = await createOrderFromQuote(f, locale);
       if (order) {
-        lines.push("", `${L.tracking}: ${order.trackingUrl}`);
         setTrackingUrl(order.trackingUrl);
+        setSent(true);
+      } else {
+        setError(true);
       }
     } catch (err) {
       console.error("createOrderFromQuote failed", err);
+      setError(true);
+    } finally {
+      setSubmitting(false);
     }
-
-    window.open(waLink(lines.join("\n")), "_blank", "noopener");
-    setSent(true);
   };
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
+      {reorderOf && (
+        <div className="rounded-lg bg-accent-soft px-4 py-3 text-[0.88rem] font-semibold text-accent-2">
+          {ar ? `إعادة طلب رقم ${reorderOf}` : `Reordering ${reorderOf}`}
+          <input type="hidden" name="source" value="reorder" />
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id="name" label={t("f.name")} required>
           <Input id="name" name="name" required placeholder={t("f.name_placeholder")} />
@@ -73,7 +76,7 @@ export function QuoteForm() {
           <Input id="phone" name="phone" type="tel" dir="ltr" required placeholder={t("f.phone_placeholder")} />
         </Field>
         <Field id="qty" label={t("f.qty")}>
-          <Input id="qty" name="qty" placeholder={t("f.qty_placeholder")} />
+          <Input id="qty" name="qty" defaultValue={reorderQty} placeholder={t("f.qty_placeholder")} />
         </Field>
       </div>
 
@@ -96,27 +99,28 @@ export function QuoteForm() {
       </Field>
 
       <Field id="message" label={t("f.msg")}>
-        <Textarea id="message" name="message" rows={4} placeholder={t("f.msg_placeholder")} />
+        <Textarea id="message" name="message" rows={4} defaultValue={defaultMessage} placeholder={t("f.msg_placeholder")} />
       </Field>
 
-      <Button type="submit" size="lg" className="w-fit rounded-full bg-accent hover:bg-accent-2">
-        <WhatsAppIcon className="size-4" />
-        {t("f.submit")}
+      <Button type="submit" size="lg" disabled={submitting} className="w-fit rounded-full bg-accent hover:bg-accent-2">
+        {submitting ? (ar ? "جاري الإرسال…" : "Sending…") : t("f.submit")}
       </Button>
 
       {sent && (
         <div className="grid gap-2 rounded-lg bg-leaf-soft px-4 py-3 text-[0.9rem] font-semibold text-leaf">
-          <p>
-            {ar
-              ? "فتحنا لك واتساب بالرسالة جاهزة — دوس إرسال."
-              : "WhatsApp is open with your message ready — just press send."}
-          </p>
+          <p>{ar ? "تم إرسال طلب عرض السعر بنجاح!" : "Your quote request has been sent!"}</p>
           {trackingUrl && (
             <a href={trackingUrl} className="underline underline-offset-2" target="_blank" rel="noopener">
               {ar ? "تابع طلبك من هنا" : "Track your order here"}
             </a>
           )}
         </div>
+      )}
+
+      {error && (
+        <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">
+          {ar ? "حصل خطأ في إرسال الطلب — من فضلك اتصل بالمبيعات مباشرة." : "Something went wrong sending your request — please call sales directly."}
+        </p>
       )}
 
       <p className="text-[0.85rem] text-muted">{t("f.note")}</p>

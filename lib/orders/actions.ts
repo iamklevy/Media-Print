@@ -6,7 +6,8 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { createStaffSession, destroyStaffSession, requireStaffSession, verifyStaffPin as checkStaffPin } from "@/lib/auth/staff";
 import { createCustomerSession, lastFourMatches, requireCustomerSession } from "@/lib/auth/customer";
 import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
-import type { Order, SampleImage } from "@/lib/orders/types";
+import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
+import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
 const LOCKOUT_MS = 15 * 60 * 1000;
@@ -33,6 +34,7 @@ export async function createOrderFromQuote(
   const product = get("product") || "Not specified";
   const qty = get("qty") || "Not specified";
   const message = get("message") || null;
+  const source = get("source") || "quote_form";
 
   const slug = randomSlugSuffix();
 
@@ -47,7 +49,7 @@ export async function createOrderFromQuote(
       product_label: product,
       quantity: qty,
       notes: message,
-      source: "quote_form",
+      source,
     })
     .select("id, order_number, tracking_slug")
     .single();
@@ -88,9 +90,27 @@ export async function staffLogout(): Promise<void> {
   await destroyStaffSession();
 }
 
+export async function setOpsLocale(locale: OpsLocale): Promise<void> {
+  await requireStaffSession();
+  await setOpsLocaleCookie(locale);
+}
+
 // ---------------------------------------------------------------------------
 // Staff order management
 // ---------------------------------------------------------------------------
+
+export async function getOrderEvents(orderId: string): Promise<OrderEvent[]> {
+  await requireStaffSession();
+  const db = supabaseServer();
+
+  const { data, error } = await db
+    .from("order_events")
+    .select("*")
+    .eq("order_id", orderId)
+    .order("created_at", { ascending: false });
+
+  return error ? [] : ((data ?? []) as OrderEvent[]);
+}
 
 export async function advancePhase(orderId: string): Promise<{ ok: boolean; error?: string }> {
   await requireStaffSession();
@@ -119,6 +139,81 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
   return { ok: true };
 }
 
+const SAMPLE_BUCKET = "sample-photos";
+const SAMPLE_MAX_BYTES = 5 * 1024 * 1024;
+const SAMPLE_MIME_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+
+export async function uploadSampleImage(
+  orderId: string,
+  slot: number,
+  formData: FormData
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  await requireStaffSession();
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
+  const ext = SAMPLE_MIME_EXT[file.type];
+  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG or WebP." };
+  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
+
+  const db = supabaseServer();
+  const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
+
+  const { error: uploadError } = await db.storage.from(SAMPLE_BUCKET).upload(path, file, {
+    contentType: file.type,
+    upsert: true,
+  });
+  if (uploadError) return { ok: false, error: uploadError.message };
+
+  const { data: pub } = db.storage.from(SAMPLE_BUCKET).getPublicUrl(path);
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("sample_images")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+
+  const images: SampleImage[] = [...((order.sample_images ?? []) as SampleImage[])];
+  while (images.length <= slot) images.push({ url: "" });
+  images[slot] = { url: pub.publicUrl };
+
+  const { error: updateError } = await db
+    .from("orders")
+    .update({ sample_images: images, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true, url: pub.publicUrl };
+}
+
+export async function removeSampleImage(orderId: string, slot: number): Promise<{ ok: boolean; error?: string }> {
+  await requireStaffSession();
+  const db = supabaseServer();
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("sample_images")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+
+  const images: SampleImage[] = [...((order.sample_images ?? []) as SampleImage[])];
+  if (images[slot]) images[slot] = { url: "" };
+
+  const { error: updateError } = await db
+    .from("orders")
+    .update({ sample_images: images, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true };
+}
+
 export async function updateOrderFields(
   orderId: string,
   fields: Partial<
@@ -126,7 +221,7 @@ export async function updateOrderFields(
       Order,
       "unit_price" | "order_total" | "lead_time_days" | "estimated_delivery" | "quantity" | "product_label"
     >
-  > & { sample_images?: SampleImage[] }
+  >
 ): Promise<{ ok: boolean; error?: string }> {
   await requireStaffSession();
   const db = supabaseServer();
@@ -197,7 +292,9 @@ export async function verifyCustomerPhone(
   return { ok: false, reason: locked ? "locked" : "mismatch" };
 }
 
-export async function approveGate(slug: string): Promise<{ ok: boolean; error?: string }> {
+export async function approveGate(
+  slug: string
+): Promise<{ ok: boolean; order?: Order; events?: OrderEvent[]; error?: string }> {
   await requireCustomerSession(slug);
   const db = supabaseServer();
 
@@ -208,18 +305,53 @@ export async function approveGate(slug: string): Promise<{ ok: boolean; error?: 
   const next = nextPhase(order.phase);
   if (!next) return { ok: false, error: "Order has no next phase." };
 
-  await db.from("orders").update({ phase: next, updated_at: new Date().toISOString() }).eq("id", order.id);
-  await db
+  const { data: updated, error: updateError } = await db
+    .from("orders")
+    .update({ phase: next, updated_at: new Date().toISOString() })
+    .eq("id", order.id)
+    .select("*")
+    .single();
+  if (updateError || !updated) return { ok: false, error: updateError?.message ?? "Update failed." };
+
+  const { data: events } = await db
     .from("order_events")
     .insert([
       { order_id: order.id, type: "customer_approved", phase: order.phase, actor: "customer" },
       { order_id: order.id, type: "phase_change", phase: next, actor: "system" },
-    ]);
+    ])
+    .select("*");
+
+  return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
+}
+
+export async function submitRating(
+  slug: string,
+  rating: number,
+  comment: string
+): Promise<{ ok: boolean; error?: string }> {
+  await requireCustomerSession(slug);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return { ok: false, error: "Rating must be between 1 and 5." };
+  }
+  const db = supabaseServer();
+
+  const { data: order, error } = await db.from("orders").select("id, rating").eq("tracking_slug", slug).single();
+  if (error || !order) return { ok: false, error: "Order not found." };
+  if (order.rating != null) return { ok: false, error: "Already rated." };
+
+  await db
+    .from("orders")
+    .update({ rating, rating_comment: comment || null, rated_at: new Date().toISOString() })
+    .eq("id", order.id);
+  await db.from("order_events").insert({ order_id: order.id, type: "rated", actor: "customer", message: comment || null });
 
   return { ok: true };
 }
 
-export async function requestChanges(slug: string, note: string): Promise<{ ok: boolean; error?: string }> {
+export async function requestChanges(
+  slug: string,
+  note: string
+): Promise<{ ok: boolean; order?: Order; events?: OrderEvent[]; error?: string }> {
   await requireCustomerSession(slug);
   const db = supabaseServer();
 
@@ -229,17 +361,27 @@ export async function requestChanges(slug: string, note: string): Promise<{ ok: 
 
   const prev = prevNonGatePhase(order.phase);
 
-  await db.from("orders").update({ phase: prev, updated_at: new Date().toISOString() }).eq("id", order.id);
-  await db.from("order_events").insert([
-    {
-      order_id: order.id,
-      type: "customer_requested_changes",
-      phase: order.phase,
-      actor: "customer",
-      message: note || null,
-    },
-    { order_id: order.id, type: "phase_change", phase: prev, actor: "system" },
-  ]);
+  const { data: updated, error: updateError } = await db
+    .from("orders")
+    .update({ phase: prev, updated_at: new Date().toISOString() })
+    .eq("id", order.id)
+    .select("*")
+    .single();
+  if (updateError || !updated) return { ok: false, error: updateError?.message ?? "Update failed." };
 
-  return { ok: true };
+  const { data: events } = await db
+    .from("order_events")
+    .insert([
+      {
+        order_id: order.id,
+        type: "customer_requested_changes",
+        phase: order.phase,
+        actor: "customer",
+        message: note || null,
+      },
+      { order_id: order.id, type: "phase_change", phase: prev, actor: "system" },
+    ])
+    .select("*");
+
+  return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
 }
