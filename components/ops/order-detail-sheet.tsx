@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/orders/status-badge";
+import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
-import { advancePhase, sendReminder, updateOrderFields } from "@/lib/orders/actions";
-import type { Order, SampleImage } from "@/lib/orders/types";
+import { formatRelativeDay } from "@/lib/utils";
+import { advancePhase, sendReminder, updateOrderFields, getOrderEvents } from "@/lib/orders/actions";
+import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
 
 export function OrderDetailSheet({
   order,
@@ -24,6 +27,10 @@ export function OrderDetailSheet({
   onOpenChange: (open: boolean) => void;
   onChanged: () => void;
 }) {
+  const t = useTranslations("ops.detail");
+  const tPhase = useTranslations("track.phase");
+  const locale = useLocale();
+  const [events, setEvents] = useState<OrderEvent[]>([]);
   const [fields, setFields] = useState({
     product_label: order.product_label,
     quantity: order.quantity,
@@ -32,9 +39,7 @@ export function OrderDetailSheet({
     lead_time_days: order.lead_time_days?.toString() ?? "",
     estimated_delivery: order.estimated_delivery ?? "",
   });
-  const [sampleImages, setSampleImages] = useState<SampleImage[]>(
-    order.sample_images.length ? order.sample_images : [{ url: "" }, { url: "" }, { url: "" }]
-  );
+  const [sampleImages, setSampleImages] = useState<SampleImage[]>(order.sample_images);
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
   const [reminding, setReminding] = useState(false);
@@ -43,6 +48,25 @@ export function OrderDetailSheet({
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
+
+  useEffect(() => {
+    getOrderEvents(order.id).then(setEvents);
+    // Re-fetch whenever the order changes too (not just on first open) — the
+    // ops board polls every 20s, so if the customer requests changes while
+    // this sheet is already open, the new note should show up without the
+    // staff having to close and reopen it.
+  }, [order.id, order.updated_at]);
+
+  const dayLabels = { today: t("today"), yesterday: t("yesterday") };
+  const EVENT_LABEL: Record<OrderEvent["type"], string> = {
+    created: t("event.created"),
+    phase_change: t("event.phase_change"),
+    customer_approved: t("event.customer_approved"),
+    customer_requested_changes: t("event.customer_requested_changes"),
+    reminder_sent: t("event.reminder_sent"),
+    rated: t("event.rated"),
+    note: t("event.note"),
+  };
 
   async function save() {
     setSaving(true);
@@ -53,7 +77,6 @@ export function OrderDetailSheet({
       order_total: fields.order_total ? Number(fields.order_total) : null,
       lead_time_days: fields.lead_time_days ? Number(fields.lead_time_days) : null,
       estimated_delivery: fields.estimated_delivery || null,
-      sample_images: showSampleImages ? sampleImages.filter((s) => s.url.trim()) : undefined,
     });
     setSaving(false);
     onChanged();
@@ -91,9 +114,9 @@ export function OrderDetailSheet({
 
         <div className="grid gap-5 p-4">
           <section className="grid gap-3">
-            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">Order details</h3>
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("order_details")}</h3>
             <div className="grid gap-1.5">
-              <Label htmlFor="product_label">Product</Label>
+              <Label htmlFor="product_label">{t("product")}</Label>
               <Input
                 id="product_label"
                 value={fields.product_label}
@@ -102,7 +125,7 @@ export function OrderDetailSheet({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
-                <Label htmlFor="quantity">Quantity</Label>
+                <Label htmlFor="quantity">{t("quantity")}</Label>
                 <Input
                   id="quantity"
                   value={fields.quantity}
@@ -110,7 +133,7 @@ export function OrderDetailSheet({
                 />
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="lead_time_days">Lead time (days)</Label>
+                <Label htmlFor="lead_time_days">{t("lead_time")}</Label>
                 <Input
                   id="lead_time_days"
                   type="number"
@@ -122,7 +145,7 @@ export function OrderDetailSheet({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
-                <Label htmlFor="unit_price">Unit price (EGP)</Label>
+                <Label htmlFor="unit_price">{t("unit_price")}</Label>
                 <Input
                   id="unit_price"
                   type="number"
@@ -133,7 +156,7 @@ export function OrderDetailSheet({
                 />
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="order_total">Order total (EGP)</Label>
+                <Label htmlFor="order_total">{t("order_total")}</Label>
                 <Input
                   id="order_total"
                   type="number"
@@ -145,7 +168,7 @@ export function OrderDetailSheet({
               </div>
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="estimated_delivery">Estimated delivery</Label>
+              <Label htmlFor="estimated_delivery">{t("estimated_delivery")}</Label>
               <Input
                 id="estimated_delivery"
                 type="date"
@@ -155,28 +178,82 @@ export function OrderDetailSheet({
             </div>
 
             {showSampleImages && (
-              <div className="grid gap-1.5">
-                <Label>Sample photo URLs</Label>
-                {sampleImages.map((img, i) => (
-                  <Input
-                    key={i}
-                    placeholder={`Sample ${i + 1} image URL`}
-                    value={img.url}
-                    onChange={(e) =>
-                      setSampleImages((prev) => prev.map((p, j) => (j === i ? { ...p, url: e.target.value } : p)))
-                    }
-                  />
-                ))}
-              </div>
+              <SamplePhotoUploader
+                orderId={order.id}
+                images={sampleImages}
+                onChanged={(next) => {
+                  setSampleImages(next);
+                  onChanged();
+                }}
+              />
             )}
 
-            <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
-              {saving ? "Saving…" : "Save changes"}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
+                {saving ? t("saving") : t("save")}
+              </Button>
+              {order.order_total != null ? (
+                <Button asChild variant="outline" className="w-fit border-line">
+                  <a href={`/api/orders/${order.id}/invoice`} target="_blank" rel="noopener">
+                    {t("invoice")}
+                  </a>
+                </Button>
+              ) : (
+                <p className="self-center text-xs text-faint">{t("invoice_pending")}</p>
+              )}
+            </div>
           </section>
 
           <section className="grid gap-2">
-            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">Pipeline</h3>
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("activity")}</h3>
+            {events.length === 0 ? (
+              <p className="text-sm text-faint">{t("no_activity")}</p>
+            ) : (
+              <ol className="grid gap-2">
+                {events.map((e) => (
+                  <li key={e.id} className="grid gap-1 text-sm">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span
+                        className={
+                          e.type === "customer_requested_changes" ? "font-semibold text-danger" : "font-medium text-ink"
+                        }
+                      >
+                        {EVENT_LABEL[e.type]}
+                        {e.type === "phase_change" && e.phase ? `: ${tPhase(e.phase)}` : ""}
+                      </span>
+                      <span className="shrink-0 text-xs text-muted whitespace-nowrap" dir="ltr">
+                        {formatRelativeDay(new Date(e.created_at), locale, dayLabels)}
+                      </span>
+                    </div>
+                    {e.message && (
+                      <p
+                        className={`rounded-md p-2 text-ink/80 ${
+                          e.type === "customer_requested_changes" ? "bg-danger-soft" : "bg-paper-2"
+                        }`}
+                      >
+                        {e.message}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+
+          <section className="grid gap-2">
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("rating_title")}</h3>
+            {order.rating != null ? (
+              <div className="grid gap-1">
+                <span className="text-amber">{"★".repeat(order.rating)}{"☆".repeat(5 - order.rating)}</span>
+                {order.rating_comment && <p className="text-sm text-ink/80">{order.rating_comment}</p>}
+              </div>
+            ) : (
+              <p className="text-sm text-faint">{t("rating_none")}</p>
+            )}
+          </section>
+
+          <section className="grid gap-2">
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("pipeline")}</h3>
             <ol className="grid gap-1.5">
               {PHASES.map((p) => {
                 const done = phaseIndex(p.key) < phaseIndex(order.phase);
@@ -193,8 +270,8 @@ export function OrderDetailSheet({
                         done ? "bg-leaf" : current ? (p.gate ? "bg-amber" : "bg-accent") : "bg-line"
                       }`}
                     />
-                    {p.label}
-                    {current && p.gate && <span className="text-xs font-normal text-amber">— your turn</span>}
+                    {tPhase(p.key)}
+                    {current && p.gate && <span className="ms-2 text-xs font-normal text-amber">{t("your_turn")}</span>}
                   </li>
                 );
               })}
@@ -204,17 +281,17 @@ export function OrderDetailSheet({
 
         <SheetFooter className="border-t border-line">
           {order.phase === "delivered" ? (
-            <p className="text-sm font-semibold text-leaf">Delivered.</p>
+            <p className="text-sm font-semibold text-leaf">{t("delivered")}</p>
           ) : gate ? (
             <>
-              <p className="text-sm text-muted">Waiting on the customer to respond — nudge them if it&apos;s been a while.</p>
+              <p className="text-sm text-muted">{t("waiting_note")}</p>
               <Button onClick={remind} disabled={reminding} className="bg-accent hover:bg-accent-2">
-                {reminding ? "Sending…" : "Send WhatsApp reminder"}
+                {reminding ? t("reminding") : t("remind")}
               </Button>
             </>
           ) : (
             <Button onClick={advance} disabled={advancing || !next} className="bg-accent hover:bg-accent-2">
-              {advancing ? "Advancing…" : `Advance to ${next ? PHASES.find((p) => p.key === next)?.label : "—"}`}
+              {advancing ? t("advancing") : t("advance", { phase: next ? tPhase(next) : "—" })}
             </Button>
           )}
         </SheetFooter>

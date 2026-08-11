@@ -392,7 +392,7 @@
   },
   "f": {
     "h2": "اطلب عرض سعر",
-    "lead": "املا البيانات وهيفتح لك واتساب برسالة جاهزة للإرسال — من غير حساب ولا تسجيل.",
+    "lead": "املا البيانات وهنتواصل معاك — من غير حساب ولا تسجيل.",
     "name": "اسمك",
     "name_placeholder": "مثال: أحمد محمود",
     "company": "الشركة / العلامة التجارية",
@@ -406,7 +406,7 @@
     "qty_placeholder": "مثال: 5000 كيس",
     "msg": "تفاصيل الطلب",
     "msg_placeholder": "المقاسات، عدد ألوان الطباعة، الخامة، ميعاد التسليم…",
-    "submit": "ابعت على واتساب",
+    "submit": "ابعت طلب عرض السعر",
     "note": "أو اتصل بالمبيعات مباشرة على 01005750973 — من السبت للخميس، 10 صباحاً لـ 6 مساءً.",
     "req": "مطلوب"
   },
@@ -466,10 +466,26 @@
       "out_for_delivery": "في الطريق للتسليم",
       "delivered": "تم التسليم"
     },
+    "phase_desc": {
+      "order_confirmed": "استلمنا طلبك وأكدنا التفاصيل.",
+      "artwork_pre_press": "فريقنا بيجهّز التصميم للطباعة.",
+      "artwork_approved": "اعتمدت التصميم — الإنتاج بيبدأ.",
+      "sample_produced": "تم تجهيز عينة لمراجعتك.",
+      "sample_approved": "اعتمدت العينة — الإنتاج الكامل بيبدأ.",
+      "plates_tooling": "جاري تجهيز الكليشيهات والتجهيزات.",
+      "printing": "طلبك قيد الطباعة.",
+      "finishing_die_cut": "جاري التشطيب والتقطيع.",
+      "quality_check": "جاري إجراء فحص الجودة.",
+      "packed": "تم تغليف طلبك.",
+      "out_for_delivery": "طلبك في الطريق إليك.",
+      "delivered": "التسليم قريب."
+    },
+    "today": "اليوم",
+    "yesterday": "أمس",
     "in_progress": {
       "estimated_delivery": "موعد التسليم المتوقع",
-      "message_prefix": "أهلاً، محتاج أعرف آخر تحديث لطلب رقم",
-      "message_sales": "راسلنا على واتساب"
+      "message_sales": "اتصل بالمبيعات",
+      "download_invoice": "تحميل الفاتورة"
     },
     "approval": {
       "badge": "محتاجين موافقتك",
@@ -481,13 +497,96 @@
       "changes_placeholder": "إيه اللي محتاجين نغيره؟",
       "changes_submit": "إرسال الطلب",
       "submitting": "جاري الإرسال…",
+      "download_hint": "دوس على الصورة عشان تحمّلها.",
+      "error": "حصل خطأ — من فضلك حاول تاني.",
       "footer_note": "الإنتاج بيبدأ فور موافقتك."
     },
     "delivered": {
       "title": "تم التسليم",
+      "order_number": "رقم الطلب",
       "product": "المنتج",
       "quantity": "الكمية",
-      "order_total": "إجمالي الطلب"
+      "order_total": "إجمالي الطلب",
+      "download_invoice": "تحميل الفاتورة",
+      "reorder": "أعد الطلب",
+      "rate_title": "إيه رأيك في تجربتك معانا؟",
+      "rate_prompt": "دوس على نجمة عشان تقيّم طلبك.",
+      "comment_placeholder": "أي حاجة حابب تضيفها؟ (اختياري)",
+      "rate_submit": "إرسال التقييم",
+      "rate_submitting": "جاري الإرسال…",
+      "rate_thanks": "شكراً على تقييمك!"
+    }
+  },
+  "ops": {
+    "title": "العمليات",
+    "logout": "تسجيل الخروج",
+    "search_placeholder": "دور برقم الطلب أو اسم العميل",
+    "tabs": {
+      "all": "كل الطلبات",
+      "needs_action": "محتاجة إجراء منا",
+      "waiting": "في انتظار العميل",
+      "overdue": "متأخرة"
+    },
+    "stats": {
+      "live": "طلب شغال",
+      "waiting": "في انتظار العميل",
+      "overdue": "متأخر",
+      "due_this_week": "مستحق الأسبوع ده",
+      "avg_rating": "متوسط التقييم"
+    },
+    "columns": {
+      "Pre-press": "قبل الطباعة",
+      "Sample": "العينة",
+      "Printing": "الطباعة",
+      "Finishing": "التشطيب",
+      "Dispatch": "الشحن"
+    },
+    "empty_column": "لا يوجد شيء هنا.",
+    "overdue_by": "متأخر {days, plural, one {# يوم} other {# أيام}}",
+    "status": {
+      "done": "تم",
+      "in_progress": "جاري التنفيذ",
+      "waiting_on_customer": "في انتظار العميل",
+      "overdue": "متأخر",
+      "not_started": "لم يبدأ"
+    },
+    "detail": {
+      "order_details": "بيانات الطلب",
+      "product": "المنتج",
+      "quantity": "الكمية",
+      "lead_time": "مدة التنفيذ (أيام)",
+      "unit_price": "سعر القطعة (جنيه)",
+      "order_total": "إجمالي الطلب (جنيه)",
+      "estimated_delivery": "موعد التسليم المتوقع",
+      "sample_photos": "صور العينة",
+      "remove_photo": "حذف الصورة",
+      "save": "حفظ التغييرات",
+      "saving": "جاري الحفظ…",
+      "pipeline": "مراحل التنفيذ",
+      "your_turn": "— دورك دلوقتي",
+      "delivered": "تم التسليم.",
+      "waiting_note": "في انتظار رد العميل — ذكّره لو الوقت طال.",
+      "remind": "إرسال تذكير واتساب",
+      "reminding": "جاري الإرسال…",
+      "advance": "التقدم إلى {phase}",
+      "advancing": "جاري التقدم…",
+      "invoice": "تحميل الفاتورة",
+      "invoice_pending": "حدد السعر أولاً لتفعيل الفاتورة.",
+      "activity": "النشاط",
+      "no_activity": "لا يوجد نشاط بعد.",
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "event": {
+        "created": "تم إنشاء الطلب",
+        "phase_change": "انتقل إلى",
+        "customer_approved": "وافق العميل",
+        "customer_requested_changes": "العميل طلب تعديل",
+        "reminder_sent": "تم إرسال تذكير",
+        "rated": "قيّم العميل الطلب",
+        "note": "ملاحظة داخلية"
+      },
+      "rating_title": "تقييم العميل",
+      "rating_none": "لم يتم التقييم بعد."
     }
   }
 }

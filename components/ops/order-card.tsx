@@ -1,10 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { deriveStatus } from "@/lib/orders/status";
 import type { Order } from "@/lib/orders/types";
 import { StatusBadge } from "@/components/orders/status-badge";
 
 export function OrderCard({ order, now, onClick }: { order: Order; now: number; onClick: () => void }) {
+  const t = useTranslations("ops");
   const status = deriveStatus(order);
   const overdueDays = order.estimated_delivery
     ? Math.floor((now - new Date(order.estimated_delivery).getTime()) / 86_400_000)
@@ -28,8 +31,9 @@ export function OrderCard({ order, now, onClick }: { order: Order; now: number; 
         className="mt-1"
       />
       {status === "overdue" && overdueDays !== null && overdueDays > 0 && (
-        <span className="text-xs font-medium text-danger">Overdue by {overdueDays} day{overdueDays === 1 ? "" : "s"}</span>
+        <span className="text-xs font-medium text-danger">{t("overdue_by", { days: overdueDays })}</span>
       )}
+      {order.rating != null && <span className="text-xs font-medium text-amber">{"★".repeat(order.rating)}</span>}
     </button>
   );
 }

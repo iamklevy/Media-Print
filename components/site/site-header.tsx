@@ -8,7 +8,6 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { SALES_PHONE, ADMIN_PHONE } from "@/lib/contact";
 
 const NAV = [
   { href: "/", key: "home" },
@@ -29,28 +28,6 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* top bar */}
-      <div className="bg-ink text-paper/80 text-[0.84rem]">
-        <div className="mx-auto flex w-[min(1200px,100%-2.5rem)] flex-wrap items-center justify-between gap-4 py-2">
-          <span className="hidden sm:inline">{t("top.hours")}</span>
-          <span className="flex items-center gap-2">
-            <span>{t("top.sales")}</span>
-            <a href={`tel:+2${SALES_PHONE}`} dir="ltr" className="font-semibold text-paper hover:text-accent">
-              {SALES_PHONE}
-            </a>
-            <span className="opacity-40">•</span>
-            <span className="hidden sm:inline">{t("top.admin")}</span>
-            <a
-              href={`tel:+2${ADMIN_PHONE}`}
-              dir="ltr"
-              className="hidden font-semibold text-paper hover:text-accent sm:inline"
-            >
-              {ADMIN_PHONE}
-            </a>
-          </span>
-        </div>
-      </div>
-
       <header className="sticky top-0 z-50 border-b border-transparent bg-paper/85 backdrop-blur-md backdrop-saturate-150 transition-[border-color,box-shadow] has-[.stuck]:border-line">
         <div className="mx-auto flex w-[min(1200px,100%-2.5rem)] items-center gap-6 py-3">
           <Link href="/" className="me-auto flex items-center gap-3">

@@ -389,7 +389,7 @@
     "phone": "Phone number",
     "phone_placeholder": "01xxxxxxxxx",
     "h2": "Request a quote",
-    "lead": "Fill this in and it opens WhatsApp with your details ready to send — no account or sign-up needed.",
+    "lead": "Fill this in and we'll get back to you — no account or sign-up needed.",
     "qty": "Quantity required",
     "qty_placeholder": "e.g. 5,000 bags",
     "product": "Type of packaging",
@@ -397,7 +397,7 @@
     "product_other": "Something else",
     "msg": "Details of the request",
     "msg_placeholder": "Sizes, number of print colours, material, delivery date…",
-    "submit": "Send on WhatsApp",
+    "submit": "Send quote request",
     "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
   },
@@ -466,10 +466,26 @@
       "out_for_delivery": "Out for delivery",
       "delivered": "Delivered"
     },
+    "phase_desc": {
+      "order_confirmed": "We've received and confirmed your order.",
+      "artwork_pre_press": "Our team is preparing your artwork for print.",
+      "artwork_approved": "You approved the artwork — production is starting.",
+      "sample_produced": "A sample has been produced for your review.",
+      "sample_approved": "You approved the sample — full production is starting.",
+      "plates_tooling": "Plates and tooling are being prepared.",
+      "printing": "Your order is being printed.",
+      "finishing_die_cut": "Finishing and die-cutting are underway.",
+      "quality_check": "A quality check is being completed.",
+      "packed": "Your order has been packed.",
+      "out_for_delivery": "Your order is on the way.",
+      "delivered": "Expect delivery soon."
+    },
+    "today": "Today",
+    "yesterday": "Yesterday",
     "in_progress": {
       "estimated_delivery": "Estimated delivery",
-      "message_prefix": "Hi, I'd like an update on order",
-      "message_sales": "Message sales on WhatsApp"
+      "message_sales": "Call sales",
+      "download_invoice": "Download invoice"
     },
     "approval": {
       "badge": "Your approval is needed",
@@ -481,13 +497,96 @@
       "changes_placeholder": "What should we change?",
       "changes_submit": "Send request",
       "submitting": "Sending…",
+      "download_hint": "Tap a photo to download it.",
+      "error": "Something went wrong — please try again.",
       "footer_note": "Production starts the moment you approve."
     },
     "delivered": {
       "title": "Delivered",
+      "order_number": "Order number",
       "product": "Product",
       "quantity": "Quantity",
-      "order_total": "Order total"
+      "order_total": "Order total",
+      "download_invoice": "Download invoice",
+      "reorder": "Reorder this",
+      "rate_title": "How was your experience?",
+      "rate_prompt": "Tap a star to rate your order.",
+      "comment_placeholder": "Anything you'd like to add? (optional)",
+      "rate_submit": "Submit rating",
+      "rate_submitting": "Submitting…",
+      "rate_thanks": "Thanks for the feedback!"
+    }
+  },
+  "ops": {
+    "title": "Operations",
+    "logout": "Log out",
+    "search_placeholder": "Search order or customer",
+    "tabs": {
+      "all": "All jobs",
+      "needs_action": "Needs our action",
+      "waiting": "Waiting on customer",
+      "overdue": "Overdue"
+    },
+    "stats": {
+      "live": "live jobs",
+      "waiting": "waiting on customer",
+      "overdue": "overdue",
+      "due_this_week": "due this week",
+      "avg_rating": "avg. rating"
+    },
+    "columns": {
+      "Pre-press": "Pre-press",
+      "Sample": "Sample",
+      "Printing": "Printing",
+      "Finishing": "Finishing",
+      "Dispatch": "Dispatch"
+    },
+    "empty_column": "Nothing here.",
+    "overdue_by": "Overdue by {days, plural, one {# day} other {# days}}",
+    "status": {
+      "done": "Done",
+      "in_progress": "In progress",
+      "waiting_on_customer": "Waiting on customer",
+      "overdue": "Overdue",
+      "not_started": "Not started"
+    },
+    "detail": {
+      "order_details": "Order details",
+      "product": "Product",
+      "quantity": "Quantity",
+      "lead_time": "Lead time (days)",
+      "unit_price": "Unit price (EGP)",
+      "order_total": "Order total (EGP)",
+      "estimated_delivery": "Estimated delivery",
+      "sample_photos": "Sample photos",
+      "remove_photo": "Remove photo",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "pipeline": "Pipeline",
+      "your_turn": "— your turn",
+      "delivered": "Delivered.",
+      "waiting_note": "Waiting on the customer to respond — nudge them if it's been a while.",
+      "remind": "Send WhatsApp reminder",
+      "reminding": "Sending…",
+      "advance": "Advance to {phase}",
+      "advancing": "Advancing…",
+      "invoice": "Download invoice",
+      "invoice_pending": "Set a price to enable the invoice.",
+      "activity": "Activity",
+      "no_activity": "No activity yet.",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "event": {
+        "created": "Order created",
+        "phase_change": "Moved to",
+        "customer_approved": "Customer approved",
+        "customer_requested_changes": "Customer requested changes",
+        "reminder_sent": "Reminder sent",
+        "rated": "Customer left a rating",
+        "note": "Internal note"
+      },
+      "rating_title": "Customer rating",
+      "rating_none": "Not rated yet."
     }
   }
 }
