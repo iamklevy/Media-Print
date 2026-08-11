@@ -7,6 +7,7 @@ import { createStaffSession, destroyStaffSession, requireStaffSession, verifySta
 import { createCustomerSession, lastFourMatches, requireCustomerSession } from "@/lib/auth/customer";
 import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
+import { trackingUrl } from "@/lib/orders/tracking";
 import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
@@ -66,13 +67,10 @@ export async function createOrderFromQuote(
     actor: "system",
   });
 
-  const trackingPath = `${locale === "ar" ? "/ar" : ""}/track/${data.tracking_slug}`;
-  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
-
   return {
     orderNumber: data.order_number,
-    trackingPath,
-    trackingUrl: `${base}${trackingPath}`,
+    trackingPath: `${locale === "ar" ? "/ar" : ""}/track/${data.tracking_slug}`,
+    trackingUrl: trackingUrl(data.tracking_slug, locale),
   };
 }
 
