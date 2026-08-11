@@ -70,6 +70,7 @@ export default async function LocaleLayout({
       lang={locale}
       dir={isRtl(locale) ? "rtl" : "ltr"}
       className={`${manrope.variable} ${plexArabic.variable}`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body

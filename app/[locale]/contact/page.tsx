@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
 
@@ -82,7 +83,9 @@ export default async function ContactPage({
         <div className="grid items-start gap-10 lg:grid-cols-2">
           <div>
             <SectionHead eyebrow={t("prod.eyebrow")} title={t("f.h2")} lead={t("f.lead")} />
-            <QuoteForm />
+            <Suspense fallback={null}>
+              <QuoteForm />
+            </Suspense>
           </div>
           <div className="grid gap-5">
             <MapEmbed title={t("c.map_title")} />

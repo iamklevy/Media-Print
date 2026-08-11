@@ -38,7 +38,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "apparel",
     "key": "p.apparel",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/clothes1.jpg",
+    "img": "/products/apparel.jpg",
     "specs": [
       "p.apparel.s1",
       "p.apparel.s2",
@@ -98,7 +98,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "cartons",
     "key": "p.cartons",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/11/Luxury-saffron-packaging-design.jpeg",
+    "img": "/products/cartons.jpg",
     "specs": [
       "p.cartons.s1",
       "p.cartons.s2",
@@ -146,7 +146,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "aluminium",
     "key": "p.alu",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Main_2024_3.jpg",
+    "img": "/products/aluminium.jpg",
     "specs": [],
     "pricing": "aluminium"
   }
