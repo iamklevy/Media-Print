@@ -3,14 +3,6 @@ import type { Order } from "./types";
 
 export type OrderStatus = "done" | "in_progress" | "waiting_on_customer" | "overdue" | "not_started";
 
-export const STATUS_LABEL: Record<OrderStatus, string> = {
-  done: "Done",
-  in_progress: "In progress",
-  waiting_on_customer: "Waiting on customer",
-  overdue: "Overdue",
-  not_started: "Not started",
-};
-
 /**
  * Single derivation used by both the ops board and the customer page so the
  * two surfaces can never disagree on an order's badge.

@@ -46,7 +46,7 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="mt-4 max-w-[34ch] text-[0.92rem]">{t("ft.about")}</p>
-            <div className="mt-5 flex gap-2">
+            <div className="mt-5 flex items-center gap-2">
               <a
                 href={FACEBOOK}
                 target="_blank"

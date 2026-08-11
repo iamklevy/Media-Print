@@ -24,6 +24,9 @@ export interface Order {
   sample_images: SampleImage[];
   source: string;
   notes: string | null;
+  rating: number | null;
+  rating_comment: string | null;
+  rated_at: string | null;
   failed_verify_attempts: number;
   verify_locked_until: string | null;
   created_at: string;
@@ -36,7 +39,8 @@ export type OrderEventType =
   | "customer_approved"
   | "customer_requested_changes"
   | "note"
-  | "reminder_sent";
+  | "reminder_sent"
+  | "rated";
 
 export type OrderEventActor = "system" | "staff" | "customer";
 
