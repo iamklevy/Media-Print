@@ -3,7 +3,8 @@ export interface CatalogueProduct {
   /** i18n key prefix, e.g. "p.zipper" -> p.zipper.t / .d / .s1 */
   key: string;
   cat: "plastic" | "paper" | "fabric" | "print";
-  img: string;
+  /** First entry is the cover image, used by the catalogue grid, OG tags and JSON-LD. */
+  images: string[];
   specs: string[];
   /** key into PRICING.products, or null when we have no verified prices */
   pricing: string | null;
@@ -14,7 +15,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "zipper",
     "key": "p.zipper",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/1.jpg",
+    "images": ["https://images.unsplash.com/photo-1586490914534-b60b88a8f3a6?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.zipper.s1",
       "p.zipper.s2",
@@ -26,7 +27,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-sacks",
     "key": "p.sacks",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/mmm.jpeg",
+    "images": ["https://images.unsplash.com/photo-1695245503558-5cdb37f49092?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks.s1",
       "p.sacks.s2",
@@ -38,7 +39,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "apparel",
     "key": "p.apparel",
     "cat": "plastic",
-    "img": "/products/apparel.jpg",
+    "images": ["/products/apparel.jpg", "/products/apparel-2.jpg", "/products/apparel-3.png", "/products/apparel-4.jpg"],
     "specs": [
       "p.apparel.s1",
       "p.apparel.s2",
@@ -50,7 +51,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "nonwoven",
     "key": "p.nonwoven",
     "cat": "fabric",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/%D8%B4%D9%86%D8%B7-%D9%82%D9%85%D8%A7%D8%B4.jpg",
+    "images": ["https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.nonwoven.s1",
       "p.nonwoven.s2",
@@ -62,7 +63,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "courier",
     "key": "p.courier",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/Screen-Shot-2023-05-03-at-10.56.35-AM.png",
+    "images": ["https://images.unsplash.com/photo-1617912760188-9ef603157f1e?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.courier.s1",
       "p.courier.s2",
@@ -74,7 +75,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-bags",
     "key": "p.paperbags",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/4.jpg",
+    "images": ["/products/paper-bags.jpg", "/products/paper-bags-coated.jpg"],
     "specs": [
       "p.paperbags.s1",
       "p.paperbags.s2",
@@ -86,7 +87,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "stickers",
     "key": "p.stickers",
     "cat": "print",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Bath-Shower-Just-Gentle-Organic.jpeg",
+    "images": ["https://images.unsplash.com/photo-1572950947476-26a6e4111e80?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.stickers.s1",
       "p.stickers.s2",
@@ -98,7 +99,17 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "cartons",
     "key": "p.cartons",
     "cat": "paper",
-    "img": "/products/cartons.jpg",
+    "images": [
+      "/products/cartons.png",
+      "/products/cartons-2.png",
+      "/products/cartons-3.png",
+      "/products/cartons-4.png",
+      "/products/cartons-5.png",
+      "/products/cartons-6.png",
+      "/products/cartons-7.png",
+      "/products/cartons-8.png",
+      "/products/cartons-9.png"
+    ],
     "specs": [
       "p.cartons.s1",
       "p.cartons.s2",
@@ -110,7 +121,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "tags",
     "key": "p.tags",
     "cat": "print",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/1.jpeg",
+    "images": ["https://images.unsplash.com/photo-1637291454111-1d115acb5023?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.tags.s1",
       "p.tags.s2",
@@ -122,7 +133,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "corrugated",
     "key": "p.corrugated",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/50-%D1%88%D1%82_-%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BE%D1%87%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D1%80%D0%BE%D0%B1%D0%BA%D0%B8-%D0%B8%D0%B7-%D0%BA%D1%80%D0%B0%D1%84%D1%82-%D0%B1%D1%83%D0%BC%D0%B0%D0%B3%D0%B8-%D0%B4%D0%BB%D1%8F-%D1%83%D0%BA%D1%80%D0%B0%D1%88%D0%B5%D0%BD%D0%B8%D0%B9-_-%D0%94%D0%BE%D0%BC-%D0%B8-%D1%81%D0%B0%D0%B4-_-%D0%90%D0%BB%D0%B8%D0%AD%D0%BA%D1%81%D0%BF%D1%80%D0%B5%D1%81%D1%81.jpeg",
+    "images": ["https://images.unsplash.com/photo-1766040923580-16ad32fae8b4?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.corrugated.s1",
       "p.corrugated.s2",
@@ -134,7 +145,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "sacks-5kg",
     "key": "p.sacks5",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Main_2024_3.jpg",
+    "images": ["https://images.unsplash.com/photo-1706881811917-6590b1054050?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks5.s1",
       "p.sacks5.s2",
@@ -146,7 +157,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "aluminium",
     "key": "p.alu",
     "cat": "plastic",
-    "img": "/products/aluminium.jpg",
+    "images": ["/products/aluminium.jpg"],
     "specs": [],
     "pricing": "aluminium"
   }
