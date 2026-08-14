@@ -14,7 +14,6 @@ const SITE = [
   { href: "/", key: "home" },
   { href: "/bestsellers", key: "best" },
   { href: "/products", key: "products" },
-  { href: "/stickers", key: "stickers" },
   { href: "/services", key: "services" },
   { href: "/book", key: "book" },
   { href: "/contact", key: "contact" },
@@ -26,6 +25,7 @@ const PRODUCTS = [
   { href: "/products/courier", key: "p.courier.t" },
   { href: "/products/cartons", key: "p.cartons.t" },
   { href: "/products/nonwoven", key: "p.nonwoven.t" },
+  { href: "/products/stickers", key: "p.stickers.t" },
 ] as const;
 
 export function SiteFooter() {

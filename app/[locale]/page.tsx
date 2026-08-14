@@ -139,7 +139,7 @@ export default async function HomePage({
             <div className="relative mx-auto w-full max-w-[460px] lg:max-w-none">
               <div className="relative aspect-[4/4.4] overflow-hidden rounded-[30px] shadow-deep">
                 <Image
-                  src="https://mediaprint-eg.com/wp-content/uploads/2024/06/Main_2024_3.jpg"
+                  src="https://images.unsplash.com/photo-1513672494107-cd9d848a383e?w=1200&q=72&auto=format&fit=crop"
                   alt={t("hero.art_alt")}
                   fill
                   priority

@@ -28,7 +28,7 @@ export function ProductCard({
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-paper-2">
         <Image
-          src={product.img}
+          src={product.images[0]}
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"

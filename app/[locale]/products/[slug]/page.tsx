@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check, ChevronRight, ShieldCheck, Truck, Palette } from "lucide-react";
@@ -11,6 +10,8 @@ import { Link } from "@/i18n/navigation";
 import { Wrap, Section, SectionHead } from "@/components/site/section";
 import { PriceCalculator } from "@/components/site/price-calculator";
 import { ProductCard } from "@/components/site/product-card";
+import { ProductGallery } from "@/components/site/product-gallery";
+import { StickerCatalogue, StickerOffers } from "@/components/site/sticker-catalogue";
 import { CtaBand } from "@/components/site/cta-band";
 
 export function generateStaticParams() {
@@ -39,7 +40,7 @@ export async function generateMetadata({
       canonical: locale === "en" ? `/products/${slug}` : `/${locale}/products/${slug}`,
       languages: { en: `/products/${slug}`, ar: `/ar/products/${slug}` },
     },
-    openGraph: { title, description, images: [product.img] },
+    openGraph: { title, description, images: [product.images[0]] },
   };
 }
 
@@ -71,7 +72,7 @@ export default async function ProductPage({
             "@type": "Product",
             name: title,
             description: t(`${product.key}.d`),
-            image: product.img,
+            image: product.images,
             brand: { "@type": "Brand", name: t("brand.name") },
             ...(priced && {
               offers: {
@@ -105,16 +106,7 @@ export default async function ProductPage({
           </div>
 
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[30px] shadow-deep">
-              <Image
-                src={product.img}
-                alt={title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
+            <ProductGallery images={product.images} alt={title} />
 
             <div>
               <span className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-[0.8rem] font-bold text-accent-2">
@@ -165,6 +157,18 @@ export default async function ProductPage({
           </div>
         </Wrap>
       </section>
+
+      {product.slug === "stickers" && (
+        <>
+          <Section>
+            <StickerCatalogue />
+          </Section>
+          <Section tint>
+            <SectionHead eyebrow={t("stick.offers")} title={t("stick.offers")} />
+            <StickerOffers />
+          </Section>
+        </>
+      )}
 
       {related.length > 0 && (
         <Section>
