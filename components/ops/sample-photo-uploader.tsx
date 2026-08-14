@@ -28,18 +28,26 @@ export function SamplePhotoUploader({
     if (!file) return;
     setBusy(slot);
     setError(null);
-    const fd = new FormData();
-    fd.set("file", file);
-    const res = await uploadSampleImage(orderId, slot, fd);
-    setBusy(null);
-    if (!res.ok) {
-      setError(res.error ?? "Upload failed.");
-      return;
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      const res = await uploadSampleImage(orderId, slot, fd);
+      if (!res.ok) {
+        setError(res.error ?? "Upload failed.");
+        return;
+      }
+      const next = [...images];
+      while (next.length <= slot) next.push({ url: "" });
+      next[slot] = { url: res.url! };
+      onChanged(next);
+    } catch {
+      // Server actions reject outright (rather than returning { ok: false })
+      // when the request itself is too large for Next's body-size limit —
+      // without this catch, that failure would only show up in server logs.
+      setError(t("upload_too_large"));
+    } finally {
+      setBusy(null);
     }
-    const next = [...images];
-    while (next.length <= slot) next.push({ url: "" });
-    next[slot] = { url: res.url! };
-    onChanged(next);
   }
 
   async function onRemove(slot: number) {
@@ -55,6 +63,7 @@ export function SamplePhotoUploader({
   return (
     <div className="grid gap-1.5">
       <Label>{t("sample_photos")}</Label>
+      <p className="text-xs text-faint">{t("sample_photos_hint")}</p>
       <div className="grid grid-cols-3 gap-2">
         {SLOTS.map((slot) => {
           const url = images[slot]?.url?.trim();

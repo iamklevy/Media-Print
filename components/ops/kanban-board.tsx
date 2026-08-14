@@ -20,6 +20,9 @@ const POLL_MS = 20_000;
 
 type Filter = "all" | "needs_action" | "waiting" | "overdue";
 
+const TAB_TRIGGER_CLASS =
+  "text-paper/70 hover:bg-paper/10 hover:text-paper data-[state=active]:bg-linear-to-r data-[state=active]:from-accent data-[state=active]:to-accent-2 data-[state=active]:text-paper data-[state=active]:hover:from-accent data-[state=active]:hover:to-accent-2";
+
 export function KanbanBoard({
   initialOrders,
   locale,
@@ -110,71 +113,99 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
   return (
     <div dir={dir} className={`min-h-screen ${locale === "ar" ? "font-arabic" : "font-sans"}`}>
       <header className="border-b border-line bg-ink text-paper">
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-4 px-5 py-3">
-          <h1 className="text-base font-bold">{t("title")}</h1>
-          <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
-            <TabsList className="bg-paper/10">
-              <TabsTrigger value="all" className="text-paper/70 data-active:bg-paper data-active:text-ink">
-                {t("tabs.all")}
-              </TabsTrigger>
-              <TabsTrigger value="needs_action" className="text-paper/70 data-active:bg-paper data-active:text-ink">
-                {t("tabs.needs_action")}
-              </TabsTrigger>
-              <TabsTrigger value="waiting" className="text-paper/70 data-active:bg-paper data-active:text-ink">
-                {t("tabs.waiting")}
-              </TabsTrigger>
-              <TabsTrigger value="overdue" className="text-paper/70 data-active:bg-paper data-active:text-ink">
-                {t("tabs.overdue")}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <div className="mx-auto grid max-w-[1600px] gap-3 px-4 py-3 sm:flex sm:flex-wrap sm:items-center sm:gap-4 sm:px-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-white p-[3px] shadow-soft">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="" className="size-full object-contain" />
+              </span>
+              <h1 className="text-base font-bold">{t("title")}</h1>
+            </div>
+            <div className="flex items-center gap-1 sm:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleLocale}
+                disabled={switching}
+                className="text-paper/80 hover:bg-paper/10 hover:text-paper"
+              >
+                <Globe className="size-4 opacity-70" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={logout} className="text-paper/80 hover:bg-paper/10 hover:text-paper">
+                {t("logout")}
+              </Button>
+            </div>
+          </div>
+
+          <div className="-mx-4 touch-pan-x overflow-x-auto px-4 sm:mx-0 sm:touch-auto sm:overflow-visible sm:px-0">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
+              <TabsList className="bg-paper/10">
+                <TabsTrigger value="all" className={TAB_TRIGGER_CLASS}>
+                  {t("tabs.all")}
+                </TabsTrigger>
+                <TabsTrigger value="needs_action" className={TAB_TRIGGER_CLASS}>
+                  {t("tabs.needs_action")}
+                </TabsTrigger>
+                <TabsTrigger value="waiting" className={TAB_TRIGGER_CLASS}>
+                  {t("tabs.waiting")}
+                </TabsTrigger>
+                <TabsTrigger value="overdue" className={TAB_TRIGGER_CLASS}>
+                  {t("tabs.overdue")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("search_placeholder")}
-            className="ms-auto h-8 w-56 border-paper/20 bg-paper/10 text-paper placeholder:text-paper/50"
+            className="h-9 w-full border-paper/20 bg-paper/10 text-paper placeholder:text-paper/50 sm:ms-auto sm:h-8 sm:w-56"
           />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleLocale}
-            disabled={switching}
-            className="text-paper/80 hover:bg-paper/10 hover:text-paper"
-          >
-            <Globe className="size-4 opacity-70" />
-            {locale === "ar" ? "English" : "العربية"}
-          </Button>
-          <Button variant="ghost" size="sm" onClick={logout} className="text-paper/80 hover:bg-paper/10 hover:text-paper">
-            {t("logout")}
-          </Button>
+          <div className="hidden items-center gap-1 sm:flex">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLocale}
+              disabled={switching}
+              className="text-paper/80 hover:bg-paper/10 hover:text-paper"
+            >
+              <Globe className="size-4 opacity-70" />
+              {locale === "ar" ? "English" : "العربية"}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={logout} className="text-paper/80 hover:bg-paper/10 hover:text-paper">
+              {t("logout")}
+            </Button>
+          </div>
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-[1600px] flex-wrap gap-6 px-5 py-4 text-sm">
-        <span>
+      <div className="mx-auto flex max-w-[1600px] touch-pan-x gap-4 overflow-x-auto px-4 py-4 text-sm sm:touch-auto sm:flex-wrap sm:gap-6 sm:px-5">
+        <span className="shrink-0">
           <b className="text-base">{counts.live}</b> {t("stats.live")}
         </span>
-        <span className="text-amber">
+        <span className="shrink-0 text-amber">
           <b className="text-base">{counts.waiting}</b> {t("stats.waiting")}
         </span>
-        <span className="text-danger">
+        <span className="shrink-0 text-danger">
           <b className="text-base">{counts.overdue}</b> {t("stats.overdue")}
         </span>
-        <span className="text-muted">
+        <span className="shrink-0 text-muted">
           <b className="text-base text-ink">{counts.dueThisWeek}</b> {t("stats.due_this_week")}
         </span>
         {avgRating != null && (
-          <span className="text-muted">
+          <span className="shrink-0 text-muted">
             <b className="text-base text-ink">★ {avgRating.toFixed(1)}</b> {t("stats.avg_rating")} ({rated.length})
           </span>
         )}
       </div>
 
-      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[minmax(260px,1fr)] gap-4 overflow-x-auto px-5 pb-8">
+      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory touch-pan-x gap-4 overflow-x-auto px-4 pb-8 sm:auto-cols-[minmax(260px,1fr)] sm:touch-auto sm:snap-none sm:px-5">
         {KANBAN_COLUMNS.map((col) => {
           const colOrders = visible.filter(({ order }) => col.phases.includes(order.phase));
           return (
-            <div key={col.title} className="grid content-start gap-3 rounded-[14px] bg-paper-2 p-3">
+            <div key={col.title} className="grid snap-center content-start gap-3 rounded-[14px] bg-paper-2 p-3">
               <div className="flex items-center justify-between text-xs font-semibold tracking-wide text-muted uppercase">
                 <span>{t(`columns.${col.title}`)}</span>
                 <span className="rounded-full bg-line px-2 py-0.5 text-ink">{colOrders.length}</span>

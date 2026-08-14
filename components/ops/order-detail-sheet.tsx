@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Check, Copy } from "lucide-react";
 
@@ -17,6 +17,12 @@ import { formatRelativeDay } from "@/lib/utils";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { advancePhase, sendReminder, updateOrderFields, getOrderEvents } from "@/lib/orders/actions";
 import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
+
+/** Quantity is free text (e.g. "5,000 bags") — pull the leading number out of it. */
+function parseQuantityNumber(quantity: string): number | null {
+  const match = quantity.replace(/,/g, "").match(/\d+(\.\d+)?/);
+  return match ? parseFloat(match[0]) : null;
+}
 
 export function OrderDetailSheet({
   order,
@@ -37,7 +43,6 @@ export function OrderDetailSheet({
     product_label: order.product_label,
     quantity: order.quantity,
     unit_price: order.unit_price?.toString() ?? "",
-    order_total: order.order_total?.toString() ?? "",
     lead_time_days: order.lead_time_days?.toString() ?? "",
     estimated_delivery: order.estimated_delivery ?? "",
   });
@@ -52,6 +57,13 @@ export function OrderDetailSheet({
   const next = nextPhase(order.phase);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
   const trackUrl = trackingUrl(order.tracking_slug, locale);
+
+  const orderTotal = useMemo(() => {
+    const price = parseFloat(fields.unit_price);
+    const qty = parseQuantityNumber(fields.quantity);
+    if (Number.isNaN(price) || qty === null) return null;
+    return price * qty;
+  }, [fields.unit_price, fields.quantity]);
 
   useEffect(() => {
     getOrderEvents(order.id).then(setEvents);
@@ -78,7 +90,7 @@ export function OrderDetailSheet({
       product_label: fields.product_label,
       quantity: fields.quantity,
       unit_price: fields.unit_price ? Number(fields.unit_price) : null,
-      order_total: fields.order_total ? Number(fields.order_total) : null,
+      order_total: orderTotal,
       lead_time_days: fields.lead_time_days ? Number(fields.lead_time_days) : null,
       estimated_delivery: fields.estimated_delivery || null,
     });
@@ -142,7 +154,7 @@ export function OrderDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full gap-0 overflow-y-auto bg-paper text-ink sm:max-w-md">
+      <SheetContent side="center" className="gap-0 overflow-y-auto bg-paper text-ink">
         <SheetHeader className="border-b border-line">
           <SheetTitle className="text-ink">{order.order_number}</SheetTitle>
           <SheetDescription>
@@ -206,10 +218,11 @@ export function OrderDetailSheet({
                 <Input
                   id="order_total"
                   type="number"
-                  min={0}
-                  step="0.01"
-                  value={fields.order_total}
-                  onChange={(e) => setFields((f) => ({ ...f, order_total: e.target.value }))}
+                  value={orderTotal != null ? orderTotal.toFixed(2) : ""}
+                  disabled
+                  readOnly
+                  title={t("order_total_auto")}
+                  className="disabled:opacity-70"
                 />
               </div>
             </div>

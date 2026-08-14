@@ -175,11 +175,20 @@ export async function uploadSampleImage(
   const db = supabaseServer();
   const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
 
-  const { error: uploadError } = await db.storage.from(SAMPLE_BUCKET).upload(path, file, {
-    contentType: file.type,
-    upsert: true,
-  });
-  if (uploadError) return { ok: false, error: uploadError.message };
+  try {
+    const { error: uploadError } = await db.storage.from(SAMPLE_BUCKET).upload(path, file, {
+      contentType: file.type,
+      upsert: true,
+    });
+    if (uploadError) return { ok: false, error: uploadError.message };
+  } catch (err) {
+    // Storage-side limits (e.g. the bucket's own max file size in the
+    // Supabase dashboard) can reject the upload with a thrown error rather
+    // than a returned one — surface it to the caller instead of letting it
+    // vanish into the server log as an unhandled action failure.
+    console.error("uploadSampleImage: storage upload threw", err);
+    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
+  }
 
   const { data: pub } = db.storage.from(SAMPLE_BUCKET).getPublicUrl(path);
 
