@@ -100,16 +100,19 @@ export function InProgressState({ order, events }: { order: Order; events: Order
                     }`}
                   />
                 ))}
-              <span
-                className={`relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full ${
-                  done
-                    ? "bg-leaf text-white"
-                    : current
-                      ? "bg-accent text-white"
-                      : "border-2 border-dashed border-line bg-paper"
-                }`}
-              >
-                {done ? <Check className="size-3.5" strokeWidth={3} /> : current ? <Icon className="size-3.5" /> : null}
+              <span className="relative z-10 flex size-6 shrink-0 items-center justify-center">
+                {current && <span className="absolute inset-0 animate-ping rounded-full bg-accent opacity-75" />}
+                <span
+                  className={`relative flex size-6 items-center justify-center rounded-full ${
+                    done
+                      ? "bg-leaf text-white"
+                      : current
+                        ? "bg-accent text-white"
+                        : "border-2 border-dashed border-line bg-paper"
+                  }`}
+                >
+                  {done ? <Check className="size-3.5" strokeWidth={3} /> : current ? <Icon className="size-3.5" /> : null}
+                </span>
               </span>
 
               <div className="min-w-0 flex-1 pt-0.5">

@@ -11,6 +11,7 @@ export interface Order {
   tracking_slug: string;
   customer_name: string;
   customer_phone: string;
+  customer_email: string | null;
   customer_company: string | null;
   product_label: string;
   quantity: string;
@@ -23,6 +24,7 @@ export interface Order {
   delivered_at: string | null;
   sample_images: SampleImage[];
   source: string;
+  locale: string;
   notes: string | null;
   rating: number | null;
   rating_comment: string | null;

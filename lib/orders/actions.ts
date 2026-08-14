@@ -8,6 +8,7 @@ import { createCustomerSession, lastFourMatches, requireCustomerSession } from "
 import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
 import { trackingUrl } from "@/lib/orders/tracking";
+import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
 import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
@@ -29,7 +30,8 @@ export async function createOrderFromQuote(
 
   const name = get("name");
   const phone = get("phone");
-  if (!name || !phone) return null;
+  const email = get("email");
+  if (!name || !phone || !email) return null;
 
   const company = get("company") || null;
   const product = get("product") || "Not specified";
@@ -46,13 +48,15 @@ export async function createOrderFromQuote(
       tracking_slug: slug,
       customer_name: name,
       customer_phone: phone,
+      customer_email: email,
       customer_company: company,
       product_label: product,
       quantity: qty,
       notes: message,
       source,
+      locale: locale === "ar" ? "ar" : "en",
     })
-    .select("id, order_number, tracking_slug")
+    .select("*")
     .single();
 
   if (error || !data) {
@@ -66,6 +70,8 @@ export async function createOrderFromQuote(
     phase: "order_confirmed",
     actor: "system",
   });
+
+  await notifyQuoteReceived(data as Order);
 
   return {
     orderNumber: data.order_number,
@@ -116,7 +122,7 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
 
   const { data: order, error: fetchError } = await db
     .from("orders")
-    .select("phase")
+    .select("*")
     .eq("id", orderId)
     .single();
   if (fetchError || !order) return { ok: false, error: "Order not found." };
@@ -134,6 +140,14 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
   if (updateError) return { ok: false, error: updateError.message };
 
   await db.from("order_events").insert({ order_id: orderId, type: "phase_change", phase: next, actor: "staff" });
+
+  if (next === "artwork_approved" || next === "sample_approved") {
+    await notifyGateReady({ ...(order as Order), phase: next }, next);
+  }
+  if (next === "delivered") {
+    await notifyDelivered({ ...(order as Order), phase: next });
+  }
+
   return { ok: true };
 }
 
@@ -296,7 +310,11 @@ export async function approveGate(
   await requireCustomerSession(slug);
   const db = supabaseServer();
 
-  const { data: order, error } = await db.from("orders").select("id, phase").eq("tracking_slug", slug).single();
+  const { data: order, error } = await db
+    .from("orders")
+    .select("id, phase, order_number, customer_name")
+    .eq("tracking_slug", slug)
+    .single();
   if (error || !order) return { ok: false, error: "Order not found." };
   if (!isGatePhase(order.phase)) return { ok: false, error: "Nothing to approve." };
 
@@ -318,6 +336,8 @@ export async function approveGate(
       { order_id: order.id, type: "phase_change", phase: next, actor: "system" },
     ])
     .select("*");
+
+  await notifyStaffGateResponse(order, "approved", order.phase as "artwork_approved" | "sample_approved");
 
   return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
 }
@@ -353,7 +373,11 @@ export async function requestChanges(
   await requireCustomerSession(slug);
   const db = supabaseServer();
 
-  const { data: order, error } = await db.from("orders").select("id, phase").eq("tracking_slug", slug).single();
+  const { data: order, error } = await db
+    .from("orders")
+    .select("id, phase, order_number, customer_name")
+    .eq("tracking_slug", slug)
+    .single();
   if (error || !order) return { ok: false, error: "Order not found." };
   if (!isGatePhase(order.phase)) return { ok: false, error: "Nothing to revise." };
 
@@ -380,6 +404,8 @@ export async function requestChanges(
       { order_id: order.id, type: "phase_change", phase: prev, actor: "system" },
     ])
     .select("*");
+
+  await notifyStaffGateResponse(order, "changes_requested", order.phase as "artwork_approved" | "sample_approved", note);
 
   return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
 }
