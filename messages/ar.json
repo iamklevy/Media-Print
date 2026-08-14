@@ -520,7 +520,7 @@
     }
   },
   "ops": {
-    "title": "العمليات",
+    "title": "عمليات ميديا برنت",
     "logout": "تسجيل الخروج",
     "search_placeholder": "دور برقم الطلب أو اسم العميل",
     "tabs": {
@@ -559,9 +559,12 @@
       "lead_time": "مدة التنفيذ (أيام)",
       "unit_price": "سعر القطعة (جنيه)",
       "order_total": "إجمالي الطلب (جنيه)",
+      "order_total_auto": "بيتحسب أوتوماتيك: سعر القطعة × الكمية",
       "estimated_delivery": "موعد التسليم المتوقع",
       "sample_photos": "صور العينة",
+      "sample_photos_hint": "JPEG أو PNG أو WebP · حتى 5 ميجابايت لكل صورة",
       "remove_photo": "حذف الصورة",
+      "upload_too_large": "الصورة دي كبيرة أوي — جرّب ملف أصغر.",
       "save": "حفظ التغييرات",
       "saving": "جاري الحفظ…",
       "pipeline": "مراحل التنفيذ",

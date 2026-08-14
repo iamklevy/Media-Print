@@ -520,7 +520,7 @@
     }
   },
   "ops": {
-    "title": "Operations",
+    "title": "Media Print Operations",
     "logout": "Log out",
     "search_placeholder": "Search order or customer",
     "tabs": {
@@ -559,9 +559,12 @@
       "lead_time": "Lead time (days)",
       "unit_price": "Unit price (EGP)",
       "order_total": "Order total (EGP)",
+      "order_total_auto": "Auto-calculated: unit price × quantity",
       "estimated_delivery": "Estimated delivery",
       "sample_photos": "Sample photos",
+      "sample_photos_hint": "JPEG, PNG or WebP · up to 5MB each",
       "remove_photo": "Remove photo",
+      "upload_too_large": "That photo is too large to upload — try a smaller file.",
       "save": "Save changes",
       "saving": "Saving…",
       "pipeline": "Pipeline",
