@@ -2,7 +2,6 @@
 
 import { useTranslations, useLocale } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/track/rating-stars";
 import type { Order } from "@/lib/orders/types";
@@ -43,25 +42,15 @@ export function DeliveredState({ order }: { order: Order }) {
         )}
       </dl>
       
-      <div className="flex flex-wrap gap-2">
-        {order.order_total != null && (
+      {order.order_total != null && (
+        <div className="flex flex-wrap gap-2">
           <Button asChild variant="outline" className="w-fit border-line">
             <a href={`/api/track/${order.tracking_slug}/invoice`} target="_blank" rel="noopener">
               {t("download_invoice")}
             </a>
           </Button>
-        )}
-        <Button asChild className="w-fit rounded-full bg-ink text-paper hover:bg-ink-2">
-          <Link
-            href={{
-              pathname: "/contact",
-              query: { reorder: order.order_number, product: order.product_label, qty: order.quantity },
-            }}
-          >
-            {t("reorder")}
-          </Link>
-        </Button>
-      </div>
+        </div>
+      )}
 
       <RatingStars order={order} />
     </div>

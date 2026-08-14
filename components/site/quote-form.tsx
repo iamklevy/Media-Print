@@ -75,10 +75,14 @@ export function QuoteForm() {
         <Field id="phone" label={t("f.phone")} required>
           <Input id="phone" name="phone" type="tel" dir="ltr" required placeholder={t("f.phone_placeholder")} />
         </Field>
-        <Field id="qty" label={t("f.qty")}>
-          <Input id="qty" name="qty" defaultValue={reorderQty} placeholder={t("f.qty_placeholder")} />
+        <Field id="email" label={t("f.email")} required>
+          <Input id="email" name="email" type="email" dir="ltr" required placeholder={t("f.email_placeholder")} />
         </Field>
       </div>
+
+      <Field id="qty" label={t("f.qty")}>
+        <Input id="qty" name="qty" defaultValue={reorderQty} placeholder={t("f.qty_placeholder")} />
+      </Field>
 
       <Field id="product" label={t("f.product")}>
         {/* native select keeps this form usable with zero JS beyond submit */}

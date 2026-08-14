@@ -399,6 +399,8 @@
     "company_placeholder": "اختياري",
     "phone": "رقم الهاتف",
     "phone_placeholder": "01xxxxxxxxx",
+    "email": "البريد الإلكتروني",
+    "email_placeholder": "you@company.com",
     "product": "نوع التغليف",
     "product_choose": "اختر المنتج",
     "product_other": "حاجة تانية",
