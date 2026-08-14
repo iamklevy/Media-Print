@@ -201,7 +201,7 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
         )}
       </div>
 
-      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory touch-pan-x gap-4 overflow-x-auto px-4 pb-8 sm:auto-cols-[minmax(260px,1fr)] sm:touch-auto sm:snap-none sm:px-5">
+      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:auto-cols-[minmax(260px,1fr)] sm:snap-none sm:px-5">
         {KANBAN_COLUMNS.map((col) => {
           const colOrders = visible.filter(({ order }) => col.phases.includes(order.phase));
           return (
