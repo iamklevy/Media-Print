@@ -388,6 +388,8 @@
     "company_placeholder": "Optional",
     "phone": "Phone number",
     "phone_placeholder": "01xxxxxxxxx",
+    "email": "Email address",
+    "email_placeholder": "you@company.com",
     "h2": "Request a quote",
     "lead": "Fill this in and we'll get back to you — no account or sign-up needed.",
     "qty": "Quantity required",
