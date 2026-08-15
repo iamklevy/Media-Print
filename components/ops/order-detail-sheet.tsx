@@ -107,38 +107,24 @@ export function OrderDetailSheet({
   }
 
   async function copyTrackingLink() {
-    if (navigator.clipboard) {
+    // navigator.clipboard only exists in secure contexts. On plain HTTP (e.g.
+    // a LAN IP the ops tablets hit), it's undefined, and document.execCommand
+    // ("copy") is not a reliable substitute — it can return true without the
+    // OS clipboard actually changing. Rather than report a false success,
+    // skip straight to the prompt below on insecure origins.
+    if (window.isSecureContext && navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(trackUrl);
         setLinkCopied(true);
         setTimeout(() => setLinkCopied(false), 2000);
         return;
       } catch {
-        // permission denied — fall through to the execCommand attempt below
+        // permission denied — fall through to the manual prompt below
       }
     }
 
-    // navigator.clipboard is undefined outside secure contexts (plain HTTP on
-    // a LAN IP) — execCommand isn't gated by secure context, so it can still
-    // copy silently here. Verify its return value before trusting it.
-    const textarea = document.createElement("textarea");
-    textarea.value = trackUrl;
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    const copied = document.execCommand("copy");
-    document.body.removeChild(textarea);
-
-    if (copied) {
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-      return;
-    }
-
-    // Last resort: the prompt dialog pre-selects its text, so one native
-    // Ctrl+C copies it, bypassing the browser's clipboard permissions entirely.
+    // The prompt dialog pre-selects its text, so one native Ctrl+C copies it,
+    // bypassing unreliable programmatic clipboard access entirely.
     window.prompt(t("copy_manually"), trackUrl);
   }
 

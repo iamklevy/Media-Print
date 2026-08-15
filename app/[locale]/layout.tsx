@@ -75,6 +75,7 @@ export default async function LocaleLayout({
     >
       <body
         className={`bg-paper text-ink antialiased ${isRtl(locale) ? "font-arabic" : "font-sans"}`}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <SiteHeader />
