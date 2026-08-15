@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   // Lets phones/other devices on the LAN load dev assets when testing against
   // this machine's local IP instead of localhost. Dev-only; unused in prod.
-  allowedDevOrigins: ["192.168.1.161"],
+  allowedDevOrigins: ["192.168.1.161", "172.20.10.5"],
   experimental: {
     serverActions: {
       // Next's server action body limit defaults to 1MB, well under the
