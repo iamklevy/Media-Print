@@ -473,10 +473,10 @@
       "error_not_found": "We couldn't find that order."
     },
     "phase": {
-      "order_confirmed": "Order confirmed",
+      "order_confirmed": "Order created",
       "artwork_pre_press": "Artwork & pre-press",
       "artwork_approved": "Artwork approved",
-      "sample_produced": "Sample produced",
+      "sample_produced": "Sample production",
       "sample_approved": "Sample approved",
       "plates_tooling": "Plates & tooling",
       "printing": "Printing",
@@ -490,7 +490,7 @@
       "order_confirmed": "We've received and confirmed your order.",
       "artwork_pre_press": "Our team is preparing your artwork for print.",
       "artwork_approved": "You approved the artwork — production is starting.",
-      "sample_produced": "A sample has been produced for your review.",
+      "sample_produced": "A sample is being produced for your review.",
       "sample_approved": "You approved the sample — full production is starting.",
       "plates_tooling": "Plates and tooling are being prepared.",
       "printing": "Your order is being printed.",
