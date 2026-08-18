@@ -23,10 +23,10 @@ export function CtaBand() {
           <p className="relative mt-4 mb-8 max-w-[54ch] text-paper/72">{t("band.p")}</p>
           <div className="relative flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-full bg-paper text-ink hover:bg-white">
-              <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener">
-                <WhatsAppIcon className="size-4" />
-                {t("cta.whatsapp")}
-              </a>
+              <Link href="/contact">
+                {t("cta.quote")}
+                <ArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
             </Button>
             <Button
               asChild
@@ -34,10 +34,10 @@ export function CtaBand() {
               variant="outline"
               className="rounded-full border-white/30 bg-transparent text-paper hover:bg-white/10 hover:text-paper"
             >
-              <Link href="/book">
-                {t("cta.book")}
-                <ArrowRight className="size-4 rtl:rotate-180" />
-              </Link>
+              <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener">
+                <WhatsAppIcon className="size-4" />
+                {t("cta.whatsapp")}
+              </a>
             </Button>
             <Button
               asChild

@@ -102,6 +102,38 @@ export function ApprovalGateState({
         <p className="text-xs text-muted">{t("download_hint")}</p>
       )}
 
+      {!isSample && order.artwork_files.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {order.artwork_files.map((file, i) => {
+            if (!file.url) return null;
+            const filename = `${order.order_number}-artwork-${i + 1}.jpg`;
+            return (
+              <a
+                key={i}
+                href={downloadUrl(file.url, filename)}
+                download={filename}
+                target="_blank"
+                rel="noopener"
+                className="relative block aspect-square overflow-hidden rounded-lg border border-line active:opacity-80"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={file.url}
+                  alt={file.label ?? `Artwork ${i + 1}`}
+                  className="size-full object-cover"
+                />
+                <span className="absolute end-1.5 top-1.5 grid size-7 place-items-center rounded-full bg-ink/70 text-paper shadow-lift backdrop-blur-sm">
+                  <Download className="size-3.5" />
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      )}
+      {!isSample && order.artwork_files.some((file) => file.url) && (
+        <p className="text-xs text-muted">{t("download_hint")}</p>
+      )}
+
       <div className="grid gap-2 rounded-lg bg-paper p-4">
         {error && <p className="text-sm font-semibold text-danger">{t("error")}</p>}
         <Button onClick={onApprove} disabled={pending !== null} className="bg-leaf hover:bg-leaf/90">

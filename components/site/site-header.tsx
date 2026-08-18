@@ -11,10 +11,10 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", key: "home" },
-  { href: "/bestsellers", key: "best" },
   { href: "/products", key: "products" },
-  { href: "/services", key: "services" },
-  { href: "/contact", key: "contact" },
+  { href: "/services", key: "finishing" },
+  { href: "/bestsellers", key: "portfolio" },
+  { href: "/about", key: "about" },
 ] as const;
 
 export function SiteHeader() {
@@ -71,7 +71,7 @@ export function SiteHeader() {
             </Button>
 
             <Button asChild className="hidden rounded-full bg-accent hover:bg-accent-2 sm:inline-flex">
-              <Link href="/book">{t("cta.book")}</Link>
+              <Link href="/contact">{t("cta.quote")}</Link>
             </Button>
 
             <Sheet open={open} onOpenChange={setOpen}>
@@ -94,12 +94,12 @@ export function SiteHeader() {
                     </Link>
                   ))}
                   <Link
-                    href="/book"
+                    href="/contact"
                     onClick={() => setOpen(false)}
                     className="mt-3 flex items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-white"
                   >
                     <Package className="size-4" />
-                    {t("cta.book")}
+                    {t("cta.quote")}
                   </Link>
                 </nav>
               </SheetContent>

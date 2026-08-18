@@ -89,7 +89,7 @@ export function QuoteForm() {
         <select
           id="product"
           name="product"
-          defaultValue=""
+          defaultValue={reorderProduct}
           className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
         >
           <option value="">{t("f.product_choose")}</option>

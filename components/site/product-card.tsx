@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
-import { PriceCalculator } from "./price-calculator";
 import type { CatalogueProduct } from "@/content/products";
 import { cn } from "@/lib/utils";
 
@@ -11,12 +10,10 @@ export function ProductCard({
   product,
   rank,
   showSpecs = true,
-  withPricer = true,
 }: {
   product: CatalogueProduct;
   rank?: number;
   showSpecs?: boolean;
-  withPricer?: boolean;
 }) {
   const t = useTranslations();
   const catKey = `cat.${product.cat === "print" ? "print" : product.cat}`;
@@ -61,10 +58,6 @@ export function ProductCard({
               </li>
             ))}
           </ul>
-        )}
-
-        {withPricer && product.pricing && (
-          <PriceCalculator productId={product.pricing} title={t(`${product.key}.t`)} />
         )}
 
         <div className={cn("mt-auto pt-4")}>
