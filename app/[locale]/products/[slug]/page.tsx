@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Check, ChevronRight, ShieldCheck, Truck, Palette } from "lucide-react";
+import { Check, ChevronRight, ShieldCheck, Truck, Palette, ArrowRight } from "lucide-react";
 
 import { PRODUCTS } from "@/content/products";
-import { PRICING } from "@/content/pricing";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/ui/button";
 import { Wrap, Section, SectionHead } from "@/components/site/section";
-import { PriceCalculator } from "@/components/site/price-calculator";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductGallery } from "@/components/site/product-gallery";
-import { StickerCatalogue, StickerOffers } from "@/components/site/sticker-catalogue";
+import { StickerCatalogue } from "@/components/site/sticker-catalogue";
 import { CtaBand } from "@/components/site/cta-band";
 
 export function generateStaticParams() {
@@ -56,7 +55,6 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const t = await getTranslations();
-  const priced = product.pricing ? PRICING.products[product.pricing] : null;
   const related = PRODUCTS.filter((p) => p.cat === product.cat && p.slug !== product.slug).slice(0, 3);
 
   const title = t(`${product.key}.t`);
@@ -74,19 +72,6 @@ export default async function ProductPage({
             description: t(`${product.key}.d`),
             image: product.images,
             brand: { "@type": "Brand", name: t("brand.name") },
-            ...(priced && {
-              offers: {
-                "@type": "AggregateOffer",
-                priceCurrency: "EGP",
-                lowPrice: Math.min(
-                  ...priced.variants.flatMap((v) =>
-                    Array.isArray(v.prices)
-                      ? (v.prices as number[])
-                      : Object.values((v.prices ?? {}) as Record<string, number>),
-                  ),
-                ),
-              },
-            }),
           }),
         }}
       />
@@ -128,18 +113,16 @@ export default async function ProductPage({
                 </ul>
               )}
 
-              {product.pricing ? (
-                <PriceCalculator
-                  productId={product.pricing}
-                  title={title}
-                  defaultOpen
-                />
-              ) : (
-                <div className="mt-6 rounded-card border border-dashed border-line bg-paper p-6">
-                  <p className="font-semibold">{t("cta.askprice")}</p>
-                  <p className="mt-1 text-[0.9rem] text-muted">{t("band.p")}</p>
-                </div>
-              )}
+              <Button
+                asChild
+                size="lg"
+                className="mt-6 w-fit rounded-full bg-accent hover:bg-accent-2"
+              >
+                <Link href={`/contact?product=${encodeURIComponent(title)}`}>
+                  {t("cta.quote")}
+                  <ArrowRight className="size-4 rtl:rotate-180" />
+                </Link>
+              </Button>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
                 {[
@@ -159,15 +142,9 @@ export default async function ProductPage({
       </section>
 
       {product.slug === "stickers" && (
-        <>
-          <Section>
-            <StickerCatalogue />
-          </Section>
-          <Section tint>
-            <SectionHead eyebrow={t("stick.offers")} title={t("stick.offers")} />
-            <StickerOffers />
-          </Section>
-        </>
+        <Section>
+          <StickerCatalogue />
+        </Section>
       )}
 
       {related.length > 0 && (
@@ -175,7 +152,7 @@ export default async function ProductPage({
           <SectionHead eyebrow={t("prod.eyebrow")} title={t("prod.h2")} />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => (
-              <ProductCard key={p.slug} product={p} withPricer={false} showSpecs={false} />
+              <ProductCard key={p.slug} product={p} showSpecs={false} />
             ))}
           </div>
         </Section>

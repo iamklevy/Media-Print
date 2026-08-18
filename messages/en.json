@@ -14,6 +14,9 @@
     "products": "Products",
     "stickers": "Stickers",
     "services": "Services",
+    "finishing": "Finishing",
+    "portfolio": "Portfolio",
+    "about": "About Us",
     "contact": "Contact",
     "menu_arialabel": "Open menu",
     "book": "Book a meeting"
@@ -23,18 +26,16 @@
   },
   "cta": {
     "book": "Book a meeting",
-    "quote": "Request a quote",
+    "quote": "Get a Quote",
     "whatsapp": "WhatsApp us",
     "details": "Details",
     "call": "Call us",
-    "askprice": "Ask for a price",
     "products": "Browse products"
   },
   "hero": {
-    "badge": "The Alibaba of packaging in Egypt",
     "h1a": "Packaging that makes",
-    "h1b": "your product",
-    "h1c": "look the part",
+    "h1b": "your brand",
+    "h1c": "stand out",
     "lead": "We manufacture and print bags, sacks, cartons and labels from our workshop in Mohandessin, Giza. No importing from China, no middlemen — we design it, print it, and ship it anywhere in Egypt and the Arab world.",
     "chip1": "A sample before production",
     "chip2": "Printed runs from 1,000 bags",
@@ -146,6 +147,13 @@
       "s1": "Printed up to 2 colours from 300 sacks",
       "s2": "Plain from 100 sacks (black, white, yellow, green, red)",
       "s3": "Zip, base and side gussets"
+    },
+    "flyers": {
+      "t": "Flyers &amp; Leaflets",
+      "d": "Printed flyers and leaflets for menus, product inserts and promotions, finished on the same press as your packaging.",
+      "s1": "Single or double-sided printing",
+      "s2": "Gloss, matte or uncoated stock",
+      "s3": "Any size, small or large runs"
     }
   },
   "why": {
@@ -201,18 +209,60 @@
       "d": "The run is produced and shipped to your door anywhere in Egypt or the Arab world."
     }
   },
-  "ind": {
-    "eyebrow": "Who we pack for",
-    "h2": "Sectors we already supply",
-    "lead": "If your product needs to sit on a shelf, survive a courier, or carry your name — we have probably packed something like it.",
-    "1": "Food &amp; coffee roasters",
-    "2": "Fertilisers &amp; pesticides",
-    "3": "Clothing &amp; fashion",
-    "4": "Cosmetics &amp; personal care",
-    "5": "Nutritional supplements",
-    "6": "E-commerce &amp; shipping",
-    "7": "Animal feed",
-    "8": "Chemicals"
+  "industry": {
+    "all": "All industries",
+    "cosmetics": {
+      "name": "Cosmetics &amp; Perfumes",
+      "blurb": "Boxes, labels, bags and cards finished to make a premium product feel premium."
+    },
+    "food": {
+      "name": "Food &amp; Beverage",
+      "blurb": "Food-safe labels, zipper pouches, bags and flyers for kitchens, roasters and grocers."
+    },
+    "clothing": {
+      "name": "Clothing Packaging",
+      "blurb": "Labels, hang tags, zipper bags, boxes, flyers and cards for fashion brands."
+    },
+    "ecommerce": {
+      "name": "E-commerce &amp; Shipping",
+      "blurb": "Shipping boxes, shipping bags, labels and inserts built to survive a courier."
+    }
+  },
+  "solution": {
+    "labels": "Labels",
+    "boxes": "Boxes",
+    "bags": "Bags",
+    "cards": "Cards",
+    "flyers": "Flyers",
+    "zipperpouches": "Zipper Pouches"
+  },
+  "home": {
+    "industry": {
+      "eyebrow": "Who we pack for",
+      "h2": "Choose your industry",
+      "lead": "Pick the industry closest to your product and we will show you exactly what we make for it."
+    },
+    "solutions": {
+      "eyebrow": "Browse by type",
+      "h2": "Explore our packaging solutions",
+      "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
+    },
+    "finishing": {
+      "eyebrow": "Beyond the print",
+      "h2": "Premium finishing",
+      "lead": "UV spot, foil stamping, embossing, lamination and die-cutting — the details that make a pack feel expensive.",
+      "cta": "See our finishing options"
+    },
+    "work": {
+      "eyebrow": "Our work",
+      "h2": "Packaging we have actually shipped",
+      "lead": "A few of the runs that left our workshop, printed and finished for the brands below.",
+      "all": "See the full portfolio"
+    },
+    "why": {
+      "eyebrow": "Why work with us",
+      "h2": "Why MediaPrint?"
+    }
   },
   "srv": {
     "eyebrow": "Beyond packaging",
@@ -282,38 +332,33 @@
       "v": "Every day 10am – 6pm, closed Friday",
       "t": "Working hours"
     },
-    "map_title": "Media Print Pack location on the map",
-    "sales": {
-      "t": "Sales",
-      "d": "Prices, quantities and samples"
-    },
-    "admin": {
-      "t": "Administration",
-      "d": "Orders and follow-up"
-    },
-    "mail": {
-      "t": "Email",
-      "d": "Artwork and enquiries"
-    },
-    "social": {
-      "t": "Follow us"
-    }
+    "map_title": "Media Print Pack location on the map"
   },
   "crumb": {
     "home": "Home"
   },
+  "about": {
+    "story_eyebrow": "Our story",
+    "story_h2": "One workshop, start to finish",
+    "story_p": "Media Print Pack is a printing and packaging workshop in Mohandessin, Giza. We design, print and finish bags, sacks, cartons and labels ourselves — no importing from China, no middlemen — then ship anywhere in Egypt and the Arab world. Every order gets a physical sample before we run the full quantity, so what you approve is what you get.",
+    "clients_h2": "Brands that print with us"
+  },
   "ph": {
     "best": {
-      "h1": "Bestsellers",
-      "lead": "The packs our customers reorder most, with live pricing on every size and quantity."
+      "h1": "Portfolio",
+      "lead": "A look at the packs we have actually printed and shipped — the packs our customers reorder most, with live pricing on every size and quantity."
     },
     "products": {
       "h1": "Products",
-      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by material, or ask us and we will point you to the right one."
+      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by industry, or ask us and we will point you to the right one."
     },
     "services": {
-      "h1": "Printing Services",
-      "lead": "Commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+      "h1": "Finishing &amp; Printing Services",
+      "lead": "The finishing touches and commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+    },
+    "about": {
+      "h1": "About Us",
+      "lead": "A printing and packaging workshop in Mohandessin, Giza — design, printing and finishing under one roof."
     },
     "book": {
       "h1": "Book a Meeting",
@@ -329,22 +374,18 @@
     "paper": "Paper &amp; board",
     "print": "Labels &amp; print",
     "fabric": "Fabric",
-    "all": "Everything"
+    "all": "Everything",
+    "empty": "Nothing in this category yet — message us and we'll point you to the right product."
   },
   "best": {
     "note": "Prices exclude VAT and are confirmed on the sample before production."
   },
   "stick": {
     "browse": "Browse by sector",
-    "offers": "This week&rsquo;s offers",
     "all": "Everything",
     "material": "Material",
     "size": "Size (cm)",
-    "from": "from",
-    "ask": "Price on request",
-    "offersEmpty": "No promotions are published right now. Message us on WhatsApp and we will quote the best price for the quantity you need.",
-    "moq": "Min.",
-    "each": "each"
+    "moq": "Min."
   },
   "book": {
     "mode": "Where would you like to meet?",
@@ -406,7 +447,8 @@
       "products": "Products — Media Print Pack",
       "services": "Printing Services — Media Print Pack",
       "book": "Book a Meeting — Media Print Pack",
-      "contact": "Contact Us — Media Print Pack"
+      "contact": "Contact Us — Media Print Pack",
+      "about": "About Us — Media Print Pack"
     },
     "desc": {
       "home": "Zipper bags, paper sacks, courier bags, non-woven totes, printed cartons and labels. Manufactured and printed in Mohandessin, Giza. Samples before production, shipping across Egypt and the Arab world.",
@@ -414,27 +456,9 @@
       "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
-      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm."
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm.",
+      "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world."
     }
-  },
-  "pricer": {
-    "open": "See tiered pricing",
-    "from": "from",
-    "size": "Size (cm)",
-    "colour": "Colour",
-    "finish": "Finishing",
-    "qty": "Quantity",
-    "pieces": "pieces",
-    "each": "each",
-    "unit": "Unit price",
-    "total": "Total",
-    "printing": "Add printing — one colour, one side",
-    "included": "One-colour printing included",
-    "moq": "Minimum order: {n} pieces",
-    "below": "Below the minimum of {n} pieces",
-    "perkg": "{price}/kg · {n} pieces per kg",
-    "send": "Send this spec on WhatsApp",
-    "novat": "Prices exclude VAT. Final price is confirmed on the sample."
   },
   "track": {
     "gate": {
@@ -555,8 +579,13 @@
       "order_total": "Order total (EGP)",
       "order_total_auto": "Auto-calculated: unit price × quantity",
       "estimated_delivery": "Estimated delivery",
+      "request_details": "Request details",
+      "lead_time_note_pending": "Starts counting once the sample is approved.",
+      "lead_time_note_started": "Started {started} — due {due}",
       "sample_photos": "Sample photos",
       "sample_photos_hint": "JPEG, PNG or WebP · up to 5MB each",
+      "artwork_files": "Artwork files",
+      "artwork_files_hint": "JPEG, PNG or WebP · up to 5MB each",
       "remove_photo": "Remove photo",
       "upload_too_large": "That photo is too large to upload — try a smaller file.",
       "save": "Save changes",
@@ -573,7 +602,6 @@
       "invoice_pending": "Set a price to enable the invoice.",
       "copy_tracking_link": "Copy tracking link",
       "link_copied": "Copied!",
-      "copy_manually": "Press Ctrl+C to copy this link:",
       "activity": "Activity",
       "no_activity": "No activity yet.",
       "today": "Today",

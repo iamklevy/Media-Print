@@ -54,7 +54,7 @@ export default async function ServicesPage({
   return (
     <>
       <PageHero
-        crumb={t("nav.services")}
+        crumb={t("nav.finishing")}
         title={t("ph.services.h1")}
         lead={t("ph.services.lead")}
       />

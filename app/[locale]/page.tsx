@@ -2,18 +2,17 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   ArrowRight, Check, Printer, Layers, Scissors, Package,
-  ShieldCheck, PenTool, Truck, Sticker, NotebookPen, GalleryVerticalEnd,
+  ShieldCheck, PenTool, Truck, Sticker, CreditCard, FileText, ShoppingBag, PackageOpen,
 } from "lucide-react";
 
-import { PRODUCTS, CLIENTS } from "@/content/products";
+import { PRODUCTS } from "@/content/products";
+import { INDUSTRIES, SOLUTION_TYPES } from "@/content/industries";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Wrap, Section, SectionHead } from "@/components/site/section";
+import { Wrap, Section, SectionHead, Eyebrow } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { CtaBand } from "@/components/site/cta-band";
-import { WhatsAppIcon } from "@/components/site/brand-icons";
-import { SALES_PHONE } from "@/lib/contact";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -25,6 +24,17 @@ const MARQUEE = [
   { icon: ShieldCheck, k: "mq.5" }, { icon: PenTool, k: "mq.6" },
   { icon: Check, k: "mq.7" }, { icon: Truck, k: "mq.8" },
 ];
+
+const SOLUTION_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  labels: Sticker,
+  boxes: Package,
+  bags: ShoppingBag,
+  cards: CreditCard,
+  flyers: FileText,
+  "zipper-pouches": PackageOpen,
+};
+
+const OUR_WORK_SLUGS = ["apparel", "paper-bags", "cartons", "corrugated", "tags", "stickers"];
 
 const BENTO = [
   {
@@ -53,12 +63,6 @@ const TONE = {
   deep: "text-paper [--a:rgba(10,40,54,0.94)] [--b:rgba(10,40,54,0.68)] [--c:rgba(10,40,54,0.32)]",
 };
 
-const SERVICES = [
-  { icon: Sticker, k: "s.metalize" },
-  { icon: NotebookPen, k: "s.notepad" },
-  { icon: GalleryVerticalEnd, k: "s.rollup" },
-];
-
 export default async function HomePage({
   params,
 }: {
@@ -68,9 +72,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const featured = PRODUCTS.filter((p) =>
-    ["zipper", "paper-sacks", "apparel", "nonwoven", "courier", "paper-bags"].includes(p.slug),
-  );
+  const ourWork = OUR_WORK_SLUGS.map((slug) => PRODUCTS.find((p) => p.slug === slug)!).filter(Boolean);
 
   return (
     <>
@@ -87,12 +89,7 @@ export default async function HomePage({
         <Wrap>
           <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent-soft px-4 py-1.5 text-[0.87rem] font-bold text-accent-2">
-                <span className="size-1.5 rounded-full bg-accent" />
-                {t("hero.badge")}
-              </span>
-
-              <h1 className="mt-4 text-[clamp(2.15rem,1.35rem+3.4vw,4rem)]">
+              <h1 className="text-[clamp(2.15rem,1.35rem+3.4vw,4rem)]">
                 {t("hero.h1a")}{" "}
                 <span className="relative whitespace-nowrap text-accent-2">
                   {t("hero.h1b")}
@@ -116,10 +113,7 @@ export default async function HomePage({
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full">
-                  <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener">
-                    <WhatsAppIcon className="size-4" />
-                    {t("cta.whatsapp")}
-                  </a>
+                  <Link href="/book">{t("cta.book")}</Link>
                 </Button>
               </div>
 
@@ -188,41 +182,137 @@ export default async function HomePage({
         </div>
       </div>
 
-      {/* ------------------------------------------------------ products */}
+      {/* ------------------------------------------------ choose industry */}
       <Section>
         <SectionHead
-          eyebrow={t("prod.eyebrow")}
-          title={t("prod.h2")}
-          lead={t("prod.lead")}
+          eyebrow={t("home.industry.eyebrow")}
+          title={t("home.industry.h2")}
+          lead={t("home.industry.lead")}
+        />
+        <div className="grid gap-5 sm:grid-cols-2">
+          {INDUSTRIES.map((ind) => (
+            <Link
+              key={ind.slug}
+              href={`/products?industry=${ind.slug}`}
+              className="group relative isolate flex min-h-[280px] flex-col justify-end overflow-hidden rounded-[28px] p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-deep md:p-8"
+            >
+              <Image
+                src={ind.image}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="-z-20 object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <span
+                aria-hidden
+                className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(18,15,12,0.15)_0%,rgba(18,15,12,0.55)_55%,rgba(18,15,12,0.92)_100%)]"
+              />
+              <h3 className="text-[clamp(1.3rem,1.05rem+0.8vw,1.6rem)] text-paper">{t(`${ind.key}.name`)}</h3>
+              <p className="mt-2 max-w-[38ch] text-[0.92rem] leading-relaxed text-paper/78">
+                {t(`${ind.key}.blurb`)}
+              </p>
+              <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/12 px-3.5 py-1.5 text-[0.85rem] font-semibold text-paper backdrop-blur-sm transition-all group-hover:gap-2.5 group-hover:bg-white/20">
+                {t("cta.products")}
+                <ArrowRight className="size-3.5 rtl:rotate-180" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+
+      {/* -------------------------------------------- explore solutions */}
+      <Section tint>
+        <SectionHead
+          eyebrow={t("home.solutions.eyebrow")}
+          title={t("home.solutions.h2")}
+          lead={t("home.solutions.lead")}
+        />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {SOLUTION_TYPES.map((s) => {
+            const Icon = SOLUTION_ICON[s.slug];
+            return (
+              <Link
+                key={s.slug}
+                href={`/products?type=${s.slug}`}
+                className="group flex flex-col items-center gap-3 rounded-card border border-line bg-paper px-4 py-7 text-center transition-all hover:-translate-y-1 hover:border-accent/35 hover:shadow-soft"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent-2 transition-colors group-hover:bg-accent group-hover:text-white">
+                  <Icon className="size-5" />
+                </span>
+                <span className="font-semibold">{t(s.key)}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* -------------------------------------------------- finishing */}
+      <Section>
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[30px] shadow-deep">
+            <Image
+              src="/products/cartons-4.png"
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <Eyebrow>{t("home.finishing.eyebrow")}</Eyebrow>
+            <h2 className="mt-3 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("home.finishing.h2")}</h2>
+            <p className="mt-4 max-w-[52ch] text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
+              {t("home.finishing.lead")}
+            </p>
+            <Button asChild size="lg" variant="outline" className="mt-8 rounded-full">
+              <Link href="/services">
+                {t("home.finishing.cta")}
+                <ArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </Section>
+
+      {/* ------------------------------------------------------- process */}
+      <Section tint>
+        <SectionHead eyebrow={t("proc.eyebrow")} title={t("proc.h2")} />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="relative pt-11">
+              <span className="absolute top-0 start-0 text-[1.9rem] font-extrabold tracking-tight text-accent/85">
+                0{n}
+              </span>
+              <h3 className="mb-2 text-[clamp(1.15rem,1rem+0.6vw,1.4rem)]">{t(`proc.${n}.t`)}</h3>
+              <p className="text-[0.93rem] text-muted">{t(`proc.${n}.d`)}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ------------------------------------------------------- our work */}
+      <Section>
+        <SectionHead
+          eyebrow={t("home.work.eyebrow")}
+          title={t("home.work.h2")}
+          lead={t("home.work.lead")}
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <ProductCard key={p.slug} product={p} withPricer={false} showSpecs={false} />
+          {ourWork.map((p) => (
+            <ProductCard key={p.slug} product={p} showSpecs={false} />
           ))}
         </div>
         <Button asChild variant="outline" size="lg" className="mt-10 rounded-full">
-          <Link href="/products">
-            {t("prod.all")}
+          <Link href="/bestsellers">
+            {t("home.work.all")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Link>
         </Button>
       </Section>
 
-      {/* --------------------------------------------------------- bento */}
+      {/* --------------------------------------------------------- why us */}
       <Section tint>
-        <SectionHead
-          eyebrow={t("why.eyebrow")}
-          title={t("why.h2")}
-          lead={t("why.lead")}
-          action={
-            <Button asChild size="lg" className="rounded-full bg-accent hover:bg-accent-2">
-              <Link href="/contact">
-                {t("cta.quote")}
-                <ArrowRight className="size-4 rtl:rotate-180" />
-              </Link>
-            </Button>
-          }
-        />
+        <SectionHead eyebrow={t("home.why.eyebrow")} title={t("home.why.h2")} />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {BENTO.map((b) => (
             <article
@@ -268,100 +358,6 @@ export default async function HomePage({
             </article>
           ))}
         </div>
-      </Section>
-
-      {/* ------------------------------------------------------- clients */}
-      <Section ink>
-        <SectionHead
-          onInk
-          eyebrow={t("clients.eyebrow")}
-          title={t("clients.h2")}
-          lead={t("clients.lead")}
-        />
-        <div className="grid gap-8 md:gap-10">
-          {CLIENTS.map((g) => (
-            <div key={g.labelKey} className="grid gap-4">
-              <span className="flex items-center gap-3 whitespace-nowrap text-[0.8rem] font-bold uppercase tracking-[0.11em] text-accent">
-                {t(g.labelKey)}
-                <span className="h-px flex-1 bg-white/15" />
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {g.names.map((c) => (
-                  <span
-                    key={c.name}
-                    className="rounded-full border border-white/15 bg-white/6 px-4 py-2 text-[0.95rem] font-semibold text-paper transition hover:-translate-y-0.5 hover:border-accent/65 hover:bg-white/12"
-                  >
-                    {c.name}
-                    {c.sub && (
-                      <small className="block text-[0.76rem] font-medium text-paper/55">
-                        {c.sub}
-                      </small>
-                    )}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ------------------------------------------------------- process */}
-      <Section>
-        <SectionHead eyebrow={t("proc.eyebrow")} title={t("proc.h2")} />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="relative pt-11">
-              <span className="absolute top-0 start-0 text-[1.9rem] font-extrabold tracking-tight text-accent/85">
-                0{n}
-              </span>
-              <h3 className="mb-2 text-[clamp(1.15rem,1rem+0.6vw,1.4rem)]">{t(`proc.${n}.t`)}</h3>
-              <p className="text-[0.93rem] text-muted">{t(`proc.${n}.d`)}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ---------------------------------------------------- industries */}
-      <Section tint>
-        <SectionHead eyebrow={t("ind.eyebrow")} title={t("ind.h2")} lead={t("ind.lead")} />
-        <div className="flex flex-wrap gap-2.5">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-            <Link
-              key={n}
-              href="/contact"
-              className="rounded-full border border-line bg-paper px-5 py-2.5 font-semibold transition-all hover:-translate-y-0.5 hover:border-ink hover:bg-ink hover:text-paper"
-            >
-              {t(`ind.${n}`)}
-            </Link>
-          ))}
-        </div>
-      </Section>
-
-      {/* ------------------------------------------------------ services */}
-      <Section>
-        <SectionHead eyebrow={t("srv.eyebrow")} title={t("srv.h2")} lead={t("srv.lead")} />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map(({ icon: Icon, k }) => (
-            <div
-              key={k}
-              className="flex items-start gap-4 rounded-card border border-line bg-paper p-6 transition-all hover:-translate-y-0.5 hover:border-accent/35 hover:shadow-soft"
-            >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-accent-2">
-                <Icon className="size-5" />
-              </span>
-              <div>
-                <h3 className="mb-1 text-[1.06rem]">{t(`${k}.t`)}</h3>
-                <p className="text-[0.9rem] leading-relaxed text-muted">{t(`${k}.d`)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <Button asChild variant="outline" size="lg" className="mt-10 rounded-full">
-          <Link href="/services">
-            {t("srv.all")}
-            <ArrowRight className="size-4 rtl:rotate-180" />
-          </Link>
-        </Button>
       </Section>
 
       <CtaBand />
