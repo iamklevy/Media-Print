@@ -3,6 +3,10 @@ export interface CatalogueProduct {
   /** i18n key prefix, e.g. "p.zipper" -> p.zipper.t / .d / .s1 */
   key: string;
   cat: "plastic" | "paper" | "fabric" | "print";
+  /** Industry slugs this product is sold under — see content/industries.ts */
+  industries: string[];
+  /** Solution-type slugs (labels/boxes/bags/cards/flyers/zipper-pouches/hang-tags) */
+  types: string[];
   /** First entry is the cover image, used by the catalogue grid, OG tags and JSON-LD. */
   images: string[];
   specs: string[];
@@ -15,6 +19,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "zipper",
     "key": "p.zipper",
     "cat": "plastic",
+    "industries": ["food", "clothing"],
+    "types": ["zipper-pouches"],
     "images": ["https://images.unsplash.com/photo-1586490914534-b60b88a8f3a6?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.zipper.s1",
@@ -27,6 +33,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-sacks",
     "key": "p.sacks",
     "cat": "paper",
+    "industries": ["food"],
+    "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1695245503558-5cdb37f49092?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks.s1",
@@ -39,6 +47,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "apparel",
     "key": "p.apparel",
     "cat": "plastic",
+    "industries": ["clothing"],
+    "types": ["zipper-pouches", "bags"],
     "images": ["/products/apparel.jpg", "/products/apparel-2.jpg", "/products/apparel-3.png", "/products/apparel-4.jpg"],
     "specs": [
       "p.apparel.s1",
@@ -51,6 +61,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "nonwoven",
     "key": "p.nonwoven",
     "cat": "fabric",
+    "industries": ["clothing", "food"],
+    "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.nonwoven.s1",
@@ -63,6 +75,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "courier",
     "key": "p.courier",
     "cat": "plastic",
+    "industries": ["ecommerce"],
+    "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1617912760188-9ef603157f1e?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.courier.s1",
@@ -75,6 +89,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-bags",
     "key": "p.paperbags",
     "cat": "paper",
+    "industries": ["cosmetics", "food", "clothing"],
+    "types": ["bags"],
     "images": ["/products/paper-bags.jpg", "/products/paper-bags-coated.jpg"],
     "specs": [
       "p.paperbags.s1",
@@ -87,6 +103,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "stickers",
     "key": "p.stickers",
     "cat": "print",
+    "industries": ["cosmetics", "food", "clothing", "ecommerce"],
+    "types": ["labels"],
     "images": ["https://images.unsplash.com/photo-1572950947476-26a6e4111e80?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.stickers.s1",
@@ -99,6 +117,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "cartons",
     "key": "p.cartons",
     "cat": "paper",
+    "industries": ["cosmetics", "clothing"],
+    "types": ["boxes"],
     "images": [
       "/products/cartons.png",
       "/products/cartons-2.png",
@@ -121,6 +141,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "tags",
     "key": "p.tags",
     "cat": "print",
+    "industries": ["clothing", "cosmetics", "ecommerce"],
+    "types": ["hang-tags", "cards"],
     "images": ["https://images.unsplash.com/photo-1637291454111-1d115acb5023?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.tags.s1",
@@ -133,6 +155,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "corrugated",
     "key": "p.corrugated",
     "cat": "paper",
+    "industries": ["ecommerce", "clothing"],
+    "types": ["boxes"],
     "images": ["https://images.unsplash.com/photo-1766040923580-16ad32fae8b4?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.corrugated.s1",
@@ -145,6 +169,8 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "sacks-5kg",
     "key": "p.sacks5",
     "cat": "plastic",
+    "industries": ["food"],
+    "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1706881811917-6590b1054050?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks5.s1",
@@ -157,9 +183,25 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "aluminium",
     "key": "p.alu",
     "cat": "plastic",
+    "industries": ["food"],
+    "types": ["zipper-pouches"],
     "images": ["/products/aluminium.jpg"],
     "specs": [],
     "pricing": "aluminium"
+  },
+  {
+    "slug": "flyers",
+    "key": "p.flyers",
+    "cat": "print",
+    "industries": ["food", "clothing"],
+    "types": ["flyers"],
+    "images": ["https://images.unsplash.com/photo-1572950947476-26a6e4111e80?w=1100&q=72&auto=format&fit=crop"],
+    "specs": [
+      "p.flyers.s1",
+      "p.flyers.s2",
+      "p.flyers.s3"
+    ],
+    "pricing": null
   }
 ];
 

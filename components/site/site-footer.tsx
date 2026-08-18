@@ -12,9 +12,10 @@ import {
 
 const SITE = [
   { href: "/", key: "home" },
-  { href: "/bestsellers", key: "best" },
   { href: "/products", key: "products" },
-  { href: "/services", key: "services" },
+  { href: "/services", key: "finishing" },
+  { href: "/bestsellers", key: "portfolio" },
+  { href: "/about", key: "about" },
   { href: "/book", key: "book" },
   { href: "/contact", key: "contact" },
 ] as const;

@@ -14,11 +14,6 @@ export function StickerCatalogue() {
   const ar = locale === "ar";
   const [cat, setCat] = useState("all");
 
-  const money = (n: number) => {
-    const s = (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, "");
-    return ar ? `${s} ج.م` : `EGP ${s}`;
-  };
-
   const matName = (id: string) => {
     const m = STICKERS.materials.find((x) => x.id === id);
     return m ? (ar ? m.ar : m.en) : id;
@@ -69,80 +64,11 @@ export function StickerCatalogue() {
                   {t("stick.moq")} {it.moq}
                 </span>
               )}
-              <span className="mt-auto pt-2">
-                {it.price == null ? (
-                  <span className="text-[0.9rem] font-bold text-accent-2">
-                    {t("stick.ask")}
-                  </span>
-                ) : (
-                  <span className="text-[1.05rem] font-extrabold">
-                    <small className="text-[0.72em] font-semibold text-muted">
-                      {t("stick.from")}{" "}
-                    </small>
-                    {money(it.price)}
-                    <small className="text-[0.72em] font-semibold text-muted">
-                      {" "}
-                      {t("stick.each")}
-                    </small>
-                  </span>
-                )}
-              </span>
             </div>
           </article>
         ))}
       </div>
     </>
-  );
-}
-
-export function StickerOffers() {
-  const t = useTranslations();
-  const locale = useLocale();
-  const ar = locale === "ar";
-
-  if (STICKERS.offers.length === 0) {
-    return (
-      <div className="rounded-card border-[1.5px] border-dashed border-line px-8 py-12 text-center text-[0.95rem] text-muted">
-        {t("stick.offersEmpty")}
-      </div>
-    );
-  }
-
-  const money = (n: number) => {
-    const s = (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, "");
-    return ar ? `${s} ج.م` : `EGP ${s}`;
-  };
-
-  return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {STICKERS.offers.map((o) => {
-        const it = STICKERS.items.find((x) => x.id === o.item);
-        if (!it) return null;
-        const save = o.was && o.was > o.price ? o.was - o.price : 0;
-        return (
-          <div
-            key={o.item}
-            className="relative grid gap-1.5 rounded-card border border-line bg-paper px-5 py-5"
-          >
-            {save > 0 && (
-              <span className="absolute -top-2.5 end-3.5 rounded-full bg-leaf px-3 py-1 text-[0.74rem] font-extrabold text-white">
-                {ar ? "وفّر" : "Save"} {money(save)}
-              </span>
-            )}
-            <h3 className="text-[1.05rem]">{ar ? it.ar : it.en}</h3>
-            <span className="text-[0.82rem] font-bold text-muted">
-              {o.qty.toLocaleString("en-US")} {ar ? "استيكر" : "stickers"}
-            </span>
-            <span className="text-[1.5rem] font-extrabold tracking-tight text-accent-2">
-              {money(o.price)}
-            </span>
-            {save > 0 && (
-              <span className="text-[0.9rem] text-muted line-through">{money(o.was!)}</span>
-            )}
-          </div>
-        );
-      })}
-    </div>
   );
 }
 

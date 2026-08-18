@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PRODUCTS } from "@/content/products";
@@ -46,7 +47,9 @@ export default async function ProductsPage({
         lead={t("ph.products.lead")}
       />
       <Section>
-        <ProductGrid products={PRODUCTS} />
+        <Suspense fallback={null}>
+          <ProductGrid products={PRODUCTS} />
+        </Suspense>
       </Section>
       <CtaBand />
     </>

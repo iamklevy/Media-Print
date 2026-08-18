@@ -5,6 +5,11 @@ export interface SampleImage {
   label?: string;
 }
 
+export interface ArtworkFile {
+  url: string;
+  label?: string;
+}
+
 export interface Order {
   id: string;
   order_number: string;
@@ -19,10 +24,12 @@ export interface Order {
   order_total: number | null;
   currency: string;
   lead_time_days: number | null;
+  lead_time_started_at: string | null;
   phase: Phase;
   estimated_delivery: string | null;
   delivered_at: string | null;
   sample_images: SampleImage[];
+  artwork_files: ArtworkFile[];
   source: string;
   locale: string;
   notes: string | null;
