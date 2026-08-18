@@ -9,7 +9,7 @@ import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
-import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
+import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
 const LOCKOUT_MS = 15 * 60 * 1000;
@@ -235,6 +235,80 @@ export async function removeSampleImage(orderId: string, slot: number): Promise<
   return { ok: true };
 }
 
+const ARTWORK_BUCKET = "artwork-files";
+
+export async function uploadArtworkFile(
+  orderId: string,
+  slot: number,
+  formData: FormData
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  await requireStaffSession();
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
+  const ext = SAMPLE_MIME_EXT[file.type];
+  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG or WebP." };
+  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
+
+  const db = supabaseServer();
+  const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
+
+  try {
+    const { error: uploadError } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
+      contentType: file.type,
+      upsert: true,
+    });
+    if (uploadError) return { ok: false, error: uploadError.message };
+  } catch (err) {
+    console.error("uploadArtworkFile: storage upload threw", err);
+    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
+  }
+
+  const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("artwork_files")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+
+  const files: ArtworkFile[] = [...((order.artwork_files ?? []) as ArtworkFile[])];
+  while (files.length <= slot) files.push({ url: "" });
+  files[slot] = { url: pub.publicUrl };
+
+  const { error: updateError } = await db
+    .from("orders")
+    .update({ artwork_files: files, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true, url: pub.publicUrl };
+}
+
+export async function removeArtworkFile(orderId: string, slot: number): Promise<{ ok: boolean; error?: string }> {
+  await requireStaffSession();
+  const db = supabaseServer();
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("artwork_files")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+
+  const files: ArtworkFile[] = [...((order.artwork_files ?? []) as ArtworkFile[])];
+  if (files[slot]) files[slot] = { url: "" };
+
+  const { error: updateError } = await db
+    .from("orders")
+    .update({ artwork_files: files, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true };
+}
+
 export async function updateOrderFields(
   orderId: string,
   fields: Partial<
@@ -330,9 +404,15 @@ export async function approveGate(
   const next = nextPhase(order.phase);
   if (!next) return { ok: false, error: "Order has no next phase." };
 
+  const update: Partial<Order> = { phase: next, updated_at: new Date().toISOString() };
+  // Quoted lead time is measured from the moment the customer signs off on
+  // the sample, not from order creation — this is the one and only place
+  // that transition happens.
+  if (order.phase === "sample_approved") update.lead_time_started_at = new Date().toISOString();
+
   const { data: updated, error: updateError } = await db
     .from("orders")
-    .update({ phase: next, updated_at: new Date().toISOString() })
+    .update(update)
     .eq("id", order.id)
     .select("*")
     .single();

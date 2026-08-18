@@ -10,13 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
+import { ArtworkFileUploader } from "@/components/ops/artwork-file-uploader";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { advancePhase, sendReminder, updateOrderFields, getOrderEvents } from "@/lib/orders/actions";
-import type { Order, OrderEvent, SampleImage } from "@/lib/orders/types";
+import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 /** Quantity is free text (e.g. "5,000 bags") — pull the leading number out of it. */
 function parseQuantityNumber(quantity: string): number | null {
@@ -47,6 +48,7 @@ export function OrderDetailSheet({
     estimated_delivery: order.estimated_delivery ?? "",
   });
   const [sampleImages, setSampleImages] = useState<SampleImage[]>(order.sample_images);
+  const [artworkFiles, setArtworkFiles] = useState<ArtworkFile[]>(order.artwork_files);
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
   const [reminding, setReminding] = useState(false);
@@ -56,7 +58,17 @@ export function OrderDetailSheet({
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
+  const showArtworkFiles = order.phase === "artwork_pre_press" || order.phase === "artwork_approved";
   const trackUrl = trackingUrl(order.tracking_slug, locale);
+
+  const leadTimeDue = useMemo(() => {
+    if (!order.lead_time_started_at || !fields.lead_time_days) return null;
+    const days = Number(fields.lead_time_days);
+    if (!Number.isFinite(days)) return null;
+    const due = new Date(order.lead_time_started_at);
+    due.setDate(due.getDate() + days);
+    return due;
+  }, [order.lead_time_started_at, fields.lead_time_days]);
 
   const orderTotal = useMemo(() => {
     const price = parseFloat(fields.unit_price);
@@ -107,11 +119,6 @@ export function OrderDetailSheet({
   }
 
   async function copyTrackingLink() {
-    // navigator.clipboard only exists in secure contexts. On plain HTTP (e.g.
-    // a LAN IP the ops tablets hit), it's undefined, and document.execCommand
-    // ("copy") is not a reliable substitute — it can return true without the
-    // OS clipboard actually changing. Rather than report a false success,
-    // skip straight to the prompt below on insecure origins.
     if (window.isSecureContext && navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(trackUrl);
@@ -119,13 +126,27 @@ export function OrderDetailSheet({
         setTimeout(() => setLinkCopied(false), 2000);
         return;
       } catch {
-        // permission denied — fall through to the manual prompt below
+        // permission denied — fall through to the silent fallback below
       }
     }
 
-    // The prompt dialog pre-selects its text, so one native Ctrl+C copies it,
-    // bypassing unreliable programmatic clipboard access entirely.
-    window.prompt(t("copy_manually"), trackUrl);
+    // On plain HTTP (e.g. a LAN IP the ops tablets hit), navigator.clipboard
+    // is undefined. Copy via a temporary off-screen textarea instead of
+    // popping a native prompt() dialog — no visible UI, just the clipboard.
+    const el = document.createElement("textarea");
+    el.value = trackUrl;
+    el.style.position = "fixed";
+    el.style.opacity = "0";
+    document.body.appendChild(el);
+    el.focus();
+    el.select();
+    try {
+      document.execCommand("copy");
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } finally {
+      document.body.removeChild(el);
+    }
   }
 
   async function remind() {
@@ -185,6 +206,14 @@ export function OrderDetailSheet({
                   value={fields.lead_time_days}
                   onChange={(e) => setFields((f) => ({ ...f, lead_time_days: e.target.value }))}
                 />
+                <p className="text-xs text-faint">
+                  {leadTimeDue
+                    ? t("lead_time_note_started", {
+                        started: new Date(order.lead_time_started_at!).toLocaleDateString(locale),
+                        due: leadTimeDue.toLocaleDateString(locale),
+                      })
+                    : t("lead_time_note_pending")}
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -221,6 +250,24 @@ export function OrderDetailSheet({
                 onChange={(e) => setFields((f) => ({ ...f, estimated_delivery: e.target.value }))}
               />
             </div>
+
+            {order.notes && (
+              <div className="grid gap-1.5">
+                <Label>{t("request_details")}</Label>
+                <p className="rounded-md bg-paper-2 p-2 text-sm text-ink/80">{order.notes}</p>
+              </div>
+            )}
+
+            {showArtworkFiles && (
+              <ArtworkFileUploader
+                orderId={order.id}
+                files={artworkFiles}
+                onChanged={(next) => {
+                  setArtworkFiles(next);
+                  onChanged();
+                }}
+              />
+            )}
 
             {showSampleImages && (
               <SamplePhotoUploader

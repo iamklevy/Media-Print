@@ -35,6 +35,27 @@
   --shadow-lift: 0 2px 6px rgb(38 28 18 / 0.06), 0 18px 40px rgb(38 28 18 / 0.09);
   --shadow-deep: 0 2px 4px rgb(38 28 18 / 0.06), 0 12px 24px rgb(38 28 18 / 0.09),
     0 40px 80px rgb(38 28 18 / 0.18);
+
+  /* shadcn/ui semantic tokens — mapped onto the brand palette above so
+     Sheet/Select/Card/Tabs etc. render with a solid, legible surface
+     instead of falling back to a transparent bg-{token} with nothing
+     defined for it. */
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-paper);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-paper);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary: var(--color-ink);
+  --color-primary-foreground: var(--color-paper);
+  --color-secondary: var(--color-paper-2);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted-foreground: var(--color-muted);
+  --color-destructive: var(--color-danger);
+  --color-destructive-foreground: var(--color-paper);
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-accent);
 }
 
 :root {
