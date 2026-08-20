@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Check, Copy } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/site/brand-icons";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -173,6 +174,12 @@ export function OrderDetailSheet({
             <Button onClick={copyTrackingLink} variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
               {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
               {linkCopied ? t("link_copied") : t("copy_tracking_link")}
+            </Button>
+            <Button asChild variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
+              <a href={waLinkTo(order.customer_phone, "")} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon className="size-3" />
+                {t("message_whatsapp")}
+              </a>
             </Button>
           </div>
         </SheetHeader>
