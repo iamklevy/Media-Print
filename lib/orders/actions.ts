@@ -14,6 +14,8 @@ import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/t
 const FAILED_ATTEMPT_LIMIT = 5;
 const LOCKOUT_MS = 15 * 60 * 1000;
 
+const ARTWORK_BUCKET = "artwork-files";
+
 function randomSlugSuffix(): string {
   return crypto.randomBytes(8).toString("base64url");
 }
@@ -21,6 +23,47 @@ function randomSlugSuffix(): string {
 // ---------------------------------------------------------------------------
 // Quote form -> order creation
 // ---------------------------------------------------------------------------
+
+const CUSTOMER_ARTWORK_MAX_BYTES = 10 * 1024 * 1024; // matches the "artwork-files" bucket's own cap
+const CUSTOMER_ARTWORK_MAX_FILES = 3;
+const CUSTOMER_ARTWORK_EXT_RE = /\.(pdf|ai|eps|svg|png|jpe?g|webp|zip)$/i;
+
+/**
+ * Uploads the design file(s) a customer attaches to the quote form. Stored
+ * under a "customer/" prefix in the same bucket the staff-uploaded artwork
+ * proofs use, so the two never collide.
+ */
+async function uploadCustomerArtwork(orderId: string, files: File[]): Promise<ArtworkFile[]> {
+  const db = supabaseServer();
+  const uploaded: ArtworkFile[] = [];
+
+  for (let i = 0; i < files.length && i < CUSTOMER_ARTWORK_MAX_FILES; i++) {
+    const file = files[i];
+    if (!(file instanceof File) || file.size === 0) continue;
+    if (file.size > CUSTOMER_ARTWORK_MAX_BYTES || !CUSTOMER_ARTWORK_EXT_RE.test(file.name)) continue;
+
+    const ext = file.name.split(".").pop()!.toLowerCase();
+    const path = `customer/${orderId}/${i}-${Date.now()}.${ext}`;
+
+    try {
+      const { error } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
+        contentType: file.type || "application/octet-stream",
+      });
+      if (error) {
+        console.error("uploadCustomerArtwork: storage upload failed", error);
+        continue;
+      }
+    } catch (err) {
+      console.error("uploadCustomerArtwork: storage upload threw", err);
+      continue;
+    }
+
+    const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
+    uploaded.push({ url: pub.publicUrl, label: file.name });
+  }
+
+  return uploaded;
+}
 
 export async function createOrderFromQuote(
   formData: FormData,
@@ -64,14 +107,24 @@ export async function createOrderFromQuote(
     return null;
   }
 
+  const artworkInputFiles = formData.getAll("artwork").filter((f): f is File => f instanceof File && f.size > 0);
+  let customerArtworkFiles: ArtworkFile[] = [];
+  if (artworkInputFiles.length > 0) {
+    customerArtworkFiles = await uploadCustomerArtwork(data.id, artworkInputFiles);
+    if (customerArtworkFiles.length > 0) {
+      await db.from("orders").update({ customer_artwork_files: customerArtworkFiles }).eq("id", data.id);
+    }
+  }
+
   await db.from("order_events").insert({
     order_id: data.id,
     type: "created",
     phase: "order_confirmed",
     actor: "system",
+    message: customerArtworkFiles.length > 0 ? `Customer attached ${customerArtworkFiles.length} design file(s).` : null,
   });
 
-  await notifyQuoteReceived(data as Order);
+  await notifyQuoteReceived({ ...(data as Order), customer_artwork_files: customerArtworkFiles });
 
   return {
     orderNumber: data.order_number,
@@ -234,8 +287,6 @@ export async function removeSampleImage(orderId: string, slot: number): Promise<
 
   return { ok: true };
 }
-
-const ARTWORK_BUCKET = "artwork-files";
 
 export async function uploadArtworkFile(
   orderId: string,

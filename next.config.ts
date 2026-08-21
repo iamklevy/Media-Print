@@ -15,11 +15,15 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.1.161", "172.20.10.5"],
   experimental: {
     serverActions: {
-      // Next's server action body limit defaults to 1MB, well under the
-      // SAMPLE_MAX_BYTES (5MB) uploadSampleImage already enforces — without
-      // this, a 1-5MB sample photo was silently rejected by Next before our
-      // own size check (or Supabase's) ever ran, logged server-side only.
-      bodySizeLimit: "6mb",
+      // Next's server action body limit defaults to 1MB. The quote form's
+      // createOrderFromQuote can carry up to 3 customer-attached design
+      // files at 10MB each (CUSTOMER_ARTWORK_MAX_BYTES/_FILES in
+      // lib/orders/actions.ts) inside that one call, on top of the single
+      // 5MB staff photo uploads (SAMPLE_MAX_BYTES) this limit already
+      // covered — without enough headroom, Next rejects the request before
+      // our own size checks ever run, and the client sees only a generic
+      // failure instead of a specific "file too large" message.
+      bodySizeLimit: "35mb",
     },
   },
 };

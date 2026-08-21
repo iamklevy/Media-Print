@@ -30,6 +30,7 @@ export interface Order {
   delivered_at: string | null;
   sample_images: SampleImage[];
   artwork_files: ArtworkFile[];
+  customer_artwork_files: ArtworkFile[];
   source: string;
   locale: string;
   notes: string | null;

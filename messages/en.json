@@ -6,7 +6,7 @@
   },
   "brand": {
     "name": "Media Print Pack",
-    "tag": "Printing &amp; Packaging"
+    "tag": "Printing & Packaging"
   },
   "nav": {
     "home": "Home",
@@ -19,14 +19,16 @@
     "about": "About Us",
     "contact": "Contact",
     "menu_arialabel": "Open menu",
-    "book": "Book a meeting"
+    "book": "Book a meeting",
+    "browse": "Browse All Products",
+    "markets": "Markets"
   },
   "lang": {
     "label": "العربية"
   },
   "cta": {
     "book": "Book a meeting",
-    "quote": "Get a Quote",
+    "quote": "Get pricing",
     "whatsapp": "WhatsApp us",
     "details": "Details",
     "call": "Call us",
@@ -48,13 +50,22 @@
     "float2": {
       "n": "6 days",
       "l": "Open every week"
+    },
+    "v2": {
+      "h1": "Packaging that does more",
+      "lead": "That means more sales. More connection with your customers. More options. More flexibility.",
+      "s1": "Pick your packaging",
+      "s2": "Upload your design",
+      "s3": "Approve, then we ship",
+      "foot": "*Production starts the moment you approve your sample — then we ship to every governorate.",
+      "cta": "Get pricing"
     }
   },
   "mq": {
     "1": "Printing up to 4 colours",
     "2": "Two-ply lamination",
     "3": "Die-cut shapes",
-    "4": "3 &amp; 5-ply corrugated",
+    "4": "3 & 5-ply corrugated",
     "5": "Sample before production",
     "6": "Artwork designed in-house",
     "7": "Food-safe materials",
@@ -82,7 +93,7 @@
       "s3": "Small quantities accepted"
     },
     "apparel": {
-      "t": "Garment &amp; Apparel Bags",
+      "t": "Garment & Apparel Bags",
       "d": "Clear polyester garment bags with a frosted 3-mil zip lock, resealable and quick to pack — no extra tape or materials needed.",
       "s1": "Clear polyester, 3 mil",
       "s2": "Zip lock or snap close",
@@ -124,7 +135,7 @@
       "s3": "Logo and product details printed"
     },
     "tags": {
-      "t": "Hang Tags &amp; Cards",
+      "t": "Hang Tags & Cards",
       "d": "Card stock in several weights, punched with string, printed one or two sides.",
       "s1": "Card stock in several weights",
       "s2": "Punched with string",
@@ -149,7 +160,7 @@
       "s3": "Zip, base and side gussets"
     },
     "flyers": {
-      "t": "Flyers &amp; Leaflets",
+      "t": "Flyers & Leaflets",
       "d": "Printed flyers and leaflets for menus, product inserts and promotions, finished on the same press as your packaging.",
       "s1": "Single or double-sided printing",
       "s2": "Gloss, matte or uncoated stock",
@@ -184,10 +195,10 @@
   "clients": {
     "eyebrow": "Trusted by",
     "h2": "Brands that already print with us",
-    "lead": "From multinationals to growing local labels &mdash; a selection of the names we have produced packaging and print for.",
-    "food": "Food &amp; Beverage",
-    "cosmetics": "Cosmetics &amp; Personal Care",
-    "clothing": "Clothing &amp; Fashion"
+    "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for.",
+    "food": "Food & Beverage",
+    "cosmetics": "Cosmetics & Personal Care",
+    "clothing": "Clothing & Fashion"
   },
   "proc": {
     "eyebrow": "How it works",
@@ -212,11 +223,11 @@
   "industry": {
     "all": "All industries",
     "cosmetics": {
-      "name": "Cosmetics &amp; Perfumes",
+      "name": "Cosmetics & Perfumes",
       "blurb": "Boxes, labels, bags and cards finished to make a premium product feel premium."
     },
     "food": {
-      "name": "Food &amp; Beverage",
+      "name": "Food & Beverage",
       "blurb": "Food-safe labels, zipper pouches, bags and flyers for kitchens, roasters and grocers."
     },
     "clothing": {
@@ -224,7 +235,7 @@
       "blurb": "Labels, hang tags, zipper bags, boxes, flyers and cards for fashion brands."
     },
     "ecommerce": {
-      "name": "E-commerce &amp; Shipping",
+      "name": "E-commerce & Shipping",
       "blurb": "Shipping boxes, shipping bags, labels and inserts built to survive a courier."
     }
   },
@@ -244,7 +255,7 @@
     },
     "solutions": {
       "eyebrow": "Browse by type",
-      "h2": "Explore our packaging solutions",
+      "h2": "Browse by product type",
       "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
     },
     "finishing": {
@@ -262,6 +273,60 @@
     "why": {
       "eyebrow": "Why work with us",
       "h2": "Why MediaPrint?"
+    },
+    "stats": {
+      "eyebrow": "In numbers",
+      "h2": "A workshop, not a middleman",
+      "lead": "Plain facts about how we work — every figure here comes from our own price list and opening hours, not from marketing.",
+      "products_n": "Products we make in-house",
+      "moq_n": "Lowest printed minimum, in pieces",
+      "days_n": "Days a week the workshop runs",
+      "gov_n": "Egyptian governorates we ship to"
+    },
+    "clients": {
+      "eyebrow": "Trusted by",
+      "h2": "Brands already printing with us",
+      "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for."
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "h2": "From enquiry to delivery in four steps",
+      "lead": "Every job runs the same way, and you approve a physical sample before we print the quantity."
+    },
+    "voices": {
+      "eyebrow": "In their words",
+      "h2": "What our customers say",
+      "lead": "PLACEHOLDER — replace the three quotes below with real customer feedback before this page goes live.",
+      "placeholder": "Awaiting a real quote from this customer.",
+      "role": "Add role and company"
+    },
+    "faq": {
+      "eyebrow": "Before you ask",
+      "h2": "Questions we get every week",
+      "moq": {
+        "q": "What is your minimum order?",
+        "a": "It depends on the product. Printed bags start at 1,000, printed sacks at 300, corrugated boxes and hang tags at 100, and plain sacks at 100. Every product page shows its own minimum next to the live price."
+      },
+      "artwork": {
+        "q": "What artwork files do you need?",
+        "a": "Send whatever you have. If you already have print-ready artwork we will check it and proof it; if you do not, our team prepares it for you."
+      },
+      "sample": {
+        "q": "Do I get a sample before the full run?",
+        "a": "Yes, always. We produce a physical sample and production only begins once you approve it. What you sign off on is what gets delivered."
+      },
+      "lead": {
+        "q": "How long does an order take?",
+        "a": "CONFIRM WITH MEDIA PRINT — we have not published a lead time. Production starts the moment you approve the sample; talk to sales for a date on your specific job."
+      },
+      "shipping": {
+        "q": "Where do you deliver?",
+        "a": "Every governorate in Egypt, and to the Arab countries. Shipping is arranged once the run is finished and quality-checked."
+      },
+      "design": {
+        "q": "Can you design the packaging for me?",
+        "a": "Yes. Design and artwork are done in-house alongside the printing, so nothing gets lost between suppliers."
+      }
     }
   },
   "srv": {
@@ -288,11 +353,11 @@
       "d": "Roll-up banners for exhibitions, showrooms and points of sale."
     },
     "letterhead": {
-      "t": "Letterheads &amp; Stationery",
+      "t": "Letterheads & Stationery",
       "d": "Company stationery and notebooks, consistent with the rest of your identity."
     },
     "sticker": {
-      "t": "Paper &amp; Plastic Stickers",
+      "t": "Paper & Plastic Stickers",
       "d": "Stickers on paper or plastic stock, for large runs and short ones alike."
     },
     "duplex": {
@@ -300,7 +365,7 @@
       "d": "Printed duplex board boxes, sized and finished around the product they hold."
     },
     "flyer": {
-      "t": "Flyers, Brochures &amp; Catalogues",
+      "t": "Flyers, Brochures & Catalogues",
       "d": "Marketing print produced at high quality, in the quantity you actually need."
     },
     "promo": {
@@ -353,7 +418,7 @@
       "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by industry, or ask us and we will point you to the right one."
     },
     "services": {
-      "h1": "Finishing &amp; Printing Services",
+      "h1": "Finishing & Printing Services",
       "lead": "The finishing touches and commercial printing alongside the packaging — stickers, stationery, marketing print and display."
     },
     "about": {
@@ -370,9 +435,9 @@
     }
   },
   "cat": {
-    "plastic": "Plastic &amp; flexible",
-    "paper": "Paper &amp; board",
-    "print": "Labels &amp; print",
+    "plastic": "Plastic & flexible",
+    "paper": "Paper & board",
+    "print": "Labels & print",
     "fabric": "Fabric",
     "all": "Everything",
     "empty": "Nothing in this category yet — message us and we'll point you to the right product."
@@ -392,17 +457,17 @@
     "online": {
       "t": "Online meeting",
       "d": "A video or WhatsApp call. Best for running through artwork and prices quickly.",
-      "m": "20&ndash;30 minutes"
+      "m": "20–30 minutes"
     },
     "yours": {
       "t": "We come to your office",
       "d": "Our sales rep visits with physical samples of the materials and sizes.",
-      "m": "Cairo &amp; Giza"
+      "m": "Cairo & Giza"
     },
     "ours": {
       "t": "You visit our office",
       "d": "323 Sudan Street, Mohandessin, Giza. See the materials and printed work in person.",
-      "m": "Sat&ndash;Thu, 10am &ndash; 6pm"
+      "m": "Sat–Thu, 10am – 6pm"
     },
     "topic": "What is it about?",
     "topic_choose": "Choose a topic",
@@ -436,6 +501,14 @@
     "product_other": "Something else",
     "msg": "Details of the request",
     "msg_placeholder": "Sizes, number of print colours, material, delivery date…",
+    "artwork": "Design file (optional)",
+    "artwork_hint": "PDF, AI, EPS, SVG, image or ZIP — up to 10MB, max 3 files.",
+    "artwork_add": "Attach a file",
+    "artwork_remove": "Remove",
+    "artwork_too_many": "You can attach up to 3 files.",
+    "artwork_too_large": "That file is over 10MB — please attach a smaller one.",
+    "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
+    "error_too_large": "Your attached files are too large to send together — please remove one or attach smaller files and try again.",
     "submit": "Send quote request",
     "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
@@ -505,7 +578,8 @@
     "in_progress": {
       "estimated_delivery": "Estimated delivery",
       "message_sales": "Call sales",
-      "download_invoice": "Download invoice"
+      "download_invoice": "Download invoice",
+      "your_files": "Files you sent us"
     },
     "approval": {
       "badge": "Your approval is needed",
@@ -580,6 +654,8 @@
       "order_total_auto": "Auto-calculated: unit price × quantity",
       "estimated_delivery": "Estimated delivery",
       "request_details": "Request details",
+      "customer_artwork": "Files from the customer",
+      "customer_artwork_hint": "Attached to the quote request — not the staff-prepared proof below.",
       "lead_time_note_pending": "Starts counting once the sample is approved.",
       "lead_time_note_started": "Started {started} — due {due}",
       "sample_photos": "Sample photos",
