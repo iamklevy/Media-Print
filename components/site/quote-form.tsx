@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SALES_PHONE } from "@/lib/contact";
 import { createOrderFromQuote } from "@/lib/orders/actions";
+import { ArtworkInput } from "@/components/site/artwork-input";
 
 export function QuoteForm() {
   const t = useTranslations();
@@ -18,7 +19,7 @@ export function QuoteForm() {
   const ar = locale === "ar";
   const [sent, setSent] = useState(false);
   const [trackingUrl, setTrackingUrl] = useState<string | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<"generic" | "too_large" | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const searchParams = useSearchParams();
@@ -34,7 +35,7 @@ export function QuoteForm() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-    setError(false);
+    setError(null);
     const f = new FormData(e.currentTarget);
 
     try {
@@ -43,11 +44,16 @@ export function QuoteForm() {
         setTrackingUrl(order.trackingUrl);
         setSent(true);
       } else {
-        setError(true);
+        setError("generic");
       }
     } catch (err) {
       console.error("createOrderFromQuote failed", err);
-      setError(true);
+      // Next's Server Action body-size guard rejects the request before our
+      // own code runs, surfacing as a thrown error here rather than a normal
+      // { ok: false } result — worth a specific message since "call sales"
+      // isn't the fix, attaching smaller files is.
+      const tooLarge = err instanceof Error && /body exceeded|limit/i.test(err.message);
+      setError(tooLarge ? "too_large" : "generic");
     } finally {
       setSubmitting(false);
     }
@@ -106,6 +112,8 @@ export function QuoteForm() {
         <Textarea id="message" name="message" rows={4} defaultValue={defaultMessage} placeholder={t("f.msg_placeholder")} />
       </Field>
 
+      <ArtworkInput name="artwork" />
+
       <Button type="submit" size="lg" disabled={submitting} className="w-fit rounded-full bg-accent hover:bg-accent-2">
         {submitting ? (ar ? "جاري الإرسال…" : "Sending…") : t("f.submit")}
       </Button>
@@ -121,7 +129,12 @@ export function QuoteForm() {
         </div>
       )}
 
-      {error && (
+      {error === "too_large" && (
+        <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">
+          {t("f.error_too_large")}
+        </p>
+      )}
+      {error === "generic" && (
         <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">
           {ar ? "حصل خطأ في إرسال الطلب — من فضلك اتصل بالمبيعات مباشرة." : "Something went wrong sending your request — please call sales directly."}
         </p>

@@ -28,6 +28,7 @@ export async function notifyQuoteReceived(order: Order): Promise<void> {
     product_label: order.product_label,
     quantity: order.quantity,
     notes: order.notes,
+    customer_artwork_files: order.customer_artwork_files,
   });
   await sendEmail({ to: STAFF_EMAIL, ...staffEmail });
 }
