@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { PHASES, phaseIndex, type Phase } from "@/lib/orders/phases";
 import { SALES_PHONE } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
@@ -132,6 +133,8 @@ export function InProgressState({ order, events }: { order: Order; events: Order
           );
         })}
       </ol>
+
+      <ArtworkFileList label={t("in_progress.your_files")} files={order.customer_artwork_files} />
 
       <div className="flex flex-wrap gap-2 border-t border-line pt-4">
         <Button asChild className="w-fit rounded-full bg-ink text-paper hover:bg-ink-2">

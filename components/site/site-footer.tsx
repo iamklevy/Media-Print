@@ -9,6 +9,7 @@ import {
   EMAIL,
   FACEBOOK,
 } from "@/lib/contact";
+import { PRODUCTS } from "@/content/products";
 
 const SITE = [
   { href: "/", key: "home" },
@@ -20,22 +21,13 @@ const SITE = [
   { href: "/contact", key: "contact" },
 ] as const;
 
-const PRODUCTS = [
-  { href: "/products/zipper", key: "p.zipper.t" },
-  { href: "/products/paper-sacks", key: "p.sacks.t" },
-  { href: "/products/courier", key: "p.courier.t" },
-  { href: "/products/cartons", key: "p.cartons.t" },
-  { href: "/products/nonwoven", key: "p.nonwoven.t" },
-  { href: "/products/stickers", key: "p.stickers.t" },
-] as const;
-
 export function SiteFooter() {
   const t = useTranslations();
 
   return (
     <footer className="bg-ink pt-12 text-paper/70 md:pt-16">
       <div className="mx-auto w-[min(1200px,100%-2.5rem)]">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.7fr_1.2fr] lg:gap-10">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px]">
@@ -91,11 +83,12 @@ export function SiteFooter() {
 
           <div>
             <h4 className="mb-4 text-[0.95rem] font-bold text-paper">{t("ft.prod")}</h4>
-            <ul className="grid gap-2.5 text-[0.93rem]">
-              {PRODUCTS.map(({ href, key }) => (
-                <li key={href}>
-                  <Link href={href} className="transition hover:text-accent">
-                    {t(key)}
+            {/* the full catalogue, same source as the header's Browse All Products menu */}
+            <ul className="grid gap-x-6 gap-y-2.5 text-[0.93rem] sm:grid-cols-2">
+              {PRODUCTS.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/products/${p.slug}`} className="transition hover:text-accent">
+                    {t(`${p.key}.t`)}
                   </Link>
                 </li>
               ))}

@@ -112,3 +112,30 @@
     transform: translateX(-50%);
   }
 }
+
+/* Hero collage: gentle vertical drift. Rotation rides the --rot custom
+   property so each card keeps its tilt while the keyframe owns transform. */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(var(--rot, 0deg));
+  }
+}
+
+/*
+ * Scroll-reveal safety net.
+ *
+ * Motion server-renders its `initial` state as an inline `opacity:0`, so with
+ * scripting turned off the reveal would never run and most of the page would
+ * stay blank. `!important` in a stylesheet outranks a plain inline style, so
+ * this hands those readers the fully visible page.
+ */
+@media (scripting: none) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
