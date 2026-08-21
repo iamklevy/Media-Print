@@ -205,89 +205,44 @@ export const PRODUCTS: CatalogueProduct[] = [
   }
 ];
 
-export interface ClientGroup { labelKey: string; names: { name: string; sub?: string }[] }
+export interface ClientGroup { labelKey: string; names: { name: string; sub?: string; logo?: string }[] }
 
 export const CLIENTS: ClientGroup[] = [
   {
-    "labelKey": "clients.food",
-    "names": [
-      {
-        "name": "Haj Arafa"
-      },
-      {
-        "name": "Coca-Cola"
-      },
-      {
-        "name": "Gomla Market"
-      },
-      {
-        "name": "TASTE PURE"
-      }
-    ]
+    labelKey: "clients.food",
+    names: [
+      { name: "Haj Arafa", logo: "/clients/haj-arafa.png" },
+      { name: "Coca-Cola", logo: "/clients/coca-cola.png" },
+      { name: "Gomla Market", logo: "/clients/gomla-market.png" },
+      { name: "TASTE PURE", logo: "/clients/taste-pure.png" },
+    ],
   },
   {
-    "labelKey": "clients.cosmetics",
-    "names": [
-      {
-        "name": "Parkvilla"
-      },
-      {
-        "name": "Capixy"
-      },
-      {
-        "name": "Marico",
-        "sub": "Fiancée · Hair Code"
-      },
-      {
-        "name": "RawAfrica"
-      },
-      {
-        "name": "FEVELIN"
-      },
-      {
-        "name": "LUNA"
-      },
-      {
-        "name": "Willy"
-      },
-      {
-        "name": "Joviality"
-      },
-      {
-        "name": "Nuit Fragrance"
-      },
-      {
-        "name": "Era Care"
-      },
-      {
-        "name": "SORELLA"
-      }
-    ]
+    labelKey: "clients.cosmetics",
+    names: [
+      { name: "Parkvilla", logo: "/clients/parkvilla.png" },
+      { name: "Capixy", logo: "/clients/capixy.jpg" },
+      { name: "Marico", sub: "Fiancée · Hair Code", logo: "/clients/marico.png" },
+      { name: "RawAfrica", logo: "/clients/rawafrica.jpg" },
+      { name: "FEVELIN", logo: "/clients/fevelin.jpg" },
+      { name: "LUNA", logo: "/clients/luna.png" },
+      { name: "Willy", logo: "/clients/willy.png" },
+      { name: "Joviality", logo: "/clients/joviality.jpg" },
+      { name: "Nuit Fragrance", logo: "/clients/nuit.png" },
+      { name: "Era Care", logo: "/clients/era-care.png" },
+      { name: "SORELLA" },
+    ],
   },
   {
-    "labelKey": "clients.clothing",
-    "names": [
-      {
-        "name": "Carina"
-      },
-      {
-        "name": "DXLR"
-      },
-      {
-        "name": "SLEEKZ"
-      },
-      {
-        "name": "FATM"
-      },
-      {
-        "name": "ELIGHT"
-      },
-      {
-        "name": "JEANZY"
-      },
-      {
-        "name": "KLEVY"
-      }
-    ]
-  }
+    labelKey: "clients.clothing",
+    names: [
+      { name: "Carina", logo: "/clients/carina.jpg" },
+      { name: "DXLR", logo: "/clients/dxlr.png" },
+      { name: "SLEEKZ", logo: "/clients/sleekz.png" },
+      { name: "FATM" },
+      { name: "ELIGHT" },
+      { name: "JEANZY", logo: "/clients/jeanzy.svg" },
+      { name: "KLEVY", logo: "/clients/klevy.jpg" },
+    ],
+  },
 ];

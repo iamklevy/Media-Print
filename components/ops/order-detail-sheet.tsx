@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
 import { ArtworkFileUploader } from "@/components/ops/artwork-file-uploader";
+import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
@@ -264,6 +265,12 @@ export function OrderDetailSheet({
                 <p className="rounded-md bg-paper-2 p-2 text-sm text-ink/80">{order.notes}</p>
               </div>
             )}
+
+            <ArtworkFileList
+              label={t("customer_artwork")}
+              hint={t("customer_artwork_hint")}
+              files={order.customer_artwork_files}
+            />
 
             {showArtworkFiles && (
               <ArtworkFileUploader

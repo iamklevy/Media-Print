@@ -1,4 +1,4 @@
-import type { Order } from "@/lib/orders/types";
+import type { ArtworkFile, Order } from "@/lib/orders/types";
 import { SALES_PHONE } from "@/lib/contact";
 
 const isAr = (locale: string): locale is "ar" => locale === "ar";
@@ -115,7 +115,9 @@ export function staffNewQuoteEmail(order: {
   product_label: string;
   quantity: string;
   notes: string | null;
+  customer_artwork_files?: ArtworkFile[];
 }) {
+  const files = (order.customer_artwork_files ?? []).filter((f) => f.url);
   const body = `<p>New quote request — <strong dir="ltr">${order.order_number}</strong></p>
     <p>
       Name: ${order.customer_name}<br/>
@@ -124,7 +126,12 @@ export function staffNewQuoteEmail(order: {
       Product: ${order.product_label}<br/>
       Quantity: ${order.quantity}
     </p>
-    ${order.notes ? `<p>Message: ${order.notes}</p>` : ""}`;
+    ${order.notes ? `<p>Message: ${order.notes}</p>` : ""}
+    ${
+      files.length > 0
+        ? `<p>Design file(s):<br/>${files.map((f) => `<a href="${f.url}" dir="ltr">${f.label ?? f.url}</a>`).join("<br/>")}</p>`
+        : ""
+    }`;
   return {
     subject: `New quote request — ${order.customer_name} (${order.order_number})`,
     html: layout("en", body),
