@@ -360,6 +360,58 @@ export async function removeArtworkFile(orderId: string, slot: number): Promise<
   return { ok: true };
 }
 
+const INVOICE_MAX_BYTES = 10 * 1024 * 1024; // matches the "artwork-files" bucket's own cap
+
+export async function uploadCustomInvoice(
+  orderId: string,
+  formData: FormData
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  await requireStaffSession();
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
+  if (file.type !== "application/pdf") return { ok: false, error: "Unsupported file type — use PDF." };
+  if (file.size > INVOICE_MAX_BYTES) return { ok: false, error: "File too large — 10MB max." };
+
+  const db = supabaseServer();
+  const path = `invoices/${orderId}/${Date.now()}.pdf`;
+
+  try {
+    const { error: uploadError } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
+      contentType: "application/pdf",
+      upsert: true,
+    });
+    if (uploadError) return { ok: false, error: uploadError.message };
+  } catch (err) {
+    console.error("uploadCustomInvoice: storage upload threw", err);
+    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
+  }
+
+  const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
+  const invoiceFile: ArtworkFile = { url: pub.publicUrl, label: file.name };
+
+  const { error: updateError } = await db
+    .from("orders")
+    .update({ invoice_file: invoiceFile, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true, url: pub.publicUrl };
+}
+
+export async function removeCustomInvoice(orderId: string): Promise<{ ok: boolean; error?: string }> {
+  await requireStaffSession();
+  const db = supabaseServer();
+
+  const { error } = await db
+    .from("orders")
+    .update({ invoice_file: null, updated_at: new Date().toISOString() })
+    .eq("id", orderId);
+  if (error) return { ok: false, error: error.message };
+
+  return { ok: true };
+}
+
 export async function updateOrderFields(
   orderId: string,
   fields: Partial<
