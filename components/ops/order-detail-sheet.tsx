@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
 import { ArtworkFileUploader } from "@/components/ops/artwork-file-uploader";
+import { CustomInvoiceUploader } from "@/components/ops/custom-invoice-uploader";
 import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
@@ -51,6 +52,7 @@ export function OrderDetailSheet({
   });
   const [sampleImages, setSampleImages] = useState<SampleImage[]>(order.sample_images);
   const [artworkFiles, setArtworkFiles] = useState<ArtworkFile[]>(order.artwork_files);
+  const [invoiceFile, setInvoiceFile] = useState<ArtworkFile | null>(order.invoice_file);
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
   const [reminding, setReminding] = useState(false);
@@ -294,19 +296,19 @@ export function OrderDetailSheet({
               />
             )}
 
+            <CustomInvoiceUploader
+              orderId={order.id}
+              file={invoiceFile}
+              onChanged={(next) => {
+                setInvoiceFile(next);
+                onChanged();
+              }}
+            />
+
             <div className="flex flex-wrap gap-2">
               <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
                 {saving ? t("saving") : t("save")}
               </Button>
-              {order.order_total != null ? (
-                <Button asChild variant="outline" className="w-fit border-line">
-                  <a href={`/api/orders/${order.id}/invoice`} target="_blank" rel="noopener">
-                    {t("invoice")}
-                  </a>
-                </Button>
-              ) : (
-                <p className="self-center text-xs text-faint">{t("invoice_pending")}</p>
-              )}
             </div>
           </section>
 

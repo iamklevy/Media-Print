@@ -31,6 +31,7 @@ export interface Order {
   sample_images: SampleImage[];
   artwork_files: ArtworkFile[];
   customer_artwork_files: ArtworkFile[];
+  invoice_file: ArtworkFile | null;
   source: string;
   locale: string;
   notes: string | null;

@@ -42,10 +42,10 @@ export function DeliveredState({ order }: { order: Order }) {
         )}
       </dl>
       
-      {order.order_total != null && (
+      {order.invoice_file?.url && (
         <div className="flex flex-wrap gap-2">
           <Button asChild variant="outline" className="w-fit border-line">
-            <a href={`/api/track/${order.tracking_slug}/invoice`} target="_blank" rel="noopener">
+            <a href={order.invoice_file.url} target="_blank" rel="noopener">
               {t("download_invoice")}
             </a>
           </Button>
