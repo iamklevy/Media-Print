@@ -21,7 +21,7 @@
     "menu_arialabel": "Open menu",
     "book": "Book a meeting",
     "browse": "Browse All Products",
-    "markets": "Markets"
+    "markets": "Industries"
   },
   "lang": {
     "label": "العربية"
@@ -674,8 +674,12 @@
       "reminding": "Sending…",
       "advance": "Advance to {phase}",
       "advancing": "Advancing…",
-      "invoice": "Download invoice",
-      "invoice_pending": "Set a price to enable the invoice.",
+      "custom_invoice": "Invoice",
+      "custom_invoice_hint": "Upload the invoice for this order — PDF only, up to 10MB. Shown here and on the customer's tracking page.",
+      "upload_invoice": "Upload invoice",
+      "uploading": "Uploading…",
+      "remove_invoice": "Remove invoice",
+      "invoice_upload_failed": "Upload failed — try again.",
       "copy_tracking_link": "Copy tracking link",
       "link_copied": "Copied!",
       "message_whatsapp": "Message on WhatsApp",
