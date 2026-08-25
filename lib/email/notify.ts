@@ -33,7 +33,10 @@ export async function notifyQuoteReceived(order: Order): Promise<void> {
   await sendEmail({ to: STAFF_EMAIL, ...staffEmail });
 }
 
-export async function notifyGateReady(order: Order, gate: "artwork_approved" | "sample_approved"): Promise<void> {
+export async function notifyGateReady(
+  order: Order,
+  gate: "quote_review" | "artwork_approved" | "sample_approved"
+): Promise<void> {
   if (!order.customer_email) return;
   const url = trackingUrl(order.tracking_slug, order.locale);
   const email = gateReadyEmail(order, gate, url, order.locale);
@@ -50,7 +53,7 @@ export async function notifyDelivered(order: Order): Promise<void> {
 export async function notifyStaffGateResponse(
   order: Pick<Order, "order_number" | "customer_name">,
   kind: "approved" | "changes_requested",
-  gate: "artwork_approved" | "sample_approved",
+  gate: "quote_review" | "artwork_approved" | "sample_approved",
   note?: string | null
 ): Promise<void> {
   const email = staffGateResponseEmail(order, kind, gate, note);

@@ -1,5 +1,7 @@
 export type Phase =
   | "order_confirmed"
+  | "quote_pending"
+  | "quote_review"
   | "artwork_pre_press"
   | "artwork_approved"
   | "sample_produced"
@@ -22,6 +24,8 @@ export interface PhaseDef {
 /** Single source of truth: order, labels, and gate flags for the 12-step pipeline. */
 export const PHASES: PhaseDef[] = [
   { key: "order_confirmed", label: "Order confirmed", gate: false },
+  { key: "quote_pending", label: "Preparing your quote", gate: false },
+  { key: "quote_review", label: "Quote awaiting approval", gate: true },
   { key: "artwork_pre_press", label: "Artwork & pre-press", gate: false },
   { key: "artwork_approved", label: "Artwork approved", gate: true },
   { key: "sample_produced", label: "Sample produced", gate: false },
@@ -70,7 +74,8 @@ export function prevNonGatePhase(phase: Phase): Phase {
 }
 
 export const KANBAN_COLUMNS = [
-  { title: "Pre-press", phases: ["order_confirmed", "artwork_pre_press", "artwork_approved"] as Phase[] },
+  { title: "Quote", phases: ["order_confirmed", "quote_pending", "quote_review"] as Phase[] },
+  { title: "Pre-press", phases: ["artwork_pre_press", "artwork_approved"] as Phase[] },
   { title: "Sample", phases: ["sample_produced", "sample_approved"] as Phase[] },
   { title: "Printing", phases: ["plates_tooling", "printing"] as Phase[] },
   { title: "Finishing", phases: ["finishing_die_cut", "quality_check"] as Phase[] },

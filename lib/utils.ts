@@ -17,6 +17,26 @@ export function downloadUrl(url: string, filename: string): string {
   return `${url}${sep}download=${encodeURIComponent(filename)}`;
 }
 
+const VIDEO_EXTS = new Set(["mp4", "mov", "webm"]);
+
+function urlExt(url: string): string {
+  const path = url.split("?")[0];
+  const match = path.match(/\.([a-z0-9]+)$/i);
+  return match ? match[1].toLowerCase() : "";
+}
+
+/** Sample slots can hold either a photo or a short video clip — tell them apart by extension. */
+export function isVideoUrl(url: string): boolean {
+  return VIDEO_EXTS.has(urlExt(url));
+}
+
+/** Swaps a download filename's extension for the uploaded file's real one, so a video doesn't download with a `.jpg` name. */
+export function withRealExt(filename: string, url: string): string {
+  const ext = urlExt(url);
+  if (!ext) return filename;
+  return filename.replace(/\.[a-z0-9]+$/i, `.${ext}`);
+}
+
 /** "Today 4:29 PM" / "Yesterday 11:38 PM" / "10 Aug · 4:29 PM" — matches the reference tracking-timeline design. */
 export function formatRelativeDay(
   date: Date,
