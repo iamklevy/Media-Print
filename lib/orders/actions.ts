@@ -182,6 +182,9 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
   if (isGatePhase(order.phase)) {
     return { ok: false, error: "Order is waiting on customer approval." };
   }
+  if (order.phase === "quote_pending" && (order.unit_price == null || !order.invoice_file)) {
+    return { ok: false, error: "Set a price and upload the invoice before sending the quote for approval." };
+  }
 
   const next = nextPhase(order.phase);
   if (!next) return { ok: false, error: "Order is already delivered." };
@@ -194,7 +197,7 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
 
   await db.from("order_events").insert({ order_id: orderId, type: "phase_change", phase: next, actor: "staff" });
 
-  if (next === "artwork_approved" || next === "sample_approved") {
+  if (next === "quote_review" || next === "artwork_approved" || next === "sample_approved") {
     await notifyGateReady({ ...(order as Order), phase: next }, next);
   }
   if (next === "delivered") {
@@ -205,8 +208,21 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
 }
 
 const SAMPLE_BUCKET = "sample-photos";
-const SAMPLE_MAX_BYTES = 5 * 1024 * 1024;
+// Samples can be a photo or a short video clip — the bucket's own file-size
+// limit in the Supabase dashboard must be raised to match (see supabase/*.sql).
+const SAMPLE_MAX_BYTES = 25 * 1024 * 1024;
 const SAMPLE_MIME_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "video/mp4": "mp4",
+  "video/quicktime": "mov",
+  "video/webm": "webm",
+};
+
+// Artwork proofs stay image-only, at the original size cap.
+const ARTWORK_MAX_BYTES = 5 * 1024 * 1024;
+const ARTWORK_MIME_EXT: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
@@ -222,8 +238,8 @@ export async function uploadSampleImage(
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
   const ext = SAMPLE_MIME_EXT[file.type];
-  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG or WebP." };
-  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
+  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG, WebP, MP4, MOV or WebM." };
+  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 25MB max." };
 
   const db = supabaseServer();
   const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
@@ -297,9 +313,9 @@ export async function uploadArtworkFile(
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
-  const ext = SAMPLE_MIME_EXT[file.type];
+  const ext = ARTWORK_MIME_EXT[file.type];
   if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG or WebP." };
-  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
+  if (file.size > ARTWORK_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
 
   const db = supabaseServer();
   const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
@@ -529,7 +545,7 @@ export async function approveGate(
     ])
     .select("*");
 
-  await notifyStaffGateResponse(order, "approved", order.phase as "artwork_approved" | "sample_approved");
+  await notifyStaffGateResponse(order, "approved", order.phase as "quote_review" | "artwork_approved" | "sample_approved");
 
   return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
 }
@@ -572,6 +588,9 @@ export async function requestChanges(
     .single();
   if (error || !order) return { ok: false, error: "Order not found." };
   if (!isGatePhase(order.phase)) return { ok: false, error: "Nothing to revise." };
+  if (order.phase === "quote_review" && !note.trim()) {
+    return { ok: false, error: "Please tell us why so we can send a new quote." };
+  }
 
   const prev = prevNonGatePhase(order.phase);
 
@@ -597,7 +616,7 @@ export async function requestChanges(
     ])
     .select("*");
 
-  await notifyStaffGateResponse(order, "changes_requested", order.phase as "artwork_approved" | "sample_approved", note);
+  await notifyStaffGateResponse(order, "changes_requested", order.phase as "quote_review" | "artwork_approved" | "sample_approved", note);
 
   return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
 }

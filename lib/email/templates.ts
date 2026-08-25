@@ -60,14 +60,15 @@ export function quoteReceivedEmail(order: Pick<Order, "order_number" | "customer
   };
 }
 
-const GATE_COPY: Record<"artwork_approved" | "sample_approved", { ar: string; en: string }> = {
+const GATE_COPY: Record<"quote_review" | "artwork_approved" | "sample_approved", { ar: string; en: string }> = {
+  quote_review: { ar: "عرض السعر جاهز للمراجعة", en: "Your price quote is ready for review" },
   artwork_approved: { ar: "التصميم جاهز للمراجعة", en: "Your artwork is ready for review" },
   sample_approved: { ar: "العينة جاهزة للمراجعة", en: "Your sample is ready for review" },
 };
 
 export function gateReadyEmail(
   order: Pick<Order, "order_number" | "customer_name">,
-  gate: "artwork_approved" | "sample_approved",
+  gate: "quote_review" | "artwork_approved" | "sample_approved",
   trackingUrl: string,
   locale: string
 ) {
@@ -141,10 +142,10 @@ export function staffNewQuoteEmail(order: {
 export function staffGateResponseEmail(
   order: { order_number: string; customer_name: string },
   kind: "approved" | "changes_requested",
-  gate: "artwork_approved" | "sample_approved",
+  gate: "quote_review" | "artwork_approved" | "sample_approved",
   note?: string | null
 ) {
-  const gateLabel = gate === "artwork_approved" ? "artwork" : "sample";
+  const gateLabel = gate === "quote_review" ? "price quote" : gate === "artwork_approved" ? "artwork" : "sample";
   const action = kind === "approved" ? `approved the ${gateLabel}` : `requested changes to the ${gateLabel}`;
   const body = `<p><strong>${order.customer_name}</strong> ${action} for order <strong dir="ltr">${order.order_number}</strong>.</p>
     ${note ? `<p>Note: ${note}</p>` : ""}`;
