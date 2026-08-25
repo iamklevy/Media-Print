@@ -22,6 +22,7 @@ export function ArtworkFileUploader({
   const t = useTranslations("ops.detail");
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   async function onPick(slot: number, file: File | undefined) {
@@ -67,7 +68,21 @@ export function ArtworkFileUploader({
           return (
             <div
               key={slot}
-              className="relative aspect-square overflow-hidden rounded-lg border border-line bg-paper-2"
+              onDragOver={(e) => {
+                e.preventDefault();
+                if (busy === null) setDragOver(slot);
+              }}
+              onDragLeave={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(null);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(null);
+                if (busy === null) onPick(slot, e.dataTransfer.files?.[0]);
+              }}
+              className={`relative aspect-square overflow-hidden rounded-lg border bg-paper-2 ${
+                dragOver === slot ? "border-accent ring-2 ring-accent/30" : "border-line"
+              }`}
             >
               {url ? (
                 // eslint-disable-next-line @next/next/no-img-element

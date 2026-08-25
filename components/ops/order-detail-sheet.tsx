@@ -55,12 +55,14 @@ export function OrderDetailSheet({
   const [invoiceFile, setInvoiceFile] = useState<ArtworkFile | null>(order.invoice_file);
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
+  const [advanceError, setAdvanceError] = useState<string | null>(null);
   const [reminding, setReminding] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
   const status = deriveStatus(order);
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
+  const quoteMissing = order.phase === "quote_pending" && (order.unit_price == null || !order.invoice_file);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
   const showArtworkFiles = order.phase === "artwork_pre_press" || order.phase === "artwork_approved";
   const trackUrl = trackingUrl(order.tracking_slug, locale);
@@ -116,8 +118,13 @@ export function OrderDetailSheet({
 
   async function advance() {
     setAdvancing(true);
-    await advancePhase(order.id);
+    const res = await advancePhase(order.id);
     setAdvancing(false);
+    if (!res.ok) {
+      setAdvanceError(res.error ?? t("advance_failed"));
+      return;
+    }
+    setAdvanceError(null);
     onChanged();
     onOpenChange(false);
   }
@@ -392,15 +399,21 @@ export function OrderDetailSheet({
             <p className="text-sm font-semibold text-leaf">{t("delivered")}</p>
           ) : gate ? (
             <>
-              <p className="text-sm text-muted">{t("waiting_note")}</p>
+              <p className="text-sm text-muted">
+                {order.phase === "quote_review" ? t("waiting_note_quote") : t("waiting_note")}
+              </p>
               <Button onClick={remind} disabled={reminding} className="bg-accent hover:bg-accent-2">
                 {reminding ? t("reminding") : t("remind")}
               </Button>
             </>
           ) : (
-            <Button onClick={advance} disabled={advancing || !next} className="bg-accent hover:bg-accent-2">
-              {advancing ? t("advancing") : t("advance", { phase: next ? tPhase(next) : "—" })}
-            </Button>
+            <>
+              {quoteMissing && <p className="text-sm text-muted">{t("quote_missing_hint")}</p>}
+              {advanceError && <p className="text-sm font-semibold text-danger">{advanceError}</p>}
+              <Button onClick={advance} disabled={advancing || !next || quoteMissing} className="bg-accent hover:bg-accent-2">
+                {advancing ? t("advancing") : t("advance", { phase: next ? tPhase(next) : "—" })}
+              </Button>
+            </>
           )}
         </SheetFooter>
       </SheetContent>

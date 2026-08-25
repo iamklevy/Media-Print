@@ -3,6 +3,8 @@
 import { useTranslations, useLocale } from "next-intl";
 import {
   ClipboardCheck,
+  Tag,
+  BadgeCheck,
   PenTool,
   FileCheck2,
   PackageSearch,
@@ -28,6 +30,8 @@ import type { Order, OrderEvent } from "@/lib/orders/types";
 /** Icon shown on the currently-active step of the timeline. */
 const PHASE_ICON: Record<Phase, LucideIcon> = {
   order_confirmed: ClipboardCheck,
+  quote_pending: Tag,
+  quote_review: BadgeCheck,
   artwork_pre_press: PenTool,
   artwork_approved: FileCheck2,
   sample_produced: PackageSearch,

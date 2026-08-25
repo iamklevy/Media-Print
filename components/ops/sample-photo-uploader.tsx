@@ -6,6 +6,7 @@ import { Upload, X } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { uploadSampleImage, removeSampleImage } from "@/lib/orders/actions";
+import { isVideoUrl } from "@/lib/utils";
 import type { SampleImage } from "@/lib/orders/types";
 
 const SLOTS = [0, 1, 2];
@@ -22,6 +23,7 @@ export function SamplePhotoUploader({
   const t = useTranslations("ops.detail");
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   async function onPick(slot: number, file: File | undefined) {
@@ -70,11 +72,29 @@ export function SamplePhotoUploader({
           return (
             <div
               key={slot}
-              className="relative aspect-square overflow-hidden rounded-lg border border-line bg-paper-2"
+              onDragOver={(e) => {
+                e.preventDefault();
+                if (busy === null) setDragOver(slot);
+              }}
+              onDragLeave={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(null);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(null);
+                if (busy === null) onPick(slot, e.dataTransfer.files?.[0]);
+              }}
+              className={`relative aspect-square overflow-hidden rounded-lg border bg-paper-2 ${
+                dragOver === slot ? "border-accent ring-2 ring-accent/30" : "border-line"
+              }`}
             >
               {url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={url} alt="" className="size-full object-cover" />
+                isVideoUrl(url) ? (
+                  <video src={url} className="size-full object-cover" controls playsInline />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={url} alt="" className="size-full object-cover" />
+                )
               ) : (
                 <button
                   type="button"
@@ -103,7 +123,7 @@ export function SamplePhotoUploader({
                   inputRefs.current[slot] = el;
                 }}
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"
                 className="hidden"
                 onChange={(e) => onPick(slot, e.target.files?.[0])}
               />
