@@ -205,7 +205,10 @@ export const PRODUCTS: CatalogueProduct[] = [
   }
 ];
 
-export interface ClientGroup { labelKey: string; names: { name: string; sub?: string; logo?: string }[] }
+export interface ClientGroup {
+  labelKey: string;
+  names: { name: string; sub?: string; logo?: string; darkPlate?: boolean }[];
+}
 
 export const CLIENTS: ClientGroup[] = [
   {
@@ -243,6 +246,14 @@ export const CLIENTS: ClientGroup[] = [
       { name: "ELIGHT" },
       { name: "JEANZY", logo: "/clients/jeanzy.svg" },
       { name: "KLEVY", logo: "/clients/klevy.jpg" },
+    ],
+  },
+  {
+    labelKey: "clients.appliances",
+    names: [
+      // Both logos are white-on-transparent — need the dark plate, not the shared white one.
+      { name: "Beko", logo: "/clients/beko.png", darkPlate: true },
+      { name: "Elaraby Group", logo: "/clients/elaraby.png", darkPlate: true },
     ],
   },
 ];
