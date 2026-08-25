@@ -28,14 +28,31 @@ const MARQUEE = [
   { icon: Check, k: "mq.7" }, { icon: Truck, k: "mq.8" },
 ];
 
-/** Hero collage — real client work from public/products, floating over the blob. */
+/**
+ * Hero collage floating over the blob. Cartons are real client work from
+ * public/products; the sticker/zipper-bag shots are stock photography
+ * (Unsplash, same convention as the catalogue images in content/products.ts)
+ * standing in until we have our own client photography for those lines.
+ */
 const HERO_CARDS = [
-  { src: "/products/apparel-4.jpg", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
+  { src: "/products/cartons-6.png", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
   { src: "/products/cartons-8.png", cls: "top-[9%] end-[1%] w-[27%] [--rot:6deg] [animation-delay:0.9s]" },
-  { src: "/products/paper-bags.jpg", cls: "top-[36%] start-[4%] w-[30%] [--rot:5deg] [animation-delay:0.4s]" },
-  { src: "/products/cartons-6.png", cls: "top-[40%] start-[44%] w-[21%] [--rot:-4deg] [animation-delay:1.4s]" },
-  { src: "/products/paper-bags-coated.jpg", cls: "bottom-[1%] start-[22%] w-[29%] [--rot:-6deg] [animation-delay:0.7s]" },
-  { src: "/products/apparel-2.jpg", cls: "bottom-[7%] end-[3%] w-[26%] [--rot:8deg] [animation-delay:1.8s]" },
+  {
+    src: "https://images.unsplash.com/photo-1780444078356-5ca1e9efe6b8?w=1100&q=72&auto=format&fit=crop",
+    cls: "top-[36%] start-[4%] w-[30%] [--rot:5deg] [animation-delay:0.4s]",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1773525912464-d2640e7aff9c?w=1100&q=72&auto=format&fit=crop",
+    cls: "top-[40%] start-[44%] w-[21%] [--rot:-4deg] [animation-delay:1.4s]",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1633533452206-8ab246b00e30?w=1100&q=72&auto=format&fit=crop",
+    cls: "bottom-[1%] start-[22%] w-[29%] [--rot:-6deg] [animation-delay:0.7s]",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1572689535562-3c54a15292d3?w=1100&q=72&auto=format&fit=crop",
+    cls: "bottom-[7%] end-[3%] w-[26%] [--rot:8deg] [animation-delay:1.8s]",
+  },
 ];
 
 const HERO_STEPS = [
@@ -197,8 +214,13 @@ export default async function HomePage({
                       key={c.name}
                       className="m-0 flex h-full flex-col items-center gap-3 rounded-2xl border border-white/12 bg-white/5 p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:bg-white/10"
                     >
-                      {/* white plate so every logo keeps its own colours on the dark band */}
-                      <span className="grid h-16 w-full place-items-center overflow-hidden rounded-xl bg-white px-3 py-2">
+                      {/* white plate so every logo keeps its own colours on the dark band —
+                          darkPlate flips this for logos that are themselves white-on-transparent */}
+                      <span
+                        className={`grid h-16 w-full place-items-center overflow-hidden rounded-xl px-3 py-2 ${
+                          c.darkPlate ? "bg-ink" : "bg-white"
+                        }`}
+                      >
                         {c.logo ? (
                           // eslint-disable-next-line @next/next/no-img-element -- tiny static logos, no optimizer needed (and it can't serve the .svg)
                           <img src={c.logo} alt="" loading="lazy" className="max-h-12 w-auto max-w-full object-contain" />
