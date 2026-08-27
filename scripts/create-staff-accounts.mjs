@@ -14,8 +14,9 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
 const STAFF = [
-  { email: "mediaprint.egypt@gmail.com", name: "Mohamed" },
+  { email: "mediaprint.egypt@gmail.com", name: "Mahmoud" },
   { email: "hamodyosama50@gmail.com", name: "Ahmed" },
+  { email: "Marketing.mediaprint@gmail.com", name: "Mohamed" },
 ];
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
