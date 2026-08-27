@@ -61,6 +61,7 @@ export interface OrderEvent {
   type: OrderEventType;
   phase: Phase | null;
   actor: OrderEventActor;
+  actor_name: string | null;
   message: string | null;
   created_at: string;
 }
