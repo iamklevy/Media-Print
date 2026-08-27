@@ -659,6 +659,7 @@
       "not_started": "Not started"
     },
     "detail": {
+      "created_at": "Created {date}",
       "order_details": "Order details",
       "product": "Product",
       "quantity": "Quantity",
@@ -702,6 +703,7 @@
       "message_whatsapp": "Message on WhatsApp",
       "activity": "Activity",
       "no_activity": "No activity yet.",
+      "event_by": "by {name}",
       "today": "Today",
       "yesterday": "Yesterday",
       "event": {

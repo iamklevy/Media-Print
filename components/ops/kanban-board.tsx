@@ -111,8 +111,13 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
   }
 
   return (
-    <div dir={dir} className={`min-h-screen ${locale === "ar" ? "font-arabic" : "font-sans"}`}>
-      <header className="border-b border-line bg-ink text-paper">
+    <div
+      dir={dir}
+      className={`min-h-screen sm:flex sm:h-screen sm:flex-col sm:overflow-hidden ${
+        locale === "ar" ? "font-arabic" : "font-sans"
+      }`}
+    >
+      <header className="border-b border-line bg-ink text-paper sm:shrink-0">
         <div className="mx-auto grid max-w-[1600px] gap-3 px-4 py-3 sm:flex sm:flex-wrap sm:items-center sm:gap-4 sm:px-5">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
@@ -181,7 +186,7 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-[1600px] touch-pan-x gap-4 overflow-x-auto px-4 py-4 text-sm sm:touch-auto sm:flex-wrap sm:gap-6 sm:px-5">
+      <div className="mx-auto flex max-w-[1600px] touch-pan-x gap-4 overflow-x-auto px-4 py-4 text-sm sm:shrink-0 sm:touch-auto sm:flex-wrap sm:gap-6 sm:px-5">
         <span className="shrink-0">
           <b className="text-base">{counts.live}</b> {t("stats.live")}
         </span>
@@ -201,16 +206,19 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
         )}
       </div>
 
-      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:auto-cols-[minmax(260px,1fr)] sm:snap-none sm:px-5">
+      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:min-h-0 sm:flex-1 sm:auto-cols-[minmax(260px,1fr)] sm:auto-rows-fr sm:snap-none sm:overflow-y-hidden sm:px-5 sm:pb-4">
         {KANBAN_COLUMNS.map((col) => {
           const colOrders = visible.filter(({ order }) => col.phases.includes(order.phase));
           return (
-            <div key={col.title} className="grid snap-center content-start gap-3 rounded-[14px] bg-paper-2 p-3">
-              <div className="flex items-center justify-between text-xs font-semibold tracking-wide text-muted uppercase">
+            <div
+              key={col.title}
+              className="grid snap-center content-start gap-3 rounded-[14px] bg-paper-2 p-3 sm:flex sm:min-h-0 sm:flex-col"
+            >
+              <div className="flex items-center justify-between text-xs font-semibold tracking-wide text-muted uppercase sm:shrink-0">
                 <span>{t(`columns.${col.title}`)}</span>
                 <span className="rounded-full bg-line px-2 py-0.5 text-ink">{colOrders.length}</span>
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-2 sm:min-h-0 sm:flex-1 sm:overflow-y-auto sm:pe-1">
                 {colOrders.map(({ order }) => (
                   <OrderCard key={order.id} order={order} now={now} onClick={() => setSelectedId(order.id)} />
                 ))}

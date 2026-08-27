@@ -659,6 +659,7 @@
       "not_started": "لم يبدأ"
     },
     "detail": {
+      "created_at": "أُنشئ في {date}",
       "order_details": "بيانات الطلب",
       "product": "المنتج",
       "quantity": "الكمية",
@@ -702,6 +703,7 @@
       "message_whatsapp": "مراسلة عبر واتساب",
       "activity": "النشاط",
       "no_activity": "لا يوجد نشاط بعد.",
+      "event_by": "بواسطة {name}",
       "today": "اليوم",
       "yesterday": "أمس",
       "event": {
