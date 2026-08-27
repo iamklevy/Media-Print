@@ -175,6 +175,9 @@ export function OrderDetailSheet({
       <SheetContent side="center" className="gap-0 overflow-y-auto bg-paper text-ink">
         <SheetHeader className="border-b border-line">
           <SheetTitle className="text-ink">{order.order_number}</SheetTitle>
+          <p className="text-xs text-muted">
+            {t("created_at", { date: formatRelativeDay(new Date(order.created_at), locale, dayLabels) })}
+          </p>
           <SheetDescription>
             {order.customer_name}
             {order.customer_company ? ` · ${order.customer_company}` : ""} · <span dir="ltr">{order.customer_phone}</span>
@@ -185,7 +188,11 @@ export function OrderDetailSheet({
               {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
               {linkCopied ? t("link_copied") : t("copy_tracking_link")}
             </Button>
-            <Button asChild variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
+            <Button
+              asChild
+              size="sm"
+              className="h-6 gap-1 border-transparent bg-[#1DA851] px-2 text-xs text-white hover:bg-[#25D366]"
+            >
               <a href={waLinkTo(order.customer_phone, "")} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="size-3" />
                 {t("message_whatsapp")}
@@ -335,6 +342,9 @@ export function OrderDetailSheet({
                       >
                         {EVENT_LABEL[e.type]}
                         {e.type === "phase_change" && e.phase ? `: ${tPhase(e.phase)}` : ""}
+                        {e.actor_name && (
+                          <span className="font-normal text-muted"> · {t("event_by", { name: e.actor_name })}</span>
+                        )}
                       </span>
                       <span className="shrink-0 text-xs text-muted whitespace-nowrap" dir="ltr">
                         {formatRelativeDay(new Date(e.created_at), locale, dayLabels)}
@@ -402,7 +412,7 @@ export function OrderDetailSheet({
               <p className="text-sm text-muted">
                 {order.phase === "quote_review" ? t("waiting_note_quote") : t("waiting_note")}
               </p>
-              <Button onClick={remind} disabled={reminding} className="bg-accent hover:bg-accent-2">
+              <Button onClick={remind} disabled={reminding} className="bg-[#1DA851] text-white hover:bg-[#25D366]">
                 {reminding ? t("reminding") : t("remind")}
               </Button>
             </>

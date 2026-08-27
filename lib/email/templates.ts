@@ -139,6 +139,16 @@ export function staffNewQuoteEmail(order: {
   };
 }
 
+export function staffSetPasswordEmail(actionLink: string) {
+  const body = `<p>Set your password for the Media Print Pack operations board.</p>
+    <p>This link works once and expires shortly — if you didn't request it, you can ignore this email.</p>
+    ${button(actionLink, "Set your password")}`;
+  return {
+    subject: "Set your password — Media Print Pack Operations",
+    html: layout("en", body),
+  };
+}
+
 export function staffGateResponseEmail(
   order: { order_number: string; customer_name: string },
   kind: "approved" | "changes_requested",

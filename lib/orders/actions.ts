@@ -3,7 +3,8 @@
 import crypto from "node:crypto";
 
 import { supabaseServer } from "@/lib/supabase/server";
-import { createStaffSession, destroyStaffSession, requireStaffSession, verifyStaffPin as checkStaffPin } from "@/lib/auth/staff";
+import { createAuthServerClient } from "@/lib/supabase/auth-server";
+import { requireStaffSession, sendStaffPasswordSetupLink, staffSignIn, staffSignOut } from "@/lib/auth/staff";
 import { createCustomerSession, lastFourMatches, requireCustomerSession } from "@/lib/auth/customer";
 import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
@@ -137,14 +138,27 @@ export async function createOrderFromQuote(
 // Staff auth
 // ---------------------------------------------------------------------------
 
-export async function staffLogin(pin: string): Promise<{ ok: boolean }> {
-  if (!checkStaffPin(pin)) return { ok: false };
-  await createStaffSession();
-  return { ok: true };
+export async function staffLogin(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+  return staffSignIn(email, password);
 }
 
 export async function staffLogout(): Promise<void> {
-  await destroyStaffSession();
+  await staffSignOut();
+}
+
+export async function staffRequestPasswordReset(email: string): Promise<void> {
+  await sendStaffPasswordSetupLink(email);
+}
+
+export async function staffSetNewPassword(tokenHash: string, password: string): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAuthServerClient();
+  const { error: verifyError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+  if (verifyError) return { ok: false, error: "This reset link is invalid or has expired." };
+
+  const { error: updateError } = await supabase.auth.updateUser({ password });
+  if (updateError) return { ok: false, error: updateError.message };
+
+  return { ok: true };
 }
 
 export async function setOpsLocale(locale: OpsLocale): Promise<void> {
@@ -170,7 +184,7 @@ export async function getOrderEvents(orderId: string): Promise<OrderEvent[]> {
 }
 
 export async function advancePhase(orderId: string): Promise<{ ok: boolean; error?: string }> {
-  await requireStaffSession();
+  const staff = await requireStaffSession();
   const db = supabaseServer();
 
   const { data: order, error: fetchError } = await db
@@ -195,7 +209,9 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
   const { error: updateError } = await db.from("orders").update(update).eq("id", orderId);
   if (updateError) return { ok: false, error: updateError.message };
 
-  await db.from("order_events").insert({ order_id: orderId, type: "phase_change", phase: next, actor: "staff" });
+  await db
+    .from("order_events")
+    .insert({ order_id: orderId, type: "phase_change", phase: next, actor: "staff", actor_name: staff.name });
 
   if (next === "quote_review" || next === "artwork_approved" || next === "sample_approved") {
     await notifyGateReady({ ...(order as Order), phase: next }, next);
@@ -449,7 +465,7 @@ export async function updateOrderFields(
 }
 
 export async function sendReminder(orderId: string): Promise<{ ok: boolean; message?: string; error?: string }> {
-  await requireStaffSession();
+  const staff = await requireStaffSession();
   const db = supabaseServer();
 
   const { data: order, error } = await db
@@ -459,7 +475,9 @@ export async function sendReminder(orderId: string): Promise<{ ok: boolean; mess
     .single();
   if (error || !order) return { ok: false, error: "Order not found." };
 
-  await db.from("order_events").insert({ order_id: orderId, type: "reminder_sent", actor: "staff" });
+  await db
+    .from("order_events")
+    .insert({ order_id: orderId, type: "reminder_sent", actor: "staff", actor_name: staff.name });
 
   return {
     ok: true,
