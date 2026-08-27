@@ -38,21 +38,6 @@ export function sessionSecret(): string {
   return secret;
 }
 
-export const STAFF_SESSION_COOKIE = "mp_staff_session";
-export const STAFF_SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
-
-export interface StaffSessionPayload {
-  role: "staff";
-  exp: number;
-}
-
-/** Proxy-safe check: no cookies() dependency, just the raw cookie value. */
-export function isStaffSessionValid(cookieValue: string | undefined): boolean {
-  if (!process.env.SESSION_SECRET) return false;
-  const payload = verifyPayload<StaffSessionPayload>(cookieValue, sessionSecret());
-  return !!payload && payload.role === "staff" && payload.exp > Date.now();
-}
-
 export const CUSTOMER_SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 export interface CustomerSessionPayload {
