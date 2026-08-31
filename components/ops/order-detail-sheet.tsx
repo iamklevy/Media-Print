@@ -172,7 +172,7 @@ export function OrderDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="center" className="gap-0 overflow-y-auto bg-paper text-ink">
+      <SheetContent side="center" className="gap-0 overflow-x-hidden overflow-y-auto bg-paper text-ink">
         <SheetHeader className="border-b border-line">
           <SheetTitle className="text-ink">{order.order_number}</SheetTitle>
           <p className="text-xs text-muted">
@@ -182,7 +182,7 @@ export function OrderDetailSheet({
             {order.customer_name}
             {order.customer_company ? ` · ${order.customer_company}` : ""} · <span dir="ltr">{order.customer_phone}</span>
           </SheetDescription>
-          <div className="mt-1 flex items-center gap-2">
+          <div className="mt-1 flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
             <Button onClick={copyTrackingLink} variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
               {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
