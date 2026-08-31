@@ -16,7 +16,8 @@ import { Resend } from "resend";
 const STAFF = [
   { email: "mediaprint.egypt@gmail.com", name: "Mahmoud" },
   { email: "hamodyosama50@gmail.com", name: "Ahmed" },
-  { email: "Marketing.mediaprint@gmail.com", name: "Mohamed" },
+  { email: "M.mostafa@mediaprint-eg.com", name: "Mohamed" },
+  { email: "sales@mediaprint-eg.com", name: "Sales Team" },
 ];
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
