@@ -27,19 +27,33 @@ export function KanbanBoard({
   initialOrders,
   locale,
   messages,
+  staffName,
+  staffEmail,
 }: {
   initialOrders: Order[];
   locale: OpsLocale;
   messages: Record<string, unknown>;
+  staffName: string;
+  staffEmail: string;
 }) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <Board initialOrders={initialOrders} locale={locale} />
+      <Board initialOrders={initialOrders} locale={locale} staffName={staffName} staffEmail={staffEmail} />
     </NextIntlClientProvider>
   );
 }
 
-function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsLocale }) {
+function Board({
+  initialOrders,
+  locale,
+  staffName,
+  staffEmail,
+}: {
+  initialOrders: Order[];
+  locale: OpsLocale;
+  staffName: string;
+  staffEmail: string;
+}) {
   const t = useTranslations("ops");
   const router = useRouter();
   const [orders, setOrders] = useState(initialOrders);
@@ -128,6 +142,9 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
               <h1 className="text-base font-bold">{t("title")}</h1>
             </div>
             <div className="flex items-center gap-1 sm:hidden">
+              <span title={staffEmail} className="max-w-24 truncate text-xs text-paper/70">
+                {staffName}
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -168,7 +185,10 @@ function Board({ initialOrders, locale }: { initialOrders: Order[]; locale: OpsL
             placeholder={t("search_placeholder")}
             className="h-9 w-full border-paper/20 bg-paper/10 text-paper placeholder:text-paper/50 sm:ms-auto sm:h-8 sm:w-56"
           />
-          <div className="hidden items-center gap-1 sm:flex">
+          <div className="hidden items-center gap-3 sm:flex">
+            <span title={staffEmail} className="max-w-40 truncate text-sm text-paper/70">
+              {staffName}
+            </span>
             <Button
               variant="ghost"
               size="sm"
