@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { hasStaffSession } from "@/lib/auth/staff";
+import { getStaffUser } from "@/lib/auth/staff";
 import { supabaseServer } from "@/lib/supabase/server";
 import { getOpsLocale } from "@/lib/ops-locale";
 import { KanbanBoard } from "@/components/ops/kanban-board";
@@ -12,7 +12,8 @@ export default async function OpsPage() {
   // proxy.ts already gates /ops, but every entry point re-checks per Next's
   // own guidance: a request that bypasses the proxy matcher shouldn't also
   // bypass auth.
-  if (!(await hasStaffSession())) {
+  const staff = await getStaffUser();
+  if (!staff) {
     redirect("/ops/login");
   }
 
@@ -22,5 +23,13 @@ export default async function OpsPage() {
   const locale = await getOpsLocale();
   const messages = (await import(`@/messages/${locale}.json`)).default;
 
-  return <KanbanBoard initialOrders={(data ?? []) as Order[]} locale={locale} messages={messages} />;
+  return (
+    <KanbanBoard
+      initialOrders={(data ?? []) as Order[]}
+      locale={locale}
+      messages={messages}
+      staffName={staff.name}
+      staffEmail={staff.email}
+    />
+  );
 }
