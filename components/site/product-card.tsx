@@ -8,11 +8,9 @@ import { cn } from "@/lib/utils";
 
 export function ProductCard({
   product,
-  rank,
   showSpecs = true,
 }: {
   product: CatalogueProduct;
-  rank?: number;
   showSpecs?: boolean;
 }) {
   const t = useTranslations();
@@ -31,11 +29,6 @@ export function ProductCard({
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        {rank && (
-          <span className="absolute end-3 top-3 z-10 grid size-8 place-items-center rounded-full bg-accent text-[0.82rem] font-extrabold text-white shadow-soft">
-            {rank}
-          </span>
-        )}
         <span className="absolute start-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[0.74rem] font-bold text-paper backdrop-blur-sm">
           {t(catKey)}
         </span>

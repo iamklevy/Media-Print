@@ -69,13 +69,14 @@ export interface SolutionType {
   slug: string;
   /** i18n key -> solution.<slug> */
   key: string;
+  image: string;
 }
 
 export const SOLUTION_TYPES: SolutionType[] = [
-  { slug: "labels", key: "solution.labels" },
-  { slug: "boxes", key: "solution.boxes" },
-  { slug: "bags", key: "solution.bags" },
-  { slug: "cards", key: "solution.cards" },
-  { slug: "flyers", key: "solution.flyers" },
-  { slug: "zipper-pouches", key: "solution.zipperpouches" },
+  { slug: "labels", key: "solution.labels", image: "https://images.unsplash.com/photo-1572950947476-26a6e4111e80?w=800&q=72&auto=format&fit=crop" },
+  { slug: "boxes", key: "solution.boxes", image: "/products/cartons.png" },
+  { slug: "bags", key: "solution.bags", image: "/products/paper-bags.jpg" },
+  { slug: "cards", key: "solution.cards", image: "https://images.unsplash.com/photo-1637291454111-1d115acb5023?w=800&q=72&auto=format&fit=crop" },
+  { slug: "flyers", key: "solution.flyers", image: "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=800&q=72&auto=format&fit=crop" },
+  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/aluminium.jpg" },
 ];
