@@ -17,6 +17,7 @@
     "finishing": "Finishing",
     "portfolio": "Portfolio",
     "about": "About Us",
+    "faq": "FAQ",
     "contact": "Contact",
     "menu_arialabel": "Open menu",
     "book": "Book a meeting",
@@ -319,6 +320,8 @@
     "faq": {
       "eyebrow": "Before you ask",
       "h2": "Questions we get every week",
+      "blurb": "Common questions on minimums, artwork, samples and delivery.",
+      "cta": "See all FAQs",
       "moq": {
         "q": "What is your minimum order?",
         "a": "It depends on the product. Printed bags start at 1,000, printed sacks at 300, corrugated boxes and hang tags at 100, and plain sacks at 100. Every product page shows its own minimum next to the live price."
@@ -448,6 +451,10 @@
     "contact": {
       "h1": "Contact Us",
       "lead": "Call, message, or fill in the form and it goes straight to our sales line on WhatsApp."
+    },
+    "faq": {
+      "h1": "Frequently Asked Questions",
+      "lead": "Everything we get asked about minimums, artwork, samples, lead times and delivery."
     }
   },
   "cat": {
@@ -497,7 +504,10 @@
     "notes": "Notes",
     "notes_placeholder": "Anything you would like us to prepare before the meeting…",
     "submit": "Send booking request",
-    "note": "Bookings are confirmed by a WhatsApp message from sales. We are open Saturday to Thursday, 10am to 6pm."
+    "sending": "Sending…",
+    "sent": "Thanks — we've received your request and will confirm shortly.",
+    "error": "Something went wrong sending your request — please try again or call us directly.",
+    "note": "Bookings are confirmed by our sales team. We are open Saturday to Thursday, 10am to 6pm."
   },
   "f": {
     "name": "Your name",
@@ -537,7 +547,8 @@
       "services": "Printing Services — Media Print Pack",
       "book": "Book a Meeting — Media Print Pack",
       "contact": "Contact Us — Media Print Pack",
-      "about": "About Us — Media Print Pack"
+      "about": "About Us — Media Print Pack",
+      "faq": "FAQ — Media Print Pack"
     },
     "desc": {
       "home": "Zipper bags, paper sacks, courier bags, non-woven totes, printed cartons and labels. Manufactured and printed in Mohandessin, Giza. Samples before production, shipping across Egypt and the Arab world.",
@@ -546,7 +557,8 @@
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
       "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm.",
-      "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world."
+      "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world.",
+      "faq": "Minimum orders, artwork requirements, sampling, lead times, delivery and design — answered."
     }
   },
   "track": {
@@ -716,6 +728,13 @@
       "copy_tracking_link": "Copy tracking link",
       "link_copied": "Copied!",
       "message_whatsapp": "Message on WhatsApp",
+      "delete": "Delete order",
+      "deleting": "Deleting…",
+      "delete_confirm_title": "Delete this order?",
+      "delete_confirm_desc": "This permanently removes {order_number} and all its files, activity and history. This can't be undone.",
+      "delete_confirm_action": "Delete permanently",
+      "delete_cancel": "Cancel",
+      "delete_failed": "Couldn't delete the order — try again.",
       "activity": "Activity",
       "no_activity": "No activity yet.",
       "event_by": "by {name}",

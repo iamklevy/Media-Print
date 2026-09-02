@@ -7,8 +7,9 @@ import {
   deliveredEmail,
   staffNewQuoteEmail,
   staffGateResponseEmail,
+  staffBookingRequestEmail,
 } from "@/lib/email/templates";
-import { EMAIL as STAFF_EMAIL } from "@/lib/contact";
+import { FOOTER_EMAIL as STAFF_EMAIL } from "@/lib/contact";
 import { trackingUrl } from "@/lib/orders/tracking";
 import type { Order } from "@/lib/orders/types";
 
@@ -48,6 +49,11 @@ export async function notifyDelivered(order: Order): Promise<void> {
   const url = trackingUrl(order.tracking_slug, order.locale);
   const email = deliveredEmail(order, url, order.locale);
   await sendEmail({ to: order.customer_email, ...email });
+}
+
+export async function notifyBookingRequest(fields: Parameters<typeof staffBookingRequestEmail>[0]): Promise<void> {
+  const email = staffBookingRequestEmail(fields);
+  await sendEmail({ to: STAFF_EMAIL, ...email });
 }
 
 export async function notifyStaffGateResponse(

@@ -2,8 +2,7 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   ArrowRight, Check, Printer, Layers, Scissors, Package, Upload, Quote,
-  ShieldCheck, PenTool, Truck, Sticker, CreditCard, FileText, ShoppingBag,
-  PackageOpen, Factory, Boxes, CalendarDays, MapPin,
+  ShieldCheck, PenTool, Truck, Factory, Boxes, CalendarDays, MapPin,
 } from "lucide-react";
 
 import { PRODUCTS, CLIENTS } from "@/content/products";
@@ -13,9 +12,9 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Wrap, Section, SectionHead, Eyebrow } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
+import { IndustryCarousel } from "@/components/site/industry-carousel";
 import { CtaBand } from "@/components/site/cta-band";
 import { Reveal, Stagger, StaggerItem, Counter, HoverLift } from "@/components/site/motion";
-import { Faq } from "@/components/site/faq";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -68,15 +67,6 @@ const STATS = [
   { icon: CalendarDays, value: 6, suffix: "", k: "home.stats.days_n" },
   { icon: MapPin, value: 27, suffix: "", k: "home.stats.gov_n" },
 ];
-
-const SOLUTION_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
-  labels: Sticker,
-  boxes: Package,
-  bags: ShoppingBag,
-  cards: CreditCard,
-  flyers: FileText,
-  "zipper-pouches": PackageOpen,
-};
 
 const OUR_WORK_SLUGS = ["apparel", "paper-bags", "cartons", "corrugated", "tags", "stickers"];
 
@@ -256,36 +246,9 @@ export default async function HomePage({
         <Reveal>
           <SectionHead eyebrow={t("home.industry.eyebrow")} title={t("home.industry.h2")} lead={t("home.industry.lead")} />
         </Reveal>
-        <Stagger className="grid gap-5 sm:grid-cols-2">
-          {INDUSTRIES.map((ind) => (
-            <StaggerItem key={ind.slug}>
-              <HoverLift>
-                <Link
-                  href={`/products?industry=${ind.slug}`}
-                  className="group relative isolate flex min-h-[280px] flex-col justify-end overflow-hidden rounded-[28px] p-7 shadow-soft transition-shadow duration-500 hover:shadow-deep md:p-8"
-                >
-                  <Image
-                    src={ind.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="-z-20 object-cover transition-transform duration-[1200ms] group-hover:scale-105"
-                  />
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(18,15,12,0.15)_0%,rgba(18,15,12,0.55)_55%,rgba(18,15,12,0.92)_100%)]"
-                  />
-                  <h3 className="text-[clamp(1.3rem,1.05rem+0.8vw,1.6rem)] text-paper">{t(`${ind.key}.name`)}</h3>
-                  <p className="mt-2 max-w-[38ch] text-[0.92rem] leading-relaxed text-paper/78">{t(`${ind.key}.blurb`)}</p>
-                  <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/12 px-3.5 py-1.5 text-[0.85rem] font-semibold text-paper backdrop-blur-sm transition-all group-hover:gap-2.5 group-hover:bg-white/20">
-                    {t("cta.products")}
-                    <ArrowRight className="size-3.5 rtl:rotate-180" />
-                  </span>
-                </Link>
-              </HoverLift>
-            </StaggerItem>
-          ))}
-        </Stagger>
+        <Reveal delay={0.08}>
+          <IndustryCarousel industries={INDUSTRIES} />
+        </Reveal>
       </Section>
 
       {/* ============================================ 6. browse by type */}
@@ -294,22 +257,29 @@ export default async function HomePage({
           <SectionHead eyebrow={t("home.solutions.eyebrow")} title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
         </Reveal>
         <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {SOLUTION_TYPES.map((s) => {
-            const Icon = SOLUTION_ICON[s.slug];
-            return (
-              <StaggerItem key={s.slug}>
+          {SOLUTION_TYPES.map((s) => (
+            <StaggerItem key={s.slug}>
+              <HoverLift>
                 <Link
                   href={`/products?type=${s.slug}`}
-                  className="group flex h-full flex-col items-center gap-3 rounded-card border border-line bg-paper px-4 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent/35 hover:shadow-soft"
+                  className="group relative isolate flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-[22px] p-4 shadow-soft transition-shadow duration-500 hover:shadow-deep"
                 >
-                  <span className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent-2 transition-colors duration-300 group-hover:bg-accent group-hover:text-white">
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="font-semibold">{t(s.key)}</span>
+                  <Image
+                    src={s.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                    className="-z-20 object-cover transition-transform duration-[1200ms] group-hover:scale-105"
+                  />
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(18,15,12,0.05)_0%,rgba(18,15,12,0.35)_55%,rgba(18,15,12,0.88)_100%)]"
+                  />
+                  <span className="font-semibold text-paper">{t(s.key)}</span>
                 </Link>
-              </StaggerItem>
-            );
-          })}
+              </HoverLift>
+            </StaggerItem>
+          ))}
         </Stagger>
       </Section>
 
@@ -368,8 +338,17 @@ export default async function HomePage({
           <SectionHead eyebrow={t("home.why.eyebrow")} title={t("home.why.h2")} />
         </Reveal>
         <Stagger className="grid gap-4 md:grid-cols-2">
-          {WHY.map((b) => (
-            <StaggerItem key={b.k} className={b.span === "wide" ? "md:col-span-2" : ""}>
+          {WHY.map((b, i) => (
+            <StaggerItem key={b.k} className={`relative ${b.span === "wide" ? "md:col-span-2" : ""}`}>
+              {/* mobile-only ambient halo — there's no hover there, so the card
+                  stays lit on its own instead of leaning on the desktop ring */}
+              <span
+                aria-hidden
+                style={{ animationDelay: `${i * 0.4}s` }}
+                className={`pointer-events-none absolute -inset-5 -z-10 rounded-[38px] blur-2xl motion-safe:animate-[glow-pulse_4s_ease-in-out_infinite] md:hidden ${
+                  b.tone === "accent" ? "bg-white/40" : "bg-accent/30"
+                }`}
+              />
               <article
                 className={`group relative h-full overflow-hidden rounded-[30px] p-8 transition-shadow duration-500 hover:shadow-deep md:p-10 ${WHY_TONE[b.tone]}`}
               >
@@ -382,7 +361,8 @@ export default async function HomePage({
                 />
                 <div className="relative">
                   <span
-                    className={`mb-6 grid size-12 place-items-center rounded-2xl ${
+                    style={{ animationDelay: `${i * 0.25}s` }}
+                    className={`mb-6 grid size-12 place-items-center rounded-2xl max-md:motion-safe:animate-[icon-float_3s_ease-in-out_infinite] ${
                       b.tone === "paper" ? "bg-accent-soft text-accent-2" : "bg-white/15 text-white"
                     }`}
                   >
@@ -480,10 +460,17 @@ export default async function HomePage({
       {/* ============================================ 12. FAQ */}
       <Section tint>
         <Reveal>
-          <SectionHead eyebrow={t("home.faq.eyebrow")} title={t("home.faq.h2")} />
+          <SectionHead eyebrow={t("home.faq.eyebrow")} title={t("home.faq.h2")} lead={t("home.faq.blurb")} />
         </Reveal>
         <Reveal delay={0.08}>
-          <Faq />
+          <div className="flex justify-center">
+            <Button asChild variant="outline" size="lg" className="rounded-full">
+              <Link href="/faq">
+                {t("home.faq.cta")}
+                <ArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            </Button>
+          </div>
         </Reveal>
       </Section>
 

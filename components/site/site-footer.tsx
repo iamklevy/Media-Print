@@ -17,6 +17,7 @@ const SITE = [
   { href: "/services", key: "finishing" },
   { href: "/bestsellers", key: "portfolio" },
   { href: "/about", key: "about" },
+  { href: "/faq", key: "faq" },
   { href: "/book", key: "book" },
   { href: "/contact", key: "contact" },
 ] as const;
