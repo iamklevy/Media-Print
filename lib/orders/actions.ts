@@ -485,6 +485,61 @@ export async function sendReminder(orderId: string): Promise<{ ok: boolean; mess
   };
 }
 
+/** Recovers a storage object's path from the public URL Supabase handed back for it. */
+function storagePathFromPublicUrl(url: string, bucket: string): string | null {
+  const marker = `/object/public/${bucket}/`;
+  const i = url.indexOf(marker);
+  return i === -1 ? null : url.slice(i + marker.length);
+}
+
+/**
+ * Best-effort cleanup of the order's storage objects before the row itself is
+ * deleted. A failed remove here is logged and swallowed — it must never block
+ * the delete the staff member asked for.
+ */
+async function removeOrderStorageFiles(order: Order): Promise<void> {
+  const db = supabaseServer();
+
+  const artworkPaths = [
+    ...order.artwork_files,
+    ...order.customer_artwork_files,
+    ...(order.invoice_file ? [order.invoice_file] : []),
+  ]
+    .map((f) => storagePathFromPublicUrl(f.url, ARTWORK_BUCKET))
+    .filter((p): p is string => !!p);
+
+  const samplePaths = order.sample_images
+    .map((f) => storagePathFromPublicUrl(f.url, SAMPLE_BUCKET))
+    .filter((p): p is string => !!p);
+
+  try {
+    if (artworkPaths.length > 0) await db.storage.from(ARTWORK_BUCKET).remove(artworkPaths);
+    if (samplePaths.length > 0) await db.storage.from(SAMPLE_BUCKET).remove(samplePaths);
+  } catch (err) {
+    console.error("removeOrderStorageFiles: storage remove threw", order.id, err);
+  }
+}
+
+export async function deleteOrder(orderId: string): Promise<{ ok: boolean; error?: string }> {
+  await requireStaffSession();
+  const db = supabaseServer();
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+
+  await removeOrderStorageFiles(order as Order);
+
+  // order_events rows cascade-delete with the order (see supabase/order_tracking.sql).
+  const { error: deleteError } = await db.from("orders").delete().eq("id", orderId);
+  if (deleteError) return { ok: false, error: deleteError.message };
+
+  return { ok: true };
+}
+
 // ---------------------------------------------------------------------------
 // Customer verification + gate actions
 // ---------------------------------------------------------------------------

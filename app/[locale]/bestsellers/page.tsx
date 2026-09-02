@@ -51,8 +51,8 @@ export default async function BestsellersPage({
       />
       <Section>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {ranked.map((p, i) => (
-            <ProductCard key={p.slug} product={p} rank={i + 1} showSpecs={false} />
+          {ranked.map((p) => (
+            <ProductCard key={p.slug} product={p} showSpecs={false} />
           ))}
         </div>
         <p className="mt-8 text-[0.85rem] text-muted">{t("best.note")}</p>

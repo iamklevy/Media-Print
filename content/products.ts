@@ -245,7 +245,6 @@ export const CLIENTS: ClientGroup[] = [
       { name: "FATM" },
       { name: "ELIGHT" },
       { name: "JEANZY", logo: "/clients/jeanzy.svg" },
-      { name: "KLEVY", logo: "/clients/klevy.jpg" },
     ],
   },
   {

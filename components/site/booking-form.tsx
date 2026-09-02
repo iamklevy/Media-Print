@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { Globe, Truck, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Globe, Truck, MapPin, Mail, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WhatsAppIcon } from "./brand-icons";
 import { cn } from "@/lib/utils";
-import { waLink } from "@/lib/contact";
+import { submitBookingRequest } from "@/lib/booking/actions";
 
 type Mode = "online" | "yours" | "ours";
 
@@ -20,15 +19,6 @@ const MODES: { id: Mode; icon: typeof Globe }[] = [
   { id: "ours", icon: MapPin },
 ];
 
-const LABEL: Record<Mode, [string, string]> = {
-  online: ["Online meeting (video / WhatsApp call)", "اجتماع أونلاين (فيديو / واتساب)"],
-  yours: ["At the customer office — our rep visits", "في مكتب العميل — مندوبنا بيزور"],
-  ours: [
-    "At our office — 323 Sudan St, Mohandessin, Giza",
-    "في مكتبنا — 323 شارع السودان، المهندسين، الجيزة",
-  ],
-};
-
 /** Tomorrow, skipping Friday (the one day the workshop is closed). */
 function defaultDate() {
   const d = new Date();
@@ -37,34 +27,19 @@ function defaultDate() {
   return d.toISOString().slice(0, 10);
 }
 
+type Status = "idle" | "sending" | "sent" | "error";
+
 export function BookingForm() {
   const t = useTranslations();
-  const ar = useLocale() === "ar";
   const [mode, setMode] = useState<Mode>("online");
+  const [status, setStatus] = useState<Status>("idle");
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const g = (k: string) => (f.get(k) as string | null)?.trim() ?? "";
-
-    const L = ar
-      ? { head: "طلب حجز اجتماع", where: "مكان الاجتماع", name: "الاسم", company: "الشركة",
-          phone: "الهاتف", date: "التاريخ", time: "الوقت", topic: "الموضوع", notes: "ملاحظات" }
-      : { head: "Meeting booking request", where: "Meeting", name: "Name", company: "Company",
-          phone: "Phone", date: "Date", time: "Time", topic: "Topic", notes: "Notes" };
-
-    const lines = [`*${L.head}*`, "", `${L.where}: ${LABEL[mode][ar ? 1 : 0]}`];
-    (
-      [
-        ["name", L.name], ["company", L.company], ["phone", L.phone],
-        ["date", L.date], ["time", L.time], ["topic", L.topic], ["notes", L.notes],
-      ] as const
-    ).forEach(([k, label]) => {
-      const v = g(k);
-      if (v) lines.push(`${label}: ${v}`);
-    });
-
-    window.open(waLink(lines.join("\n")), "_blank", "noopener");
+    setStatus("sending");
+    const formData = new FormData(e.currentTarget);
+    const res = await submitBookingRequest(formData);
+    setStatus(res.ok ? "sent" : "error");
   };
 
   return (
@@ -94,6 +69,7 @@ export function BookingForm() {
       </div>
 
       <form onSubmit={onSubmit} className="grid gap-4">
+        <input type="hidden" name="mode" value={mode} />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field id="bname" label={t("f.name")} required>
             <Input id="bname" name="name" required placeholder={t("f.name_placeholder")} />
@@ -144,10 +120,26 @@ export function BookingForm() {
           <Textarea id="bnotes" name="notes" rows={4} placeholder={t("book.notes_placeholder")} />
         </Field>
 
-        <Button type="submit" size="lg" className="w-fit rounded-full bg-accent hover:bg-accent-2">
-          <WhatsAppIcon className="size-4" />
-          {t("book.submit")}
-        </Button>
+        {status === "sent" ? (
+          <p className="flex w-fit items-center gap-2 rounded-full bg-leaf-soft px-4 py-2.5 text-[0.92rem] font-semibold text-leaf">
+            <Check className="size-4" />
+            {t("book.sent")}
+          </p>
+        ) : (
+          <Button
+            type="submit"
+            size="lg"
+            disabled={status === "sending"}
+            className="w-fit rounded-full bg-accent hover:bg-accent-2"
+          >
+            <Mail className="size-4" />
+            {status === "sending" ? t("book.sending") : t("book.submit")}
+          </Button>
+        )}
+
+        {status === "error" && (
+          <p className="text-[0.85rem] font-semibold text-danger">{t("book.error")}</p>
+        )}
 
         <p className="text-[0.85rem] text-muted">{t("book.note")}</p>
       </form>

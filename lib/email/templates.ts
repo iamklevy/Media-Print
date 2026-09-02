@@ -139,6 +139,33 @@ export function staffNewQuoteEmail(order: {
   };
 }
 
+export function staffBookingRequestEmail(fields: {
+  where: string;
+  name: string;
+  company: string | null;
+  phone: string;
+  date: string;
+  time: string;
+  topic: string | null;
+  notes: string | null;
+}) {
+  const body = `<p>New meeting booking request</p>
+    <p>
+      Meeting: ${fields.where}<br/>
+      Name: ${fields.name}<br/>
+      ${fields.company ? `Company: ${fields.company}<br/>` : ""}
+      Phone: <span dir="ltr">${fields.phone}</span><br/>
+      Date: ${fields.date}<br/>
+      Time: ${fields.time}
+      ${fields.topic ? `<br/>Topic: ${fields.topic}` : ""}
+    </p>
+    ${fields.notes ? `<p>Notes: ${fields.notes}</p>` : ""}`;
+  return {
+    subject: `New meeting booking — ${fields.name}`,
+    html: layout("en", body),
+  };
+}
+
 export function staffSetPasswordEmail(actionLink: string) {
   const body = `<p>Set your password for the Media Print Pack operations board.</p>
     <p>This link works once and expires shortly — if you didn't request it, you can ignore this email.</p>

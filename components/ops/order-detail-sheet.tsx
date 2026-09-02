@@ -2,10 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Trash2 } from "lucide-react";
 
 import { WhatsAppIcon } from "@/components/site/brand-icons";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +30,7 @@ import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases"
 import { waLinkTo } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
 import { trackingUrl } from "@/lib/orders/tracking";
-import { advancePhase, sendReminder, updateOrderFields, getOrderEvents } from "@/lib/orders/actions";
+import { advancePhase, sendReminder, updateOrderFields, getOrderEvents, deleteOrder } from "@/lib/orders/actions";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 /** Quantity is free text (e.g. "5,000 bags") — pull the leading number out of it. */
@@ -58,6 +69,8 @@ export function OrderDetailSheet({
   const [advanceError, setAdvanceError] = useState<string | null>(null);
   const [reminding, setReminding] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const status = deriveStatus(order);
   const gate = isGatePhase(order.phase);
@@ -170,6 +183,18 @@ export function OrderDetailSheet({
     }
   }
 
+  async function remove() {
+    setDeleting(true);
+    const res = await deleteOrder(order.id);
+    setDeleting(false);
+    if (!res.ok) {
+      setDeleteError(res.error ?? t("delete_failed"));
+      return;
+    }
+    onChanged();
+    onOpenChange(false);
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="center" className="gap-0 overflow-x-hidden overflow-y-auto bg-paper text-ink">
@@ -198,7 +223,31 @@ export function OrderDetailSheet({
                 {t("message_whatsapp")}
               </a>
             </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" className="h-6 gap-1 px-2 text-xs">
+                  <Trash2 className="size-3" />
+                  {t("delete")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("delete_confirm_title")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("delete_confirm_desc", { order_number: order.order_number })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("delete_cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={remove} disabled={deleting}>
+                    {deleting ? t("deleting") : t("delete_confirm_action")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
+          {deleteError && <p className="mt-1 text-xs font-semibold text-danger">{deleteError}</p>}
         </SheetHeader>
 
         <div className="grid gap-5 p-4">
