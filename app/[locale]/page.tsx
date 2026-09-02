@@ -80,6 +80,14 @@ const SOLUTION_ICON: Record<string, React.ComponentType<{ className?: string }>>
 
 const OUR_WORK_SLUGS = ["apparel", "paper-bags", "cartons", "corrugated", "tags", "stickers"];
 
+/** Testimonials. Quotes/names/roles live in messages under home.voices.list.<id>;
+    the logo is the client's mark from public/clients (same files as the client wall). */
+const VOICES = [
+  { id: "carina", logo: "/clients/carina.jpg" },
+  { id: "joviality", logo: "/clients/joviality.jpg" },
+  { id: "hajarafa", logo: "/clients/haj-arafa.png" },
+] as const;
+
 /** Graphic cards, no photography — see notes in the section below. */
 const WHY = [
   { k: "why.1", tag: "why.1.tag", icon: Factory, tone: "ink" as const, span: "wide" as const },
@@ -440,26 +448,27 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* ============================================ 11. testimonials
-           PLACEHOLDER CONTENT — no real quotes were supplied. The copy in
-           home.voices says so plainly rather than inventing praise. */}
+      {/* ============================================ 11. testimonials */}
       <Section>
         <Reveal>
           <SectionHead eyebrow={t("home.voices.eyebrow")} title={t("home.voices.h2")} lead={t("home.voices.lead")} />
         </Reveal>
         <Stagger className="grid gap-5 md:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <StaggerItem key={i} className="h-full">
-              <figure className="flex h-full flex-col rounded-card border border-dashed border-line bg-paper-2 p-7">
+          {VOICES.map((v) => (
+            <StaggerItem key={v.id} className="h-full">
+              <figure className="flex h-full flex-col rounded-card border border-line bg-paper-2 p-7">
                 <Quote className="mb-4 size-7 text-accent/45" />
                 <blockquote className="flex-1 text-[0.98rem] leading-relaxed text-muted">
-                  {t("home.voices.placeholder")}
+                  {t(`home.voices.list.${v.id}.quote`)}
                 </blockquote>
                 <figcaption className="mt-6 flex items-center gap-3 border-t border-line pt-5">
-                  <span className="size-10 rounded-full bg-line" aria-hidden />
+                  <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-line">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- tiny static logo, no optimizer needed */}
+                    <img src={v.logo} alt="" loading="lazy" className="size-full object-contain p-1.5" />
+                  </span>
                   <span className="grid">
-                    <span className="text-[0.92rem] font-bold text-faint">— — —</span>
-                    <span className="text-[0.82rem] text-faint">{t("home.voices.role")}</span>
+                    <span className="text-[0.92rem] font-bold text-ink">{t(`home.voices.list.${v.id}.name`)}</span>
+                    <span className="text-[0.82rem] text-faint">{t(`home.voices.list.${v.id}.role`)}</span>
                   </span>
                 </figcaption>
               </figure>
