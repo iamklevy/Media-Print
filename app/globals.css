@@ -125,6 +125,30 @@
   }
 }
 
+/* "Why MediaPrint" cards on mobile: since there's no hover there, these
+   replace the desktop hover-ring with an always-on ambient presence. */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 /*
  * Scroll-reveal safety net.
  *
