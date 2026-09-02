@@ -2,6 +2,7 @@ export const SALES_PHONE = "01005750973";
 export const ADMIN_PHONE = "01070226790";
 export const ADMIN_PHONE_2 = "01114537488";
 export const EMAIL = "mediaprint.egypt@gmail.com";
+export const FOOTER_EMAIL = "m.mostafa@mediaprint-eg.com";
 export const EMAIL_MARKETING = "marketing.mediaprint@gmail.com";
 export const FACEBOOK = "https://www.facebook.com/mediaprint.pack";
 export const ADDRESS_EN = "323 Sudan Street, Mohandessin, Giza";

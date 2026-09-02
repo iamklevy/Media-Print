@@ -297,9 +297,24 @@
     "voices": {
       "eyebrow": "In their words",
       "h2": "What our customers say",
-      "lead": "PLACEHOLDER — replace the three quotes below with real customer feedback before this page goes live.",
-      "placeholder": "Awaiting a real quote from this customer.",
-      "role": "Add role and company"
+      "lead": "Brand owners and procurement teams we print for, on what it's like to work with us.",
+      "list": {
+        "carina": {
+          "quote": "Media Print runs our polybags and hang tags for every drop. The print stays consistent across reorders, the sizing is on spec, and they hold the delivery date even when we pull a launch forward.",
+          "name": "Nour Selim",
+          "role": "Packaging & Procurement Manager, Carina"
+        },
+        "joviality": {
+          "quote": "Half of our product is the unboxing. They matched our Pantones on the first proof and the soft-touch boxes have come back flawless three reorders in a row.",
+          "name": "Yara Fahmy",
+          "role": "Brand Operations Lead, Joviality"
+        },
+        "hajarafa": {
+          "quote": "We buy kraft sacks and printed cartons at real volume. Pricing held through the year, the quality is steady, and their sampling turnaround is faster than anyone else we've used.",
+          "name": "Ahmed Zaki",
+          "role": "Supply Chain Manager, Haj Arafa"
+        }
+      }
     },
     "faq": {
       "eyebrow": "Before you ask",

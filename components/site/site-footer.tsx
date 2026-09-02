@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   SALES_PHONE,
   ADMIN_PHONE,
-  EMAIL,
+  FOOTER_EMAIL,
   FACEBOOK,
 } from "@/lib/contact";
 import { PRODUCTS } from "@/content/products";
@@ -109,8 +109,8 @@ export function SiteFooter() {
                 </a>
               </li>
               <li>
-                <a href={`mailto:${EMAIL}`} dir="ltr" className="transition hover:text-accent">
-                  {EMAIL}
+                <a href={`mailto:${FOOTER_EMAIL}`} dir="ltr" className="transition hover:text-accent">
+                  {FOOTER_EMAIL}
                 </a>
               </li>
               <li>{t("c.addr.v")}</li>
