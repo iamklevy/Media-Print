@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, Globe, Package, ChevronDown } from "lucide-react";
+import { Menu, Globe, Package, Calendar, ChevronDown } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
@@ -105,6 +105,10 @@ export function SiteHeader() {
             </Link>
           </Button>
 
+          <Button asChild variant="outline" className="hidden rounded-full sm:inline-flex">
+            <Link href="/book">{t("cta.book")}</Link>
+          </Button>
+
           <Button asChild className="hidden rounded-full bg-accent hover:bg-accent-2 sm:inline-flex">
             <Link href="/contact">{t("cta.quote")}</Link>
           </Button>
@@ -182,6 +186,15 @@ export function SiteHeader() {
                 >
                   <Package className="size-4" />
                   {t("cta.quote")}
+                </Link>
+
+                <Link
+                  href="/book"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-full bg-accent-soft px-4 py-3 font-semibold text-accent-2"
+                >
+                  <Calendar className="size-4" />
+                  {t("cta.book")}
                 </Link>
               </nav>
             </SheetContent>
