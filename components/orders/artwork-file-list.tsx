@@ -19,15 +19,15 @@ export function ArtworkFileList({ label, hint, files }: { label: string; hint?: 
   if (items.length === 0) return null;
 
   return (
-    <div className="grid gap-1.5">
+    <div className="grid min-w-0 gap-1.5">
       <p className="text-[0.88rem] font-semibold text-ink">{label}</p>
       {hint && <p className="text-xs text-faint">{hint}</p>}
-      <ul className="grid gap-1.5">
+      <ul className="grid min-w-0 gap-1.5">
         {items.map((file, i) => {
           const name = file.label ?? file.url.split("/").pop() ?? `File ${i + 1}`;
           const Icon = iconFor(name);
           return (
-            <li key={`${file.url}-${i}`}>
+            <li key={`${file.url}-${i}`} className="min-w-0">
               <a
                 href={file.url}
                 target="_blank"
