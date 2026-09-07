@@ -12,9 +12,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { SALES_PHONE } from "@/lib/contact";
 import { createOrderFromQuote } from "@/lib/orders/actions";
 import { ArtworkInput } from "@/components/site/artwork-input";
+import { QUANTITY_RANGES, isQuantityRange } from "@/lib/orders/quantity";
 
 export function QuoteForm() {
   const t = useTranslations();
+  const tQty = useTranslations("quantity_ranges");
   const locale = useLocale();
   const ar = locale === "ar";
   const [sent, setSent] = useState(false);
@@ -25,7 +27,8 @@ export function QuoteForm() {
   const searchParams = useSearchParams();
   const reorderOf = searchParams.get("reorder");
   const reorderProduct = searchParams.get("product") ?? "";
-  const reorderQty = searchParams.get("qty") ?? "";
+  const reorderQtyParam = searchParams.get("qty") ?? "";
+  const reorderQty = isQuantityRange(reorderQtyParam) ? reorderQtyParam : "";
   const defaultMessage = reorderOf
     ? ar
       ? `إعادة طلب — زي طلب رقم ${reorderOf} (${reorderProduct})`
@@ -86,8 +89,24 @@ export function QuoteForm() {
         </Field>
       </div>
 
-      <Field id="qty" label={t("f.qty")}>
-        <Input id="qty" name="qty" defaultValue={reorderQty} placeholder={t("f.qty_placeholder")} />
+      <Field id="qty" label={t("f.qty")} required>
+        {/* native select keeps this form usable with zero JS beyond submit */}
+        <select
+          id="qty"
+          name="qty"
+          required
+          defaultValue={reorderQty}
+          className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
+        >
+          <option value="" disabled>
+            {t("f.qty_choose")}
+          </option>
+          {QUANTITY_RANGES.map((code) => (
+            <option key={code} value={code}>
+              {tQty(code)}
+            </option>
+          ))}
+        </select>
       </Field>
 
       <Field id="product" label={t("f.product")}>

@@ -10,6 +10,7 @@ import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
+import { isQuantityRange } from "@/lib/orders/quantity";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
@@ -75,11 +76,11 @@ export async function createOrderFromQuote(
   const name = get("name");
   const phone = get("phone");
   const email = get("email");
-  if (!name || !phone || !email) return null;
+  const qty = get("qty");
+  if (!name || !phone || !email || !isQuantityRange(qty)) return null;
 
   const company = get("company") || null;
   const product = get("product") || "Not specified";
-  const qty = get("qty") || "Not specified";
   const message = get("message") || null;
   const source = get("source") || "quote_form";
 
@@ -196,8 +197,11 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
   if (isGatePhase(order.phase)) {
     return { ok: false, error: "Order is waiting on customer approval." };
   }
-  if (order.phase === "quote_pending" && (order.unit_price == null || !order.invoice_file)) {
-    return { ok: false, error: "Set a price and upload the invoice before sending the quote for approval." };
+  if (
+    order.phase === "quote_pending" &&
+    (order.unit_price == null || !order.invoice_file || order.confirmed_quantity == null)
+  ) {
+    return { ok: false, error: "Set a price, confirm the exact quantity, and upload the invoice before sending the quote for approval." };
   }
 
   const next = nextPhase(order.phase);
@@ -449,7 +453,12 @@ export async function updateOrderFields(
   fields: Partial<
     Pick<
       Order,
-      "unit_price" | "order_total" | "lead_time_days" | "estimated_delivery" | "quantity" | "product_label"
+      | "unit_price"
+      | "order_total"
+      | "lead_time_days"
+      | "estimated_delivery"
+      | "confirmed_quantity"
+      | "product_label"
     >
   >
 ): Promise<{ ok: boolean; error?: string }> {

@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
 import { ArtworkFileUploader } from "@/components/ops/artwork-file-uploader";
@@ -31,10 +32,17 @@ import { waLinkTo } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { advancePhase, sendReminder, updateOrderFields, getOrderEvents, deleteOrder } from "@/lib/orders/actions";
+import { isQuantityRange, quantityRangeLowerBound } from "@/lib/orders/quantity";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
-/** Quantity is free text (e.g. "5,000 bags") — pull the leading number out of it. */
+/**
+ * New orders store a fixed range code (e.g. "1000_5000") — use its lower bound
+ * as a conservative estimate for the order-total math. Orders created before
+ * this change may still carry free text (e.g. "5,000 bags"); pull the leading
+ * number out of those instead.
+ */
 function parseQuantityNumber(quantity: string): number | null {
+  if (isQuantityRange(quantity)) return quantityRangeLowerBound(quantity);
   const match = quantity.replace(/,/g, "").match(/\d+(\.\d+)?/);
   return match ? parseFloat(match[0]) : null;
 }
@@ -52,11 +60,12 @@ export function OrderDetailSheet({
 }) {
   const t = useTranslations("ops.detail");
   const tPhase = useTranslations("track.phase");
+  const tQty = useTranslations("quantity_ranges");
   const locale = useLocale();
   const [events, setEvents] = useState<OrderEvent[]>([]);
   const [fields, setFields] = useState({
     product_label: order.product_label,
-    quantity: order.quantity,
+    confirmed_quantity: order.confirmed_quantity?.toString() ?? "",
     unit_price: order.unit_price?.toString() ?? "",
     lead_time_days: order.lead_time_days?.toString() ?? "",
     estimated_delivery: order.estimated_delivery ?? "",
@@ -75,7 +84,9 @@ export function OrderDetailSheet({
   const status = deriveStatus(order);
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
-  const quoteMissing = order.phase === "quote_pending" && (order.unit_price == null || !order.invoice_file);
+  const quoteMissing =
+    order.phase === "quote_pending" &&
+    (order.unit_price == null || !order.invoice_file || order.confirmed_quantity == null);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
   const showArtworkFiles = order.phase === "artwork_pre_press" || order.phase === "artwork_approved";
   const trackUrl = trackingUrl(order.tracking_slug, locale);
@@ -89,12 +100,16 @@ export function OrderDetailSheet({
     return due;
   }, [order.lead_time_started_at, fields.lead_time_days]);
 
+  const confirmedQty = fields.confirmed_quantity ? Number(fields.confirmed_quantity) : null;
+  const hasConfirmedQty = confirmedQty !== null && Number.isFinite(confirmedQty) && confirmedQty > 0;
+
   const orderTotal = useMemo(() => {
     const price = parseFloat(fields.unit_price);
-    const qty = parseQuantityNumber(fields.quantity);
+    const qty = hasConfirmedQty ? confirmedQty : parseQuantityNumber(order.quantity);
     if (Number.isNaN(price) || qty === null) return null;
     return price * qty;
-  }, [fields.unit_price, fields.quantity]);
+  }, [fields.unit_price, order.quantity, hasConfirmedQty, confirmedQty]);
+  const orderTotalIsEstimate = !hasConfirmedQty;
 
   useEffect(() => {
     getOrderEvents(order.id).then(setEvents);
@@ -119,7 +134,7 @@ export function OrderDetailSheet({
     setSaving(true);
     await updateOrderFields(order.id, {
       product_label: fields.product_label,
-      quantity: fields.quantity,
+      confirmed_quantity: hasConfirmedQty ? confirmedQty : null,
       unit_price: fields.unit_price ? Number(fields.unit_price) : null,
       order_total: orderTotal,
       lead_time_days: fields.lead_time_days ? Number(fields.lead_time_days) : null,
@@ -266,12 +281,36 @@ export function OrderDetailSheet({
                 <Label htmlFor="quantity">{t("quantity")}</Label>
                 <Input
                   id="quantity"
-                  value={fields.quantity}
-                  onChange={(e) => setFields((f) => ({ ...f, quantity: e.target.value }))}
+                  value={isQuantityRange(order.quantity) ? tQty(order.quantity) : order.quantity}
+                  disabled
+                  readOnly
+                  title={t("quantity_readonly_hint")}
+                  className="disabled:opacity-70"
                 />
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="lead_time_days">{t("lead_time")}</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="lead_time_days">{t("lead_time")}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={t("lead_time_note_toggle")}
+                        className="flex h-4 w-4 items-center justify-center rounded-full border border-line text-[10px] font-semibold leading-none text-faint hover:bg-canvas hover:text-ink"
+                      >
+                        !
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      {leadTimeDue
+                        ? t("lead_time_note_started", {
+                            started: new Date(order.lead_time_started_at!).toLocaleDateString(locale),
+                            due: leadTimeDue.toLocaleDateString(locale),
+                          })
+                        : t("lead_time_note_pending")}
+                    </PopoverContent>
+                  </Popover>
+                </div>
                 <Input
                   id="lead_time_days"
                   type="number"
@@ -279,15 +318,19 @@ export function OrderDetailSheet({
                   value={fields.lead_time_days}
                   onChange={(e) => setFields((f) => ({ ...f, lead_time_days: e.target.value }))}
                 />
-                <p className="text-xs text-faint">
-                  {leadTimeDue
-                    ? t("lead_time_note_started", {
-                        started: new Date(order.lead_time_started_at!).toLocaleDateString(locale),
-                        due: leadTimeDue.toLocaleDateString(locale),
-                      })
-                    : t("lead_time_note_pending")}
-                </p>
               </div>
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="confirmed_quantity">{t("confirmed_quantity")}</Label>
+              <Input
+                id="confirmed_quantity"
+                type="number"
+                min={1}
+                value={fields.confirmed_quantity}
+                onChange={(e) => setFields((f) => ({ ...f, confirmed_quantity: e.target.value }))}
+                placeholder={t("confirmed_quantity_placeholder")}
+              />
+              <p className="text-xs text-faint">{t("confirmed_quantity_hint")}</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
@@ -305,13 +348,23 @@ export function OrderDetailSheet({
                 <Label htmlFor="order_total">{t("order_total")}</Label>
                 <Input
                   id="order_total"
-                  type="number"
-                  value={orderTotal != null ? orderTotal.toFixed(2) : ""}
+                  type="text"
+                  value={
+                    orderTotal != null
+                      ? `${orderTotalIsEstimate ? "≈ " : ""}${orderTotal.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}`
+                      : ""
+                  }
                   disabled
                   readOnly
-                  title={t("order_total_auto")}
+                  title={orderTotalIsEstimate ? t("order_total_estimated") : t("order_total_auto")}
                   className="disabled:opacity-70"
                 />
+                {orderTotal != null && orderTotalIsEstimate && (
+                  <p className="text-xs text-faint">{t("order_total_estimated")}</p>
+                )}
               </div>
             </div>
             <div className="grid gap-1.5">
