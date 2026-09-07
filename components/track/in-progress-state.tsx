@@ -25,6 +25,7 @@ import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { PHASES, phaseIndex, type Phase } from "@/lib/orders/phases";
 import { SALES_PHONE } from "@/lib/contact";
 import { formatRelativeDay } from "@/lib/utils";
+import { formatOrderQuantity } from "@/lib/orders/quantity";
 import type { Order, OrderEvent } from "@/lib/orders/types";
 
 /** Icon shown on the currently-active step of the timeline. */
@@ -47,6 +48,7 @@ const PHASE_ICON: Record<Phase, LucideIcon> = {
 
 export function InProgressState({ order, events }: { order: Order; events: OrderEvent[] }) {
   const t = useTranslations("track");
+  const tQty = useTranslations("quantity_ranges");
   const locale = useLocale();
 
   const enteredAt = new Map<string, string>();
@@ -65,7 +67,7 @@ export function InProgressState({ order, events }: { order: Order; events: Order
     <div className="mx-auto grid max-w-lg gap-5 rounded-[18px] border border-line bg-paper p-6 shadow-soft">
       <div>
         <p className="text-xs font-semibold tracking-wide text-muted uppercase">
-          {order.product_label} · {order.quantity}
+          {order.product_label} · {formatOrderQuantity(order, tQty)}
         </p>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink" dir="ltr">
           {order.order_number}
