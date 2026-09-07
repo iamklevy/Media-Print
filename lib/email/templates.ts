@@ -1,5 +1,6 @@
 import type { ArtworkFile, Order } from "@/lib/orders/types";
 import { SALES_PHONE } from "@/lib/contact";
+import { quantityRangeLabel } from "@/lib/orders/quantity";
 
 const isAr = (locale: string): locale is "ar" => locale === "ar";
 
@@ -125,7 +126,7 @@ export function staffNewQuoteEmail(order: {
       Phone: <span dir="ltr">${order.customer_phone}</span><br/>
       Email: <span dir="ltr">${order.customer_email}</span><br/>
       Product: ${order.product_label}<br/>
-      Quantity: ${order.quantity}
+      Quantity: ${quantityRangeLabel(order.quantity)}
     </p>
     ${order.notes ? `<p>Message: ${order.notes}</p>` : ""}
     ${

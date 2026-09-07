@@ -4,10 +4,12 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/track/rating-stars";
+import { formatOrderQuantity } from "@/lib/orders/quantity";
 import type { Order } from "@/lib/orders/types";
 
 export function DeliveredState({ order }: { order: Order }) {
   const t = useTranslations("track.delivered");
+  const tQty = useTranslations("quantity_ranges");
   const locale = useLocale();
 
   const dateFmt = new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-GB", {
@@ -31,7 +33,7 @@ export function DeliveredState({ order }: { order: Order }) {
         <dt className="text-muted">{t("product")}</dt>
         <dd className="text-end font-medium">{order.product_label}</dd>
         <dt className="text-muted">{t("quantity")}</dt>
-        <dd className="text-end font-medium">{order.quantity}</dd>
+        <dd className="text-end font-medium">{formatOrderQuantity(order, tQty)}</dd>
         {order.order_total != null && (
           <>
             <dt className="text-muted">{t("order_total")}</dt>
