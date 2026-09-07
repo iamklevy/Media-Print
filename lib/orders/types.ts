@@ -19,7 +19,10 @@ export interface Order {
   customer_email: string | null;
   customer_company: string | null;
   product_label: string;
+  /** A QuantityRange code (see lib/orders/quantity.ts) for new orders; older orders may still carry free text. */
   quantity: string;
+  /** Exact quantity agreed with the customer after negotiation, if any; drives order_total once set. */
+  confirmed_quantity: number | null;
   unit_price: number | null;
   order_total: number | null;
   currency: string;

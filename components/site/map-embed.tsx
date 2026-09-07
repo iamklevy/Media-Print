@@ -2,7 +2,7 @@ export function MapEmbed({ title }: { title: string }) {
   return (
     <div className="min-h-[320px] overflow-hidden rounded-card border border-line">
       <iframe
-        src="https://maps.google.com/maps?q=323%20Sudan%20Street%20Mohandessin%20Giza%20Egypt&z=15&output=embed"
+        src="https://maps.google.com/maps?cid=1886169677804910620&z=17&output=embed"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         title={title}

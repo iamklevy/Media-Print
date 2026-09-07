@@ -226,19 +226,19 @@ function Board({
         )}
       </div>
 
-      <div className="mx-auto grid max-w-[1600px] grid-flow-col auto-cols-[85vw] snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:min-h-0 sm:flex-1 sm:auto-cols-[minmax(260px,1fr)] sm:auto-rows-fr sm:snap-none sm:overflow-y-hidden sm:px-5 sm:pb-4">
+      <div className="mx-auto flex w-full max-w-[1600px] snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-8 sm:min-h-0 sm:min-w-0 sm:flex-1 sm:snap-none sm:overflow-y-hidden sm:px-5 sm:pb-4">
         {KANBAN_COLUMNS.map((col) => {
           const colOrders = visible.filter(({ order }) => col.phases.includes(order.phase));
           return (
             <div
               key={col.title}
-              className="grid snap-center content-start gap-3 rounded-[14px] bg-paper-2 p-3 sm:flex sm:min-h-0 sm:flex-col"
+              className="grid w-[85vw] shrink-0 snap-center content-start gap-3 rounded-[14px] bg-paper-2 p-3 sm:w-auto sm:min-w-[260px] sm:flex-1 sm:flex sm:min-h-0 sm:flex-col"
             >
               <div className="flex items-center justify-between text-xs font-semibold tracking-wide text-muted uppercase sm:shrink-0">
                 <span>{t(`columns.${col.title}`)}</span>
                 <span className="rounded-full bg-line px-2 py-0.5 text-ink">{colOrders.length}</span>
               </div>
-              <div className="grid gap-2 sm:min-h-0 sm:flex-1 sm:overflow-y-auto sm:pe-1">
+              <div className="flex flex-col gap-2 sm:min-h-0 sm:flex-1 sm:overflow-y-auto sm:pe-1 sm:[scrollbar-gutter:stable]">
                 {colOrders.map(({ order }) => (
                   <OrderCard key={order.id} order={order} now={now} onClick={() => setSelectedId(order.id)} />
                 ))}
