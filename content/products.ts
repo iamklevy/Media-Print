@@ -218,6 +218,7 @@ export const CLIENTS: ClientGroup[] = [
       { name: "Coca-Cola", logo: "/clients/coca-cola.png" },
       { name: "Gomla Market", logo: "/clients/gomla-market.png" },
       { name: "TASTE PURE", logo: "/clients/taste-pure.png" },
+      { name: "Fridal", logo: "/clients/frida.png", darkPlate: true },
     ],
   },
   {
@@ -233,7 +234,7 @@ export const CLIENTS: ClientGroup[] = [
       { name: "Joviality", logo: "/clients/joviality.jpg" },
       { name: "Nuit Fragrance", logo: "/clients/nuit.png" },
       { name: "Era Care", logo: "/clients/era-care.png" },
-      { name: "SORELLA" },
+      { name: "SORELLA", logo: "/clients/sorella.png" },
     ],
   },
   {
