@@ -33,11 +33,10 @@ export function Eyebrow({ children, onInk }: { children: React.ReactNode; onInk?
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 text-[0.8rem] font-bold uppercase tracking-[0.12em]",
+        "text-[0.8rem] font-bold uppercase tracking-[0.12em]",
         onInk ? "text-accent" : "text-accent-2",
       )}
     >
-      <span className="inline-block h-0.5 w-6 rounded-sm bg-accent" />
       {children}
     </span>
   );

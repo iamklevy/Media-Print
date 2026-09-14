@@ -12,7 +12,21 @@ const SPRING = { type: "spring", stiffness: 380, damping: 38, mass: 0.9 } as con
 /** offset(px) * velocity(px/s) — a fast short flick and a slow long drag both clear this. */
 const SWIPE_CONFIDENCE = 6000;
 const SWIPE_DISTANCE = 90;
-const ZOOM_SCALE = 2.4;
+/** Total movement below which a released drag counts as a tap, not a swipe attempt. */
+const TAP_SLOP = 8;
+/** Desktop has no pinch gesture, so a mouse click still toggles zoom to this level. */
+const CLICK_ZOOM = 2.4;
+const MIN_SCALE = 1;
+const MAX_SCALE = 4;
+
+type Point = { x: number; y: number };
+const dist = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
+const mid = (a: Point, b: Point): Point => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+const panBoundsFor = (scale: number, rect: { width: number; height: number }) => ({
+  x: (rect.width * (scale - 1)) / 2,
+  y: (rect.height * (scale - 1)) / 2,
+});
+const clamp = (v: number, max: number) => Math.min(max, Math.max(-max, v));
 
 function isSwipe(info: PanInfo) {
   const power = info.offset.x * info.velocity.x;
@@ -21,9 +35,8 @@ function isSwipe(info: PanInfo) {
   return 0;
 }
 
-/** Fallback while the real image is still loading, and a sane clamp so an
- * unusually wide/tall photo can't blow out the two-column product layout. */
-const FALLBACK_ASPECT = 4 / 3;
+/** Sane clamp so an unusually wide/tall cover photo can't blow out the
+ * two-column product layout. */
 const clampAspect = (r: number) => Math.min(1.6, Math.max(0.65, r));
 
 const slideVariants = {
@@ -44,22 +57,29 @@ function useSlides(length: number) {
   return { active, dir, paginate, jumpTo };
 }
 
-export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+export function ProductGallery({
+  images,
+  alt,
+  coverAspect,
+}: {
+  images: string[];
+  alt: string;
+  /** Locks the frame to the cover photo's shape — see CatalogueProduct.coverAspect.
+   * Every image in the set is centered inside it, so swiping never resizes the frame. */
+  coverAspect: number;
+}) {
   const { active, dir, paginate, jumpTo } = useSlides(images.length);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const reduce = useReducedMotion();
+  const aspect = clampAspect(coverAspect);
 
-  // Each photo's own aspect ratio, measured once on load, so the frame fits it
-  // exactly instead of cropping (object-cover) or leaving letterbox gaps
-  // around a fixed 4:3 box (object-contain in a box that doesn't match).
-  const [aspects, setAspects] = useState<Record<number, number>>({});
-  const aspect = aspects[active] ?? FALLBACK_ASPECT;
-  const onImageLoad = (i: number) => (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
-    if (!w || !h) return;
-    const r = clampAspect(w / h);
-    setAspects((prev) => (prev[i] === r ? prev : { ...prev, [i]: r }));
-  };
+  // Framer's own drag gesture already suppresses its tap gesture for any
+  // interaction it recognizes as a drag — but a very fast, short flick can
+  // reach pointerup before framer's drag tracking ever "starts" (it needs a
+  // few pixels of movement to engage), so its tap gesture still fires. Track
+  // the press origin ourselves so onTap can tell a real flick like that apart
+  // from an actual stationary tap and swipe instead of popping the lightbox.
+  const pressStart = useRef<Point | null>(null);
 
   return (
     <div>
@@ -69,7 +89,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
         aria-label={`${alt} — open zoomed view`}
         onKeyDown={(e) => e.key === "Enter" && setLightboxOpen(true)}
         style={{ aspectRatio: aspect }}
-        className="group relative cursor-zoom-in overflow-hidden rounded-[30px] bg-paper-2 shadow-deep transition-[aspect-ratio] duration-300"
+        className="group relative cursor-zoom-in overflow-hidden rounded-[30px] bg-paper-2 shadow-deep"
       >
         <AnimatePresence initial={false} custom={dir}>
           <motion.div
@@ -87,7 +107,25 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               const d = isSwipe(info);
               if (d) paginate(d);
             }}
-            onTap={() => setLightboxOpen(true)}
+            onPointerDown={(e) => {
+              pressStart.current = { x: e.pageX, y: e.pageY };
+            }}
+            onTap={(_, info) => {
+              const start = pressStart.current;
+              pressStart.current = null;
+              if (start && images.length > 1) {
+                const dx = info.point.x - start.x;
+                const dy = info.point.y - start.y;
+                if (Math.hypot(dx, dy) >= TAP_SLOP) {
+                  // Framer's drag gesture never engaged for this one (rare — it needs a
+                  // few pixels of movement to "start"), but it clearly moved, so honor it
+                  // as the swipe it was meant to be instead of opening the lightbox.
+                  if (Math.abs(dx) > Math.abs(dy)) paginate(dx < 0 ? 1 : -1);
+                  return;
+                }
+              }
+              setLightboxOpen(true);
+            }}
             className="absolute inset-0"
           >
             <Image
@@ -96,9 +134,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain"
               draggable={false}
-              onLoad={onImageLoad(active)}
             />
           </motion.div>
         </AnimatePresence>
@@ -125,7 +162,9 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
             >
               <ChevronRight className="size-5 rtl:rotate-180" />
             </button>
-            <span className="pointer-events-none absolute bottom-3 start-1/2 z-10 -translate-x-1/2 rounded-full bg-ink/55 px-2.5 py-1 text-[0.75rem] font-semibold text-paper backdrop-blur-sm">
+            {/* Dead-center regardless of text direction — `left` on purpose, not
+                the logical `start`, since a centered badge shouldn't mirror in RTL. */}
+            <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink/55 px-2.5 py-1 text-[0.75rem] font-semibold text-paper backdrop-blur-sm">
               {active + 1} / {images.length}
             </span>
           </>
@@ -186,29 +225,108 @@ function Lightbox({
 }) {
   const reduce = useReducedMotion();
 
-  // Zoom state for the current slide, reset whenever the slide or the dialog's open
-  // state changes (adjusting state while rendering, per
+  // Zoom/pan for the current slide — a real two-finger pinch (like every phone's
+  // native photo viewer), plus a one-finger pan once zoomed in. Reset whenever the
+  // slide or the dialog's open state changes (adjusting state while rendering, per
   // https://react.dev/learn/you-might-not-need-an-effect#resetting-state).
-  const [zoomed, setZoomed] = useState(false);
+  const [scale, setScale] = useState(MIN_SCALE);
+  const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
+  const [interacting, setInteracting] = useState(false);
+  const zoomed = scale > 1.02;
+
   const resetKey = `${active}-${open}`;
   const [prevResetKey, setPrevResetKey] = useState(resetKey);
   if (resetKey !== prevResetKey) {
     setPrevResetKey(resetKey);
-    setZoomed(false);
+    setScale(MIN_SCALE);
+    setPan({ x: 0, y: 0 });
   }
 
   const viewerRef = useRef<HTMLDivElement>(null);
-  const [panBounds, setPanBounds] = useState({ x: 0, y: 0 });
+  // Per-pointer tracking for the pinch/pan gesture — refs, not state, since these
+  // update every touch-move frame and never need to trigger a render on their own.
+  const pointers = useRef(new Map<number, Point>());
+  const pinch = useRef<{ dist: number; mid: Point; scale: number; pan: Point } | null>(null);
+  const pan1 = useRef<{ start: Point; pan: Point } | null>(null);
 
-  useEffect(() => {
-    if (!zoomed) return;
-    const el = viewerRef.current;
-    if (!el) return;
-    setPanBounds({
-      x: (el.clientWidth * (ZOOM_SCALE - 1)) / 2,
-      y: (el.clientHeight * (ZOOM_SCALE - 1)) / 2,
-    });
-  }, [zoomed]);
+  const onGestureDown = (e: React.PointerEvent) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    setInteracting(true);
+
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinch.current = { dist: dist(a, b), mid: mid(a, b), scale, pan };
+      pan1.current = null;
+    } else if (pointers.current.size === 1 && zoomed) {
+      pan1.current = { start: { x: e.clientX, y: e.clientY }, pan };
+    }
+  };
+
+  const onGestureMove = (e: React.PointerEvent) => {
+    if (!pointers.current.has(e.pointerId)) return;
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const rect = viewerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    if (pointers.current.size >= 2 && pinch.current) {
+      const [a, b] = [...pointers.current.values()];
+      const distNow = dist(a, b);
+      const midNow = mid(a, b);
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const prev = pinch.current;
+
+      const scaleDelta = prev.dist > 5 ? distNow / prev.dist : 1;
+      const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, prev.scale * scaleDelta));
+      // Keep whatever was under the fingers anchored under the fingers as scale changes.
+      const localX = (prev.mid.x - cx - prev.pan.x) / prev.scale;
+      const localY = (prev.mid.y - cy - prev.pan.y) / prev.scale;
+      const bounds = panBoundsFor(newScale, rect);
+      const newPan = {
+        x: clamp(midNow.x - cx - localX * newScale, bounds.x),
+        y: clamp(midNow.y - cy - localY * newScale, bounds.y),
+      };
+
+      setScale(newScale);
+      setPan(newPan);
+      pinch.current = { dist: distNow, mid: midNow, scale: newScale, pan: newPan };
+      return;
+    }
+
+    if (pointers.current.size === 1 && pan1.current) {
+      const p = [...pointers.current.values()][0];
+      const bounds = panBoundsFor(scale, rect);
+      setPan({
+        x: clamp(pan1.current.pan.x + (p.x - pan1.current.start.x), bounds.x),
+        y: clamp(pan1.current.pan.y + (p.y - pan1.current.start.y), bounds.y),
+      });
+    }
+  };
+
+  const onGestureUp = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    pan1.current = null;
+
+    if (pointers.current.size >= 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinch.current = { dist: dist(a, b), mid: mid(a, b), scale, pan };
+      return;
+    }
+    pinch.current = null;
+
+    if (pointers.current.size === 1) {
+      const p = [...pointers.current.values()][0];
+      if (zoomed) pan1.current = { start: p, pan };
+      return;
+    }
+
+    setInteracting(false);
+    if (scale <= 1.05) {
+      setScale(MIN_SCALE);
+      setPan({ x: 0, y: 0 });
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -251,37 +369,53 @@ function Lightbox({
             )}
           >
             <AnimatePresence initial={false} custom={dir}>
+              {/* Slide layer — swipe between images. Disabled while zoomed, so it
+                  never fights with the pinch/pan layer nested inside it. */}
               <motion.div
                 key={active}
                 custom={dir}
                 variants={zoomed ? undefined : slideVariants}
                 initial={reduce || zoomed ? false : "enter"}
-                animate={zoomed ? { scale: ZOOM_SCALE } : "center"}
+                animate={zoomed ? { x: 0 } : "center"}
                 exit={reduce || zoomed ? undefined : "exit"}
                 transition={reduce ? { duration: 0 } : SPRING}
-                drag={zoomed ? true : images.length > 1}
-                dragConstraints={zoomed ? { left: -panBounds.x, right: panBounds.x, top: -panBounds.y, bottom: panBounds.y } : { left: 0, right: 0 }}
-                dragElastic={zoomed ? 0.15 : 0.8}
-                onDragEnd={
-                  zoomed
-                    ? undefined
-                    : (_, info: PanInfo) => {
-                        const d = isSwipe(info);
-                        if (d) paginate(d);
-                      }
-                }
-                onTap={() => setZoomed((z) => !z)}
+                drag={zoomed ? false : images.length > 1 ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.8}
+                onDragEnd={(_, info: PanInfo) => {
+                  const d = isSwipe(info);
+                  if (d) paginate(d);
+                }}
+                onTap={(e) => {
+                  // Touch devices zoom via pinch instead — see the gesture handlers below.
+                  if ((e as PointerEvent).pointerType === "touch") return;
+                  setScale((s) => (s > 1 ? MIN_SCALE : CLICK_ZOOM));
+                  setPan({ x: 0, y: 0 });
+                }}
                 className="absolute inset-0"
               >
-                <Image
-                  src={images[active]}
-                  alt={alt}
-                  fill
-                  sizes="100vw"
-                  className="object-contain"
-                  draggable={false}
-                  priority
-                />
+                {/* Zoom/pan layer — a real two-finger pinch, plus one-finger pan once zoomed. */}
+                <div
+                  onPointerDown={onGestureDown}
+                  onPointerMove={onGestureMove}
+                  onPointerUp={onGestureUp}
+                  onPointerCancel={onGestureUp}
+                  style={{
+                    transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
+                    transition: interacting ? "none" : "transform 200ms ease-out",
+                  }}
+                  className="absolute inset-0 touch-none"
+                >
+                  <Image
+                    src={images[active]}
+                    alt={alt}
+                    fill
+                    sizes="100vw"
+                    className="object-contain"
+                    draggable={false}
+                    priority
+                  />
+                </div>
               </motion.div>
             </AnimatePresence>
 
