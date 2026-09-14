@@ -9,6 +9,10 @@ export interface CatalogueProduct {
   types: string[];
   /** First entry is the cover image, used by the catalogue grid, OG tags and JSON-LD. */
   images: string[];
+  /** width/height of the cover image — locks the product-page gallery frame to this
+   * shape so it never resizes as you swipe between photos (Shopify's own default
+   * gallery behavior). Every other image in `images` is centered inside that frame. */
+  coverAspect: number;
   specs: string[];
   /** key into PRICING.products, or null when we have no verified prices */
   pricing: string | null;
@@ -22,6 +26,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["food", "clothing"],
     "types": ["zipper-pouches"],
     "images": ["/products/zipper-1.jpg"],
+    "coverAspect": 0.8003,
     "specs": [
       "p.zipper.s1",
       "p.zipper.s2",
@@ -36,6 +41,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["food"],
     "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1695245503558-5cdb37f49092?w=1100&q=72&auto=format&fit=crop"],
+    "coverAspect": 1.5007,
     "specs": [
       "p.sacks.s1",
       "p.sacks.s2",
@@ -50,6 +56,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["clothing"],
     "types": ["zipper-pouches", "bags"],
     "images": ["/products/apparel.jpg", "/products/apparel-2.jpg", "/products/apparel-3.png", "/products/apparel-4.jpg"],
+    "coverAspect": 1.3318,
     "specs": [
       "p.apparel.s1",
       "p.apparel.s2",
@@ -64,6 +71,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["clothing", "food"],
     "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?w=1100&q=72&auto=format&fit=crop"],
+    "coverAspect": 0.6667,
     "specs": [
       "p.nonwoven.s1",
       "p.nonwoven.s2",
@@ -78,6 +86,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["ecommerce"],
     "types": ["bags"],
     "images": ["/products/courier-1.jpg"],
+    "coverAspect": 0.8003,
     "specs": [
       "p.courier.s1",
       "p.courier.s2",
@@ -98,6 +107,7 @@ export const PRODUCTS: CatalogueProduct[] = [
       "/products/paper-bags-4.jpg",
       "/products/paper-bags.jpg",
     ],
+    "coverAspect": 0.8003,
     "specs": [
       "p.paperbags.s1",
       "p.paperbags.s2",
@@ -118,6 +128,7 @@ export const PRODUCTS: CatalogueProduct[] = [
       "/products/stickers-4.jpg",
       "/products/stickers-5.jpg"
     ],
+    "coverAspect": 1.3333,
     "specs": [
       "p.stickers.s1",
       "p.stickers.s2",
@@ -144,6 +155,7 @@ export const PRODUCTS: CatalogueProduct[] = [
       "/products/cartons-9.png",
       "/products/cartons-10.jpg",
     ],
+    "coverAspect": 0.8003,
     "specs": [
       "p.cartons.s1",
       "p.cartons.s2",
@@ -158,6 +170,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["clothing", "cosmetics", "ecommerce"],
     "types": ["hang-tags", "cards"],
     "images": ["/products/tags-1.jpg", "/products/tags-2.jpg", "/products/tags-3.jpg"],
+    "coverAspect": 1.5,
     "specs": [
       "p.tags.s1",
       "p.tags.s2",
@@ -172,6 +185,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["ecommerce", "clothing"],
     "types": ["boxes"],
     "images": ["/products/corrugated-1.jpg", "/products/corrugated-2.jpg"],
+    "coverAspect": 1.1943,
     "specs": [
       "p.corrugated.s1",
       "p.corrugated.s2",
@@ -186,6 +200,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["food"],
     "types": ["bags"],
     "images": ["https://images.unsplash.com/photo-1706881811917-6590b1054050?w=1100&q=72&auto=format&fit=crop"],
+    "coverAspect": 1.4986,
     "specs": [
       "p.sacks5.s1",
       "p.sacks5.s2",
@@ -200,6 +215,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["food"],
     "types": ["zipper-pouches"],
     "images": ["/products/aluminium.jpg"],
+    "coverAspect": 1.3318,
     "specs": [],
     "pricing": "aluminium"
   },
@@ -210,6 +226,7 @@ export const PRODUCTS: CatalogueProduct[] = [
     "industries": ["food", "clothing"],
     "types": ["flyers"],
     "images": ["/products/flyers-1.jpg", "/products/flyers-2.jpg", "/products/flyers-3.jpg"],
+    "coverAspect": 1.5,
     "specs": [
       "p.flyers.s1",
       "p.flyers.s2",
