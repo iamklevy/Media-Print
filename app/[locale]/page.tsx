@@ -32,22 +32,22 @@ const MARQUEE = [
  * photography from public/products — no stock photography.
  */
 const HERO_CARDS = [
-  { src: "/products/cartons-6.png", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
-  { src: "/products/cartons-8.png", cls: "top-[9%] end-[1%] w-[27%] [--rot:6deg] [animation-delay:0.9s]" },
+  { src: "/products/cartons-raw-african-frizzfade-box-side.png", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
+  { src: "/products/cartons-musk-altahara-lavender-box.png", cls: "top-[9%] end-[1%] w-[27%] [--rot:6deg] [animation-delay:0.9s]" },
   {
-    src: "/products/zipper-1.jpg",
+    src: "/products/zipper-loops-travel-bottle-ziplock.jpg",
     cls: "top-[36%] start-[4%] w-[30%] [--rot:5deg] [animation-delay:0.4s]",
   },
   {
-    src: "/products/tags-1.jpg",
+    src: "/products/tags-nasaq-women-hang-tag.jpg",
     cls: "top-[40%] start-[44%] w-[21%] [--rot:-4deg] [animation-delay:1.4s]",
   },
   {
-    src: "/products/stickers-1.jpg",
+    src: "/products/stickers-clear-label-roll-pair.jpg",
     cls: "bottom-[1%] start-[22%] w-[29%] [--rot:-6deg] [animation-delay:0.7s]",
   },
   {
-    src: "/products/paper-bags-3.jpg",
+    src: "/products/paper-bags-favelin-pink-ribbon-pair.jpg",
     cls: "bottom-[7%] end-[3%] w-[26%] [--rot:8deg] [animation-delay:1.8s]",
   },
 ];
@@ -400,7 +400,7 @@ export default async function HomePage({
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden rounded-[30px] shadow-deep">
               <Image
-                src="/products/cartons-4.png"
+                src="/products/cartons-nuit-perfume-oil-pastel-lineup.png"
                 alt=""
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
