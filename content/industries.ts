@@ -29,7 +29,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "food",
     key: "industry.food",
-    image: "https://images.unsplash.com/photo-1695245503558-5cdb37f49092?w=1100&q=72&auto=format&fit=crop",
+    image: "/products/industry-food-1.jpg",
     types: [
       { label: "Labels", typeSlug: "labels" },
       { label: "Zipper Pouch Bags", typeSlug: "zipper-pouches" },
@@ -53,7 +53,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "ecommerce",
     key: "industry.ecommerce",
-    image: "https://images.unsplash.com/photo-1766040923580-16ad32fae8b4?w=1100&q=72&auto=format&fit=crop",
+    image: "/products/corrugated-1.jpg",
     types: [
       { label: "Shipping Boxes", typeSlug: "boxes" },
       { label: "Shipping Bags", typeSlug: "bags" },
@@ -73,10 +73,10 @@ export interface SolutionType {
 }
 
 export const SOLUTION_TYPES: SolutionType[] = [
-  { slug: "labels", key: "solution.labels", image: "https://images.unsplash.com/photo-1572950947476-26a6e4111e80?w=800&q=72&auto=format&fit=crop" },
-  { slug: "boxes", key: "solution.boxes", image: "/products/cartons.png" },
-  { slug: "bags", key: "solution.bags", image: "/products/paper-bags.jpg" },
-  { slug: "cards", key: "solution.cards", image: "https://images.unsplash.com/photo-1637291454111-1d115acb5023?w=800&q=72&auto=format&fit=crop" },
-  { slug: "flyers", key: "solution.flyers", image: "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=800&q=72&auto=format&fit=crop" },
-  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/aluminium.jpg" },
+  { slug: "labels", key: "solution.labels", image: "/products/stickers-1.jpg" },
+  { slug: "boxes", key: "solution.boxes", image: "/products/cartons-11.jpg" },
+  { slug: "bags", key: "solution.bags", image: "/products/paper-bags-5.jpg" },
+  { slug: "cards", key: "solution.cards", image: "/products/tags-1.jpg" },
+  { slug: "flyers", key: "solution.flyers", image: "/products/flyers-1.jpg" },
+  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/zipper-1.jpg" },
 ];
