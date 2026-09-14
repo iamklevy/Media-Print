@@ -90,7 +90,7 @@ export default async function ProductPage({
           </div>
 
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <ProductGallery images={product.images} alt={title} coverAspect={product.coverAspect} />
+            <ProductGallery images={product.images} alt={title} />
 
             <div>
               <span className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-[0.8rem] font-bold text-accent-2">
