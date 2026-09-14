@@ -18,7 +18,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "cosmetics",
     key: "industry.cosmetics",
-    image: "/products/cartons.png",
+    image: "/products/cartons-luvira-serum-box-unfolded.png",
     types: [
       { label: "Packaging", typeSlug: "boxes" },
       { label: "Labels", typeSlug: "labels" },
@@ -29,7 +29,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "food",
     key: "industry.food",
-    image: "/products/industry-food-1.jpg",
+    image: "/products/industry-food-aljabal-olive-oil-bottles.jpg",
     types: [
       { label: "Labels", typeSlug: "labels" },
       { label: "Zipper Pouch Bags", typeSlug: "zipper-pouches" },
@@ -40,7 +40,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "clothing",
     key: "industry.clothing",
-    image: "/products/apparel.jpg",
+    image: "/products/apparel-monest-london-grey-ziplock.jpg",
     types: [
       { label: "Labels", typeSlug: "labels" },
       { label: "Hang Tags", typeSlug: "hang-tags" },
@@ -53,7 +53,7 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "ecommerce",
     key: "industry.ecommerce",
-    image: "/products/corrugated-1.jpg",
+    image: "/products/corrugated-nuit-mailer-box-open-perfume.jpg",
     types: [
       { label: "Shipping Boxes", typeSlug: "boxes" },
       { label: "Shipping Bags", typeSlug: "bags" },
@@ -73,10 +73,10 @@ export interface SolutionType {
 }
 
 export const SOLUTION_TYPES: SolutionType[] = [
-  { slug: "labels", key: "solution.labels", image: "/products/stickers-1.jpg" },
-  { slug: "boxes", key: "solution.boxes", image: "/products/cartons-11.jpg" },
-  { slug: "bags", key: "solution.bags", image: "/products/paper-bags-5.jpg" },
-  { slug: "cards", key: "solution.cards", image: "/products/tags-1.jpg" },
-  { slug: "flyers", key: "solution.flyers", image: "/products/flyers-1.jpg" },
-  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/zipper-1.jpg" },
+  { slug: "labels", key: "solution.labels", image: "/products/stickers-clear-label-roll-pair.jpg" },
+  { slug: "boxes", key: "solution.boxes", image: "/products/cartons-smile-wonders-mouthwash-trio.jpg" },
+  { slug: "bags", key: "solution.bags", image: "/products/paper-bags-biomedica-teal-flat.jpg" },
+  { slug: "cards", key: "solution.cards", image: "/products/tags-nasaq-women-hang-tag.jpg" },
+  { slug: "flyers", key: "solution.flyers", image: "/products/flyers-nounas-bakery-iced-coffee.jpg" },
+  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/zipper-loops-travel-bottle-ziplock.jpg" },
 ];

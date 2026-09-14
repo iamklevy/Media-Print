@@ -21,7 +21,7 @@ export function ProductCard({
       id={product.slug}
       className="group flex flex-col overflow-hidden rounded-card border border-line bg-paper transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-paper-2">
+      <div className="relative aspect-square overflow-hidden bg-paper-2">
         <Image
           src={product.images[0]}
           alt=""
