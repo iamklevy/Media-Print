@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Wrap, Section, SectionHead } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductGallery } from "@/components/site/product-gallery";
-import { StickerCatalogue } from "@/components/site/sticker-catalogue";
 import { CtaBand } from "@/components/site/cta-band";
 
 export function generateStaticParams() {
@@ -91,7 +90,7 @@ export default async function ProductPage({
           </div>
 
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <ProductGallery images={product.images} alt={title} />
+            <ProductGallery images={product.images} alt={title} coverAspect={product.coverAspect} />
 
             <div>
               <span className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-[0.8rem] font-bold text-accent-2">
@@ -140,12 +139,6 @@ export default async function ProductPage({
           </div>
         </Wrap>
       </section>
-
-      {product.slug === "stickers" && (
-        <Section>
-          <StickerCatalogue />
-        </Section>
-      )}
 
       {related.length > 0 && (
         <Section>
