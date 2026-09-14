@@ -35,10 +35,6 @@ function isSwipe(info: PanInfo) {
   return 0;
 }
 
-/** Sane clamp so an unusually wide/tall cover photo can't blow out the
- * two-column product layout. */
-const clampAspect = (r: number) => Math.min(1.6, Math.max(0.65, r));
-
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", scale: 1 }),
   center: { x: 0, scale: 1 },
@@ -60,18 +56,13 @@ function useSlides(length: number) {
 export function ProductGallery({
   images,
   alt,
-  coverAspect,
 }: {
   images: string[];
   alt: string;
-  /** Locks the frame to the cover photo's shape — see CatalogueProduct.coverAspect.
-   * Every image in the set is centered inside it, so swiping never resizes the frame. */
-  coverAspect: number;
 }) {
   const { active, dir, paginate, jumpTo } = useSlides(images.length);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const reduce = useReducedMotion();
-  const aspect = clampAspect(coverAspect);
 
   // Framer's own drag gesture already suppresses its tap gesture for any
   // interaction it recognizes as a drag — but a very fast, short flick can
@@ -88,8 +79,7 @@ export function ProductGallery({
         tabIndex={0}
         aria-label={`${alt} — open zoomed view`}
         onKeyDown={(e) => e.key === "Enter" && setLightboxOpen(true)}
-        style={{ aspectRatio: aspect }}
-        className="group relative cursor-zoom-in overflow-hidden rounded-[30px] bg-paper-2 shadow-deep"
+        className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-[30px] bg-paper-2 shadow-deep"
       >
         <AnimatePresence initial={false} custom={dir}>
           <motion.div
@@ -134,7 +124,7 @@ export function ProductGallery({
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain"
+              className="object-cover"
               draggable={false}
             />
           </motion.div>

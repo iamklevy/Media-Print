@@ -76,7 +76,11 @@
     "eyebrow": "What we make",
     "h2": "One workshop, every kind of packaging",
     "lead": "From a zipper bag for a spice brand to five-ply corrugated cartons for a shipping line — printed, finished and delivered by the same team.",
-    "all": "See the full catalogue"
+    "all": "See the full catalogue",
+    "related": {
+      "eyebrow": "You may also like",
+      "h2": "Similar packaging you might need"
+    }
   },
   "p": {
     "zipper": {
