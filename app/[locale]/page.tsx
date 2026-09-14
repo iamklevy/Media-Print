@@ -28,28 +28,26 @@ const MARQUEE = [
 ];
 
 /**
- * Hero collage floating over the blob. Cartons are real client work from
- * public/products; the sticker/zipper-bag shots are stock photography
- * (Unsplash, same convention as the catalogue images in content/products.ts)
- * standing in until we have our own client photography for those lines.
+ * Hero collage floating over the blob. Every card is real client/product
+ * photography from public/products — no stock photography.
  */
 const HERO_CARDS = [
   { src: "/products/cartons-6.png", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
   { src: "/products/cartons-8.png", cls: "top-[9%] end-[1%] w-[27%] [--rot:6deg] [animation-delay:0.9s]" },
   {
-    src: "https://images.unsplash.com/photo-1780444078356-5ca1e9efe6b8?w=1100&q=72&auto=format&fit=crop",
+    src: "/products/zipper-1.jpg",
     cls: "top-[36%] start-[4%] w-[30%] [--rot:5deg] [animation-delay:0.4s]",
   },
   {
-    src: "https://images.unsplash.com/photo-1773525912464-d2640e7aff9c?w=1100&q=72&auto=format&fit=crop",
+    src: "/products/tags-1.jpg",
     cls: "top-[40%] start-[44%] w-[21%] [--rot:-4deg] [animation-delay:1.4s]",
   },
   {
-    src: "https://images.unsplash.com/photo-1633533452206-8ab246b00e30?w=1100&q=72&auto=format&fit=crop",
+    src: "/products/stickers-1.jpg",
     cls: "bottom-[1%] start-[22%] w-[29%] [--rot:-6deg] [animation-delay:0.7s]",
   },
   {
-    src: "https://images.unsplash.com/photo-1572689535562-3c54a15292d3?w=1100&q=72&auto=format&fit=crop",
+    src: "/products/paper-bags-3.jpg",
     cls: "bottom-[7%] end-[3%] w-[26%] [--rot:8deg] [animation-delay:1.8s]",
   },
 ];
