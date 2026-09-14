@@ -27,7 +27,7 @@ export function ProductCard({
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-contain p-3 transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <span className="absolute start-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[0.74rem] font-bold text-paper backdrop-blur-sm">
           {t(catKey)}
