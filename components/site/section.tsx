@@ -18,7 +18,7 @@ export function Section({
   return (
     <section
       className={cn(
-        "py-16 md:py-24 lg:py-28",
+        "py-7 md:py-9 lg:py-11",
         tint && "bg-paper-2",
         ink && "bg-ink text-paper",
         className,
@@ -59,7 +59,7 @@ export function SectionHead({
     <div className={cn("mb-10 md:mb-14", action && "flex flex-wrap items-end justify-between gap-6")}>
       <div className="max-w-[62ch]">
         {eyebrow && <Eyebrow onInk={onInk}>{eyebrow}</Eyebrow>}
-        <h2 className="mt-3 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{title}</h2>
+        <h2 className="mt-0.2 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{title}</h2>
         {lead && (
           <p className={cn("mt-4 text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)]", onInk ? "text-paper/72" : "text-muted")}>
             {lead}
