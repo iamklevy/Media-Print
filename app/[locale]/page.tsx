@@ -169,29 +169,7 @@ export default async function HomePage({
         </div>
       </div>
 
-      {/* ============================================ 3. proof in numbers */}
-      <Section>
-        <Reveal>
-          <SectionHead eyebrow={t("home.stats.eyebrow")} title={t("home.stats.h2")} lead={t("home.stats.lead")} />
-        </Reveal>
-        <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map(({ icon: Icon, value, suffix, k }) => (
-            <StaggerItem key={k}>
-              <div className="h-full rounded-card border border-line bg-paper p-7 transition-colors hover:border-accent/35">
-                <Icon className="mb-5 size-6 text-accent-2" strokeWidth={1.6} />
-                <Counter
-                  value={value}
-                  suffix={suffix}
-                  className="block text-[clamp(2.2rem,1.6rem+2vw,3.2rem)] font-extrabold leading-none tracking-tight"
-                />
-                <span className="mt-3 block text-[0.9rem] leading-snug text-muted">{t(k)}</span>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </Section>
-
-      {/* ============================================ 4. client wall (dark) */}
+      {/* ============================================ 3. client wall (dark) */}
       <Section ink>
         <Reveal>
           <SectionHead onInk eyebrow={t("home.clients.eyebrow")} title={t("home.clients.h2")} lead={t("home.clients.lead")} />
@@ -239,7 +217,7 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* ============================================ 5. choose your industry */}
+      {/* ============================================ 4. choose your industry */}
       <Section>
         <Reveal>
           <SectionHead eyebrow={t("home.industry.eyebrow")} title={t("home.industry.h2")} lead={t("home.industry.lead")} />
@@ -249,7 +227,7 @@ export default async function HomePage({
         </Reveal>
       </Section>
 
-      {/* ============================================ 6. browse by type */}
+      {/* ============================================ 5. browse by type */}
       <Section tint>
         <Reveal>
           <SectionHead eyebrow={t("home.solutions.eyebrow")} title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
@@ -276,6 +254,28 @@ export default async function HomePage({
                   <span className="font-semibold text-paper">{t(s.key)}</span>
                 </Link>
               </HoverLift>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </Section>
+
+      {/* ============================================ 6. proof in numbers */}
+      <Section>
+        <Reveal>
+          <SectionHead eyebrow={t("home.stats.eyebrow")} title={t("home.stats.h2")} lead={t("home.stats.lead")} />
+        </Reveal>
+        <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {STATS.map(({ icon: Icon, value, suffix, k }) => (
+            <StaggerItem key={k}>
+              <div className="h-full rounded-card border border-line bg-paper p-7 transition-colors hover:border-accent/35">
+                <Icon className="mb-5 size-6 text-accent-2" strokeWidth={1.6} />
+                <Counter
+                  value={value}
+                  suffix={suffix}
+                  className="block text-[clamp(2.2rem,1.6rem+2vw,3.2rem)] font-extrabold leading-none tracking-tight"
+                />
+                <span className="mt-3 block text-[0.9rem] leading-snug text-muted">{t(k)}</span>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>
