@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 
@@ -13,6 +13,7 @@ import { SALES_PHONE } from "@/lib/contact";
 import { createOrderFromQuote } from "@/lib/orders/actions";
 import { ArtworkInput } from "@/components/site/artwork-input";
 import { QUANTITY_RANGES, isQuantityRange } from "@/lib/orders/quantity";
+import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
 
 export function QuoteForm() {
   const t = useTranslations();
@@ -23,6 +24,10 @@ export function QuoteForm() {
   const [trackingUrl, setTrackingUrl] = useState<string | null>(null);
   const [error, setError] = useState<"generic" | "too_large" | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Blocks a second submit before React re-renders the disabled button
+  // (fast double click, Enter pressed twice).
+  const inFlight = useRef(false);
+  const successRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
   const reorderOf = searchParams.get("reorder");
@@ -37,6 +42,8 @@ export function QuoteForm() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (inFlight.current || sent) return;
+    inFlight.current = true;
     setSubmitting(true);
     setError(null);
     const f = new FormData(e.currentTarget);
@@ -46,6 +53,7 @@ export function QuoteForm() {
       if (order) {
         setTrackingUrl(order.trackingUrl);
         setSent(true);
+        requestAnimationFrame(() => successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }));
       } else {
         setError("generic");
       }
@@ -58,9 +66,26 @@ export function QuoteForm() {
       const tooLarge = err instanceof Error && /body exceeded|limit/i.test(err.message);
       setError(tooLarge ? "too_large" : "generic");
     } finally {
+      inFlight.current = false;
       setSubmitting(false);
     }
   };
+
+  // Once sent, the filled-in form is replaced by the confirmation — leaving it
+  // on screen with an active "Send" button is what led customers to submit
+  // the same request again.
+  if (sent) {
+    return (
+      <div ref={successRef} className="grid gap-2 rounded-lg bg-leaf-soft px-4 py-3 text-[0.9rem] font-semibold text-leaf">
+        <p>{ar ? "تم إرسال طلب عرض السعر بنجاح!" : "Your quote request has been sent!"}</p>
+        {trackingUrl && (
+          <a href={trackingUrl} className="underline underline-offset-2" target="_blank" rel="noopener">
+            {ar ? "تابع طلبك من هنا" : "Track your order here"}
+          </a>
+        )}
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
@@ -133,20 +158,19 @@ export function QuoteForm() {
 
       <ArtworkInput name="artwork" />
 
+      {/* honeypot — off-screen and skipped by keyboard/screen readers; see QUOTE_HONEYPOT_FIELD */}
+      <input
+        type="text"
+        name={QUOTE_HONEYPOT_FIELD}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="sr-only"
+      />
+
       <Button type="submit" size="lg" disabled={submitting} className="w-fit rounded-full bg-accent hover:bg-accent-2">
         {submitting ? (ar ? "جاري الإرسال…" : "Sending…") : t("f.submit")}
       </Button>
-
-      {sent && (
-        <div className="grid gap-2 rounded-lg bg-leaf-soft px-4 py-3 text-[0.9rem] font-semibold text-leaf">
-          <p>{ar ? "تم إرسال طلب عرض السعر بنجاح!" : "Your quote request has been sent!"}</p>
-          {trackingUrl && (
-            <a href={trackingUrl} className="underline underline-offset-2" target="_blank" rel="noopener">
-              {ar ? "تابع طلبك من هنا" : "Track your order here"}
-            </a>
-          )}
-        </div>
-      )}
 
       {error === "too_large" && (
         <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">
