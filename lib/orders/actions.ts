@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "node:crypto";
+import { after } from "next/server";
 
 import { supabaseServer } from "@/lib/supabase/server";
 import { createAuthServerClient } from "@/lib/supabase/auth-server";
@@ -11,6 +12,7 @@ import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
 import { isQuantityRange } from "@/lib/orders/quantity";
+import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
@@ -29,6 +31,8 @@ function randomSlugSuffix(): string {
 const CUSTOMER_ARTWORK_MAX_BYTES = 10 * 1024 * 1024; // matches the "artwork-files" bucket's own cap
 const CUSTOMER_ARTWORK_MAX_FILES = 3;
 const CUSTOMER_ARTWORK_EXT_RE = /\.(pdf|ai|eps|svg|png|jpe?g|webp|zip)$/i;
+
+const QUOTE_DEDUPE_WINDOW_MS = 30 * 60 * 1000;
 
 /**
  * Uploads the design file(s) a customer attaches to the quote form. Stored
@@ -79,14 +83,47 @@ export async function createOrderFromQuote(
   const qty = get("qty");
   if (!name || !phone || !email || !isQuantityRange(qty)) return null;
 
+  // Honeypot: the field is hidden off-screen in the form, so only bots that
+  // blindly fill every input ever send a value for it.
+  if (get(QUOTE_HONEYPOT_FIELD)) return null;
+
   const company = get("company") || null;
   const product = get("product") || "Not specified";
   const message = get("message") || null;
   const source = get("source") || "quote_form";
 
+  const db = supabaseServer();
+
+  // Re-submitting the exact same request within the window (double click,
+  // "did it send?" retry, bot replay) returns the order that already exists
+  // instead of creating a duplicate in the ops dashboard.
+  const since = new Date(Date.now() - QUOTE_DEDUPE_WINDOW_MS).toISOString();
+  const { data: recent } = await db
+    .from("orders")
+    .select("order_number, tracking_slug, customer_name, customer_email, customer_company, product_label, quantity, notes, source")
+    .eq("customer_phone", phone)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false });
+  const existing = recent?.find(
+    (o) =>
+      o.customer_name === name &&
+      o.customer_email === email &&
+      o.customer_company === company &&
+      o.product_label === product &&
+      o.quantity === qty &&
+      o.notes === message &&
+      o.source === source
+  );
+  if (existing) {
+    return {
+      orderNumber: existing.order_number,
+      trackingPath: `${locale === "ar" ? "/ar" : ""}/track/${existing.tracking_slug}`,
+      trackingUrl: trackingUrl(existing.tracking_slug, locale),
+    };
+  }
+
   const slug = randomSlugSuffix();
 
-  const db = supabaseServer();
   const { data, error } = await db
     .from("orders")
     .insert({
@@ -126,7 +163,10 @@ export async function createOrderFromQuote(
     message: customerArtworkFiles.length > 0 ? `Customer attached ${customerArtworkFiles.length} design file(s).` : null,
   });
 
-  await notifyQuoteReceived({ ...(data as Order), customer_artwork_files: customerArtworkFiles });
+  // Sent after the response so the customer sees the confirmation right away
+  // instead of waiting on two sequential Resend calls — a slow reply is what
+  // made people click "Send" again.
+  after(() => notifyQuoteReceived({ ...(data as Order), customer_artwork_files: customerArtworkFiles }));
 
   return {
     orderNumber: data.order_number,
