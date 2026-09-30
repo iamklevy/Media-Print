@@ -538,7 +538,7 @@
     "artwork_too_many": "You can attach up to 3 files.",
     "artwork_too_large": "That file is over 10MB — please attach a smaller one.",
     "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
-    "error_too_large": "Your attached files are too large to send together — please remove one or attach smaller files and try again.",
+    "error_upload": "We couldn't upload your attached files — please check your connection and try again.",
     "submit": "Send quote request",
     "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
@@ -723,6 +723,7 @@
       "artwork_files_hint": "JPEG, PNG or WebP · up to 5MB each",
       "remove_photo": "Remove photo",
       "upload_too_large": "That photo is too large to upload — try a smaller file.",
+      "upload_failed": "Upload failed — try again.",
       "save": "Save changes",
       "saving": "Saving…",
       "pipeline": "Pipeline",

@@ -19,8 +19,8 @@ function formatSize(bytes: number): string {
 /**
  * Lets a customer attach their design file(s) to the quote form. The real
  * <input type="file"> stays in sync via DataTransfer so the surrounding
- * <form>'s native FormData already carries the current file list on submit
- * — no extra wiring needed in the parent form's submit handler.
+ * <form>'s native FormData already carries the current file list on submit;
+ * the quote form then uploads them to Storage before calling its action.
  */
 export function ArtworkInput({ name }: { name: string }) {
   const t = useTranslations("f");

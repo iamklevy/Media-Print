@@ -34,41 +34,82 @@ const CUSTOMER_ARTWORK_EXT_RE = /\.(pdf|ai|eps|svg|png|jpe?g|webp|zip)$/i;
 
 const QUOTE_DEDUPE_WINDOW_MS = 30 * 60 * 1000;
 
+// Customer design files upload straight from the browser to Storage via
+// signed URLs, never through our function: Vercel caps a function's request
+// body at 4.5MB regardless of Next's serverActions.bodySizeLimit, so sending
+// the files inside createOrderFromQuote's FormData failed with 413
+// FUNCTION_PAYLOAD_TOO_LARGE for anything but small attachments.
+const CUSTOMER_ARTWORK_PREFIX = "customer/pending";
+const CUSTOMER_ARTWORK_PATH_RE = /^customer\/pending\/[A-Za-z0-9_-]{16}\/[0-2]\.(pdf|ai|eps|svg|png|jpe?g|webp|zip)$/;
+
+export type CustomerArtworkUpload = { path: string; signedUrl: string };
+
 /**
- * Uploads the design file(s) a customer attaches to the quote form. Stored
- * under a "customer/" prefix in the same bucket the staff-uploaded artwork
- * proofs use, so the two never collide.
+ * Step 1 of the quote form's attachment flow: returns one signed upload URL
+ * per file the customer picked. The browser PUTs each file to its URL, then
+ * passes the resulting paths to createOrderFromQuote.
  */
-async function uploadCustomerArtwork(orderId: string, files: File[]): Promise<ArtworkFile[]> {
+export async function createCustomerArtworkUploadUrls(
+  files: { name: string; size: number }[]
+): Promise<CustomerArtworkUpload[] | null> {
+  if (!Array.isArray(files) || files.length === 0 || files.length > CUSTOMER_ARTWORK_MAX_FILES) return null;
+  for (const f of files) {
+    if (typeof f?.name !== "string" || typeof f?.size !== "number") return null;
+    if (f.size <= 0 || f.size > CUSTOMER_ARTWORK_MAX_BYTES || !CUSTOMER_ARTWORK_EXT_RE.test(f.name)) return null;
+  }
+
   const db = supabaseServer();
-  const uploaded: ArtworkFile[] = [];
+  const folder = `${CUSTOMER_ARTWORK_PREFIX}/${crypto.randomBytes(12).toString("base64url")}`;
+  const uploads: CustomerArtworkUpload[] = [];
 
-  for (let i = 0; i < files.length && i < CUSTOMER_ARTWORK_MAX_FILES; i++) {
-    const file = files[i];
-    if (!(file instanceof File) || file.size === 0) continue;
-    if (file.size > CUSTOMER_ARTWORK_MAX_BYTES || !CUSTOMER_ARTWORK_EXT_RE.test(file.name)) continue;
+  for (let i = 0; i < files.length; i++) {
+    const ext = files[i].name.split(".").pop()!.toLowerCase();
+    const path = `${folder}/${i}.${ext}`;
+    const { data, error } = await db.storage.from(ARTWORK_BUCKET).createSignedUploadUrl(path);
+    if (error || !data) {
+      console.error("createCustomerArtworkUploadUrls failed", error);
+      return null;
+    }
+    uploads.push({ path, signedUrl: data.signedUrl });
+  }
 
-    const ext = file.name.split(".").pop()!.toLowerCase();
-    const path = `customer/${orderId}/${i}-${Date.now()}.${ext}`;
+  return uploads;
+}
+
+/**
+ * Step 2: turns the "artwork" entries the form sends back (JSON
+ * { path, label }) into ArtworkFile records, keeping only paths this server
+ * could have issued and that actually finished uploading.
+ */
+async function resolveCustomerArtwork(entries: FormDataEntryValue[]): Promise<ArtworkFile[]> {
+  const db = supabaseServer();
+  const resolved: ArtworkFile[] = [];
+
+  for (const entry of entries.slice(0, CUSTOMER_ARTWORK_MAX_FILES)) {
+    if (typeof entry !== "string") continue;
+    let parsed: { path?: unknown; label?: unknown };
+    try {
+      parsed = JSON.parse(entry);
+    } catch {
+      continue;
+    }
+    const { path, label } = parsed;
+    if (typeof path !== "string" || !CUSTOMER_ARTWORK_PATH_RE.test(path)) continue;
 
     try {
-      const { error } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
-        contentType: file.type || "application/octet-stream",
-      });
-      if (error) {
-        console.error("uploadCustomerArtwork: storage upload failed", error);
-        continue;
-      }
+      const { data: exists } = await db.storage.from(ARTWORK_BUCKET).exists(path);
+      if (!exists) continue;
     } catch (err) {
-      console.error("uploadCustomerArtwork: storage upload threw", err);
+      console.error("resolveCustomerArtwork: exists check threw", err);
       continue;
     }
 
     const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
-    uploaded.push({ url: pub.publicUrl, label: file.name });
+    const name = typeof label === "string" && label.trim() ? label.trim().slice(0, 200) : path.split("/").pop()!;
+    resolved.push({ url: pub.publicUrl, label: name });
   }
 
-  return uploaded;
+  return resolved;
 }
 
 export async function createOrderFromQuote(
@@ -146,13 +187,9 @@ export async function createOrderFromQuote(
     return null;
   }
 
-  const artworkInputFiles = formData.getAll("artwork").filter((f): f is File => f instanceof File && f.size > 0);
-  let customerArtworkFiles: ArtworkFile[] = [];
-  if (artworkInputFiles.length > 0) {
-    customerArtworkFiles = await uploadCustomerArtwork(data.id, artworkInputFiles);
-    if (customerArtworkFiles.length > 0) {
-      await db.from("orders").update({ customer_artwork_files: customerArtworkFiles }).eq("id", data.id);
-    }
+  const customerArtworkFiles = await resolveCustomerArtwork(formData.getAll("artwork"));
+  if (customerArtworkFiles.length > 0) {
+    await db.from("orders").update({ customer_artwork_files: customerArtworkFiles }).eq("id", data.id);
   }
 
   await db.from("order_events").insert({
@@ -280,6 +317,8 @@ const SAMPLE_MIME_EXT: Record<string, string> = {
   "video/webm": "webm",
 };
 
+const INVOICE_MAX_BYTES = 10 * 1024 * 1024; // matches the "artwork-files" bucket's own cap
+
 // Artwork proofs stay image-only, at the original size cap.
 const ARTWORK_MAX_BYTES = 5 * 1024 * 1024;
 const ARTWORK_MIME_EXT: Record<string, string> = {
@@ -288,39 +327,119 @@ const ARTWORK_MIME_EXT: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export async function uploadSampleImage(
+// ---------------------------------------------------------------------------
+// Staff file uploads: the browser PUTs the file to a signed URL from
+// createStaffUploadUrl, then calls the matching save* action with the path.
+// Vercel caps function request bodies at 4.5MB, so files must not pass
+// through a Server Action themselves.
+// ---------------------------------------------------------------------------
+
+type StaffUploadKind = "sample" | "artwork" | "invoice";
+
+const STAFF_UPLOADS: Record<
+  StaffUploadKind,
+  { bucket: string; maxBytes: number; mimeExt: Record<string, string>; typeError: string; sizeError: string }
+> = {
+  sample: {
+    bucket: SAMPLE_BUCKET,
+    maxBytes: SAMPLE_MAX_BYTES,
+    mimeExt: SAMPLE_MIME_EXT,
+    typeError: "Unsupported file type — use JPEG, PNG, WebP, MP4, MOV or WebM.",
+    sizeError: "File too large — 25MB max.",
+  },
+  artwork: {
+    bucket: ARTWORK_BUCKET,
+    maxBytes: ARTWORK_MAX_BYTES,
+    mimeExt: ARTWORK_MIME_EXT,
+    typeError: "Unsupported file type — use JPEG, PNG or WebP.",
+    sizeError: "File too large — 5MB max.",
+  },
+  invoice: {
+    bucket: ARTWORK_BUCKET,
+    maxBytes: INVOICE_MAX_BYTES,
+    mimeExt: { "application/pdf": "pdf" },
+    typeError: "Unsupported file type — use PDF.",
+    sizeError: "File too large — 10MB max.",
+  },
+};
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const STAFF_UPLOAD_SLOTS = 3;
+
+function staffUploadPrefix(kind: StaffUploadKind, orderId: string, slot: number): string {
+  return kind === "invoice" ? `invoices/${orderId}/` : `${orderId}/${slot}-`;
+}
+
+function isValidSlot(kind: StaffUploadKind, slot: number): boolean {
+  return kind === "invoice" || (Number.isInteger(slot) && slot >= 0 && slot < STAFF_UPLOAD_SLOTS);
+}
+
+/** Step 1 of a staff upload: validates the file's metadata and returns a signed upload URL for it. */
+export async function createStaffUploadUrl(
+  kind: StaffUploadKind,
   orderId: string,
   slot: number,
-  formData: FormData
+  file: { size: number; type: string }
+): Promise<{ ok: boolean; path?: string; signedUrl?: string; error?: string }> {
+  await requireStaffSession();
+
+  const cfg = STAFF_UPLOADS[kind];
+  if (!cfg || !UUID_RE.test(orderId) || !isValidSlot(kind, slot)) return { ok: false, error: "Invalid upload." };
+  const ext = cfg.mimeExt[file?.type];
+  if (!ext) return { ok: false, error: cfg.typeError };
+  if (typeof file.size !== "number" || file.size <= 0) return { ok: false, error: "No file provided." };
+  if (file.size > cfg.maxBytes) return { ok: false, error: cfg.sizeError };
+
+  const path = `${staffUploadPrefix(kind, orderId, slot)}${Date.now()}.${ext}`;
+  const { data, error } = await supabaseServer().storage.from(cfg.bucket).createSignedUploadUrl(path);
+  if (error || !data) {
+    console.error("createStaffUploadUrl failed", error);
+    return { ok: false, error: error?.message ?? "Upload failed." };
+  }
+  return { ok: true, path, signedUrl: data.signedUrl };
+}
+
+/**
+ * Step 2 guard: only accepts a path createStaffUploadUrl could have issued
+ * for this order/slot, and only once the file is actually in Storage.
+ * Returns the file's public URL.
+ */
+async function verifyStaffUpload(
+  kind: StaffUploadKind,
+  orderId: string,
+  slot: number,
+  path: string
+): Promise<string | null> {
+  const cfg = STAFF_UPLOADS[kind];
+  if (!UUID_RE.test(orderId) || !isValidSlot(kind, slot) || typeof path !== "string") return null;
+  const prefix = staffUploadPrefix(kind, orderId, slot);
+  const rest = path.startsWith(prefix) ? path.slice(prefix.length) : "";
+  const exts = new Set(Object.values(cfg.mimeExt));
+  const m = /^\d+\.([a-z0-9]+)$/.exec(rest);
+  if (!m || !exts.has(m[1])) return null;
+
+  const db = supabaseServer();
+  try {
+    const { data: exists } = await db.storage.from(cfg.bucket).exists(path);
+    if (!exists) return null;
+  } catch (err) {
+    console.error("verifyStaffUpload: exists check threw", err);
+    return null;
+  }
+  return db.storage.from(cfg.bucket).getPublicUrl(path).data.publicUrl;
+}
+
+export async function saveSampleImage(
+  orderId: string,
+  slot: number,
+  path: string
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   await requireStaffSession();
 
-  const file = formData.get("file");
-  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
-  const ext = SAMPLE_MIME_EXT[file.type];
-  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG, WebP, MP4, MOV or WebM." };
-  if (file.size > SAMPLE_MAX_BYTES) return { ok: false, error: "File too large — 25MB max." };
+  const publicUrl = await verifyStaffUpload("sample", orderId, slot, path);
+  if (!publicUrl) return { ok: false, error: "Upload not found — try again." };
 
   const db = supabaseServer();
-  const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
-
-  try {
-    const { error: uploadError } = await db.storage.from(SAMPLE_BUCKET).upload(path, file, {
-      contentType: file.type,
-      upsert: true,
-    });
-    if (uploadError) return { ok: false, error: uploadError.message };
-  } catch (err) {
-    // Storage-side limits (e.g. the bucket's own max file size in the
-    // Supabase dashboard) can reject the upload with a thrown error rather
-    // than a returned one — surface it to the caller instead of letting it
-    // vanish into the server log as an unhandled action failure.
-    console.error("uploadSampleImage: storage upload threw", err);
-    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
-  }
-
-  const { data: pub } = db.storage.from(SAMPLE_BUCKET).getPublicUrl(path);
-
   const { data: order, error: fetchError } = await db
     .from("orders")
     .select("sample_images")
@@ -330,7 +449,7 @@ export async function uploadSampleImage(
 
   const images: SampleImage[] = [...((order.sample_images ?? []) as SampleImage[])];
   while (images.length <= slot) images.push({ url: "" });
-  images[slot] = { url: pub.publicUrl };
+  images[slot] = { url: publicUrl };
 
   const { error: updateError } = await db
     .from("orders")
@@ -338,7 +457,7 @@ export async function uploadSampleImage(
     .eq("id", orderId);
   if (updateError) return { ok: false, error: updateError.message };
 
-  return { ok: true, url: pub.publicUrl };
+  return { ok: true, url: publicUrl };
 }
 
 export async function removeSampleImage(orderId: string, slot: number): Promise<{ ok: boolean; error?: string }> {
@@ -364,35 +483,17 @@ export async function removeSampleImage(orderId: string, slot: number): Promise<
   return { ok: true };
 }
 
-export async function uploadArtworkFile(
+export async function saveArtworkFile(
   orderId: string,
   slot: number,
-  formData: FormData
+  path: string
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   await requireStaffSession();
 
-  const file = formData.get("file");
-  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
-  const ext = ARTWORK_MIME_EXT[file.type];
-  if (!ext) return { ok: false, error: "Unsupported file type — use JPEG, PNG or WebP." };
-  if (file.size > ARTWORK_MAX_BYTES) return { ok: false, error: "File too large — 5MB max." };
+  const publicUrl = await verifyStaffUpload("artwork", orderId, slot, path);
+  if (!publicUrl) return { ok: false, error: "Upload not found — try again." };
 
   const db = supabaseServer();
-  const path = `${orderId}/${slot}-${Date.now()}.${ext}`;
-
-  try {
-    const { error: uploadError } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
-      contentType: file.type,
-      upsert: true,
-    });
-    if (uploadError) return { ok: false, error: uploadError.message };
-  } catch (err) {
-    console.error("uploadArtworkFile: storage upload threw", err);
-    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
-  }
-
-  const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
-
   const { data: order, error: fetchError } = await db
     .from("orders")
     .select("artwork_files")
@@ -402,7 +503,7 @@ export async function uploadArtworkFile(
 
   const files: ArtworkFile[] = [...((order.artwork_files ?? []) as ArtworkFile[])];
   while (files.length <= slot) files.push({ url: "" });
-  files[slot] = { url: pub.publicUrl };
+  files[slot] = { url: publicUrl };
 
   const { error: updateError } = await db
     .from("orders")
@@ -410,7 +511,7 @@ export async function uploadArtworkFile(
     .eq("id", orderId);
   if (updateError) return { ok: false, error: updateError.message };
 
-  return { ok: true, url: pub.publicUrl };
+  return { ok: true, url: publicUrl };
 }
 
 export async function removeArtworkFile(orderId: string, slot: number): Promise<{ ok: boolean; error?: string }> {
@@ -436,43 +537,25 @@ export async function removeArtworkFile(orderId: string, slot: number): Promise<
   return { ok: true };
 }
 
-const INVOICE_MAX_BYTES = 10 * 1024 * 1024; // matches the "artwork-files" bucket's own cap
-
-export async function uploadCustomInvoice(
+export async function saveCustomInvoice(
   orderId: string,
-  formData: FormData
+  path: string,
+  label: string
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   await requireStaffSession();
 
-  const file = formData.get("file");
-  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "No file provided." };
-  if (file.type !== "application/pdf") return { ok: false, error: "Unsupported file type — use PDF." };
-  if (file.size > INVOICE_MAX_BYTES) return { ok: false, error: "File too large — 10MB max." };
+  const publicUrl = await verifyStaffUpload("invoice", orderId, 0, path);
+  if (!publicUrl) return { ok: false, error: "Upload not found — try again." };
 
-  const db = supabaseServer();
-  const path = `invoices/${orderId}/${Date.now()}.pdf`;
+  const invoiceFile: ArtworkFile = { url: publicUrl, label: String(label ?? "").slice(0, 200) || "invoice.pdf" };
 
-  try {
-    const { error: uploadError } = await db.storage.from(ARTWORK_BUCKET).upload(path, file, {
-      contentType: "application/pdf",
-      upsert: true,
-    });
-    if (uploadError) return { ok: false, error: uploadError.message };
-  } catch (err) {
-    console.error("uploadCustomInvoice: storage upload threw", err);
-    return { ok: false, error: err instanceof Error ? err.message : "Upload failed — file may be too large." };
-  }
-
-  const { data: pub } = db.storage.from(ARTWORK_BUCKET).getPublicUrl(path);
-  const invoiceFile: ArtworkFile = { url: pub.publicUrl, label: file.name };
-
-  const { error: updateError } = await db
+  const { error: updateError } = await supabaseServer()
     .from("orders")
     .update({ invoice_file: invoiceFile, updated_at: new Date().toISOString() })
     .eq("id", orderId);
   if (updateError) return { ok: false, error: updateError.message };
 
-  return { ok: true, url: pub.publicUrl };
+  return { ok: true, url: publicUrl };
 }
 
 export async function removeCustomInvoice(orderId: string): Promise<{ ok: boolean; error?: string }> {

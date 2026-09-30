@@ -6,7 +6,8 @@ import { FileText, Upload, X } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { uploadCustomInvoice, removeCustomInvoice } from "@/lib/orders/actions";
+import { saveCustomInvoice, removeCustomInvoice } from "@/lib/orders/actions";
+import { uploadStaffFile } from "@/components/ops/upload-staff-file";
 import type { ArtworkFile } from "@/lib/orders/types";
 
 export function CustomInvoiceUploader({
@@ -28,9 +29,12 @@ export function CustomInvoiceUploader({
     setBusy(true);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.set("file", picked);
-      const res = await uploadCustomInvoice(orderId, fd);
+      const up = await uploadStaffFile("invoice", orderId, 0, picked);
+      if (!up.ok) {
+        setError(up.tooLarge ? t("upload_too_large") : (up.error ?? t("invoice_upload_failed")));
+        return;
+      }
+      const res = await saveCustomInvoice(orderId, up.path, picked.name);
       if (!res.ok) {
         setError(res.error ?? t("invoice_upload_failed"));
         return;

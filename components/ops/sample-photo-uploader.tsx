@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { Upload, X } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
-import { uploadSampleImage, removeSampleImage } from "@/lib/orders/actions";
+import { saveSampleImage, removeSampleImage } from "@/lib/orders/actions";
+import { uploadStaffFile } from "@/components/ops/upload-staff-file";
 import { isVideoUrl } from "@/lib/utils";
 import type { SampleImage } from "@/lib/orders/types";
 
@@ -31,9 +32,12 @@ export function SamplePhotoUploader({
     setBusy(slot);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      const res = await uploadSampleImage(orderId, slot, fd);
+      const up = await uploadStaffFile("sample", orderId, slot, file);
+      if (!up.ok) {
+        setError(up.tooLarge ? t("upload_too_large") : (up.error ?? t("upload_failed")));
+        return;
+      }
+      const res = await saveSampleImage(orderId, slot, up.path);
       if (!res.ok) {
         setError(res.error ?? "Upload failed.");
         return;
@@ -43,10 +47,7 @@ export function SamplePhotoUploader({
       next[slot] = { url: res.url! };
       onChanged(next);
     } catch {
-      // Server actions reject outright (rather than returning { ok: false })
-      // when the request itself is too large for Next's body-size limit —
-      // without this catch, that failure would only show up in server logs.
-      setError(t("upload_too_large"));
+      setError(t("upload_failed"));
     } finally {
       setBusy(null);
     }
