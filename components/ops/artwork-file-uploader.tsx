@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { Upload, X } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
-import { uploadArtworkFile, removeArtworkFile } from "@/lib/orders/actions";
+import { saveArtworkFile, removeArtworkFile } from "@/lib/orders/actions";
+import { uploadStaffFile } from "@/components/ops/upload-staff-file";
 import type { ArtworkFile } from "@/lib/orders/types";
 
 const SLOTS = [0, 1, 2];
@@ -30,9 +31,12 @@ export function ArtworkFileUploader({
     setBusy(slot);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      const res = await uploadArtworkFile(orderId, slot, fd);
+      const up = await uploadStaffFile("artwork", orderId, slot, file);
+      if (!up.ok) {
+        setError(up.tooLarge ? t("upload_too_large") : (up.error ?? t("upload_failed")));
+        return;
+      }
+      const res = await saveArtworkFile(orderId, slot, up.path);
       if (!res.ok) {
         setError(res.error ?? "Upload failed.");
         return;
@@ -42,7 +46,7 @@ export function ArtworkFileUploader({
       next[slot] = { url: res.url! };
       onChanged(next);
     } catch {
-      setError(t("upload_too_large"));
+      setError(t("upload_failed"));
     } finally {
       setBusy(null);
     }

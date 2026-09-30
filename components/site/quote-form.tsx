@@ -10,8 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SALES_PHONE } from "@/lib/contact";
-import { createOrderFromQuote } from "@/lib/orders/actions";
+import { createCustomerArtworkUploadUrls, createOrderFromQuote } from "@/lib/orders/actions";
 import { ArtworkInput } from "@/components/site/artwork-input";
+import { putToSignedUrl } from "@/lib/storage/signed-upload";
 import { QUANTITY_RANGES, isQuantityRange } from "@/lib/orders/quantity";
 import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
 
@@ -22,7 +23,7 @@ export function QuoteForm() {
   const ar = locale === "ar";
   const [sent, setSent] = useState(false);
   const [trackingUrl, setTrackingUrl] = useState<string | null>(null);
-  const [error, setError] = useState<"generic" | "too_large" | null>(null);
+  const [error, setError] = useState<"generic" | "upload" | null>(null);
   const [submitting, setSubmitting] = useState(false);
   // Blocks a second submit before React re-renders the disabled button
   // (fast double click, Enter pressed twice).
@@ -49,6 +50,19 @@ export function QuoteForm() {
     const f = new FormData(e.currentTarget);
 
     try {
+      // Attached files go straight to Storage; only their paths travel with
+      // the Server Action (Vercel rejects function bodies over 4.5MB).
+      const artwork = f.getAll("artwork").filter((v): v is File => v instanceof File && v.size > 0);
+      f.delete("artwork");
+      if (artwork.length > 0) {
+        const uploaded = await uploadArtwork(artwork);
+        if (!uploaded) {
+          setError("upload");
+          return;
+        }
+        uploaded.forEach((entry) => f.append("artwork", JSON.stringify(entry)));
+      }
+
       const order = await createOrderFromQuote(f, locale);
       if (order) {
         setTrackingUrl(order.trackingUrl);
@@ -59,12 +73,7 @@ export function QuoteForm() {
       }
     } catch (err) {
       console.error("createOrderFromQuote failed", err);
-      // Next's Server Action body-size guard rejects the request before our
-      // own code runs, surfacing as a thrown error here rather than a normal
-      // { ok: false } result — worth a specific message since "call sales"
-      // isn't the fix, attaching smaller files is.
-      const tooLarge = err instanceof Error && /body exceeded|limit/i.test(err.message);
-      setError(tooLarge ? "too_large" : "generic");
+      setError("generic");
     } finally {
       inFlight.current = false;
       setSubmitting(false);
@@ -172,9 +181,9 @@ export function QuoteForm() {
         {submitting ? (ar ? "جاري الإرسال…" : "Sending…") : t("f.submit")}
       </Button>
 
-      {error === "too_large" && (
+      {error === "upload" && (
         <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">
-          {t("f.error_too_large")}
+          {t("f.error_upload")}
         </p>
       )}
       {error === "generic" && (
@@ -189,6 +198,24 @@ export function QuoteForm() {
       </p>
     </form>
   );
+}
+
+/**
+ * Uploads the customer's design files directly to Storage through signed
+ * URLs and returns the { path, label } entries createOrderFromQuote expects,
+ * or null if any file failed to upload.
+ */
+async function uploadArtwork(files: File[]): Promise<{ path: string; label: string }[] | null> {
+  const targets = await createCustomerArtworkUploadUrls(files.map((file) => ({ name: file.name, size: file.size })));
+  if (!targets || targets.length !== files.length) return null;
+
+  const results = await Promise.all(
+    files.map(async (file, i) => {
+      const put = await putToSignedUrl(targets[i].signedUrl, file);
+      return put.ok ? { path: targets[i].path, label: file.name } : null;
+    })
+  );
+  return results.every((r) => r !== null) ? (results as { path: string; label: string }[]) : null;
 }
 
 function Field({
