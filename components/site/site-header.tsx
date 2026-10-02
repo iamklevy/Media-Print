@@ -193,7 +193,7 @@ export function SiteHeader() {
                 <Link
                   href="/book"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-full bg-accent-soft px-4 py-3 font-semibold text-accent-2"
+                  className="mt-2 flex items-center gap-2 rounded-full bg-accent-soft px-4 py-3 font-semibold text-accent-2"
                 >
                   <Calendar className="size-4" />
                   {t("cta.book")}
@@ -204,7 +204,7 @@ export function SiteHeader() {
                   target="_blank"
                   rel="noopener"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 font-semibold text-white"
+                  className="mt-2 flex items-center gap-2 rounded-full bg-[#1DA851] px-4 py-3 font-semibold text-white"
                 >
                   <WhatsAppIcon className="size-4" />
                   {t("cta.whatsapp")}
