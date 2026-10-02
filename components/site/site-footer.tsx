@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Phone } from "lucide-react";
-import { FacebookIcon, WhatsAppIcon } from "./brand-icons";
+import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "./brand-icons";
 
 import { Link } from "@/i18n/navigation";
 import {
@@ -8,6 +8,7 @@ import {
   ADMIN_PHONE,
   FOOTER_EMAIL,
   FACEBOOK,
+  INSTAGRAM,
 } from "@/lib/contact";
 import { PRODUCTS } from "@/content/products";
 
@@ -51,7 +52,16 @@ export function SiteFooter() {
                 <FacebookIcon className="size-5" />
               </a>
               <a
-                href={`https://wa.me/20${SALES_PHONE}`}
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener"
+                aria-label={t("ft.in_arialabel")}
+                className="grid size-10 place-items-center rounded-xl bg-white/10 text-paper transition hover:bg-accent"
+              >
+                <InstagramIcon className="size-5" />
+              </a>
+              <a
+                href={`https://wa.me/20${SALES_PHONE}`} 
                 target="_blank"
                 rel="noopener"
                 aria-label={t("ft.wa_arialabel")}

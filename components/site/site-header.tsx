@@ -11,6 +11,8 @@ import { NavDropdown, type NavMenuItem } from "./nav-dropdown";
 import { PRODUCTS } from "@/content/products";
 import { INDUSTRIES } from "@/content/industries";
 import { cn } from "@/lib/utils";
+import { SALES_PHONE } from "@/lib/contact";
+import { WhatsAppIcon } from "./brand-icons";
 
 /** Plain links, shown after the two dropdowns. */
 const LINKS = [
@@ -196,6 +198,17 @@ export function SiteHeader() {
                   <Calendar className="size-4" />
                   {t("cta.book")}
                 </Link>
+
+                <a
+                  href={`https://wa.me/20${SALES_PHONE}`}
+                  target="_blank"
+                  rel="noopener"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 font-semibold text-white"
+                >
+                  <WhatsAppIcon className="size-4" />
+                  {t("cta.whatsapp")}
+                </a>
               </nav>
             </SheetContent>
           </Sheet>

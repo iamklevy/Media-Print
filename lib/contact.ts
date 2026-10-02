@@ -4,6 +4,7 @@ export const ADMIN_PHONE_2 = "01114537488";
 export const FOOTER_EMAIL = "m.mostafa@mediaprint-eg.com";
 export const EMAIL_MARKETING = "marketing.mediaprint@gmail.com";
 export const FACEBOOK = "https://www.facebook.com/mediaprint.pack";
+export const INSTAGRAM = "https://www.instagram.com/media.print.egy/";
 export const ADDRESS_EN = "323 Sudan Street, Mohandessin, Giza";
 
 /** Deep link to any number's WhatsApp thread with a prefilled message. */
