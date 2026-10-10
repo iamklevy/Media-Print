@@ -25,12 +25,15 @@ export function NavDropdown({
   isOpen,
   onOpen,
   onClose,
+  onDark = false,
 }: {
   label: string;
   items: NavMenuItem[];
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  /** trigger sits on the homepage hero photo rather than on paper */
+  onDark?: boolean;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
   const [canHover, setCanHover] = useState(false);
@@ -77,8 +80,10 @@ export function NavDropdown({
         aria-haspopup="true"
         onClick={() => (isOpen ? onClose() : onOpen())}
         className={cn(
-          "flex items-center gap-1.5 rounded-full px-4 py-2 text-[0.96rem] font-semibold transition-colors",
-          isOpen ? "text-accent-2" : "text-ink-2 hover:bg-paper-2",
+          "flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[0.93rem] font-semibold transition-colors",
+          onDark
+            ? isOpen ? "bg-white/15 text-white" : "text-white/85 hover:bg-white/10 hover:text-white"
+            : isOpen ? "bg-paper text-accent-2 shadow-soft" : "text-ink-2 hover:bg-paper",
         )}
       >
         {label}
@@ -88,9 +93,9 @@ export function NavDropdown({
       </button>
 
       {isOpen && (
-        // pt-1 keeps the panel touching the trigger so the pointer never
+        // pt-2 keeps the panel touching the trigger so the pointer never
         // crosses a gap on its way down (which would fire mouseleave)
-        <div className="absolute start-0 top-full z-50 pt-1">
+        <div className="absolute start-0 top-full z-50 pt-2">
           <ul className="min-w-[15rem] overflow-hidden rounded-xl border border-line bg-paper py-2 shadow-lift">
             {items.map((it) => (
               <li key={it.href}>

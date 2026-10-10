@@ -1,62 +1,25 @@
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
-  ArrowRight, Check, Printer, Layers, Scissors, Package, Upload, Quote,
-  ShieldCheck, PenTool, Truck, Factory, Boxes, CalendarDays, MapPin,
+  ArrowRight, Layers, Quote, ShieldCheck, Truck, Factory, Boxes, CalendarDays, MapPin,
 } from "lucide-react";
 
-import { PRODUCTS, CLIENTS } from "@/content/products";
+import { PRODUCTS } from "@/content/products";
 import { INDUSTRIES, SOLUTION_TYPES } from "@/content/industries";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Wrap, Section, SectionHead, Eyebrow } from "@/components/site/section";
+import { Section, SectionHead, Eyebrow } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { IndustryCarousel } from "@/components/site/industry-carousel";
 import { CtaBand } from "@/components/site/cta-band";
+import { HomeHero, HeroReflection } from "@/components/site/home-hero";
+import { ClientMarquee } from "@/components/site/client-marquee";
 import { Reveal, Stagger, StaggerItem, Counter, HoverLift } from "@/components/site/motion";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
-
-const MARQUEE = [
-  { icon: Printer, k: "mq.1" }, { icon: Layers, k: "mq.2" },
-  { icon: Scissors, k: "mq.3" }, { icon: Package, k: "mq.4" },
-  { icon: ShieldCheck, k: "mq.5" }, { icon: PenTool, k: "mq.6" },
-  { icon: Check, k: "mq.7" }, { icon: Truck, k: "mq.8" },
-];
-
-/**
- * Hero collage floating over the blob. Every card is real client/product
- * photography from public/products — no stock photography.
- */
-const HERO_CARDS = [
-  { src: "/products/cartons-raw-african-frizzfade-box-side.png", cls: "top-[2%] start-[26%] w-[34%] [--rot:-7deg] [animation-delay:0s]" },
-  { src: "/products/cartons-musk-altahara-lavender-box.png", cls: "top-[9%] end-[1%] w-[27%] [--rot:6deg] [animation-delay:0.9s]" },
-  {
-    src: "/products/zipper-loops-travel-bottle-ziplock.jpg",
-    cls: "top-[36%] start-[4%] w-[30%] [--rot:5deg] [animation-delay:0.4s]",
-  },
-  {
-    src: "/products/tags-nasaq-women-hang-tag.jpg",
-    cls: "top-[40%] start-[44%] w-[21%] [--rot:-4deg] [animation-delay:1.4s]",
-  },
-  {
-    src: "/products/stickers-clear-label-roll-pair.jpg",
-    cls: "bottom-[1%] start-[22%] w-[29%] [--rot:-6deg] [animation-delay:0.7s]",
-  },
-  {
-    src: "/products/paper-bags-favelin-pink-ribbon-pair.jpg",
-    cls: "bottom-[7%] end-[3%] w-[26%] [--rot:8deg] [animation-delay:1.8s]",
-  },
-];
-
-const HERO_STEPS = [
-  { icon: Package, k: "hero.v2.s1" },
-  { icon: Upload, k: "hero.v2.s2" },
-  { icon: Truck, k: "hero.v2.s3" },
-];
 
 /** Only figures that can be checked against the price list. */
 const STATS = [
@@ -71,8 +34,8 @@ const OUR_WORK_SLUGS = ["apparel", "paper-bags", "cartons", "corrugated", "tags"
 /** Testimonials. Quotes/names/roles live in messages under home.voices.list.<id>;
     the logo is the client's mark from public/clients (same files as the client wall). */
 const VOICES = [
-  { id: "carina", logo: "/clients/carina.jpg" },
-  { id: "joviality", logo: "/clients/joviality.jpg" },
+  { id: "carina", logo: "/clients/carina.png" },
+  { id: "joviality", logo: "/clients/joviality.png" },
   { id: "hajarafa", logo: "/clients/haj-arafa.png" },
 ] as const;
 
@@ -103,118 +66,19 @@ export default async function HomePage({
 
   return (
     <>
-      {/* ============================================ 1. hero (unchanged) */}
-      <section className="relative isolate overflow-hidden bg-ink py-14 text-paper md:py-20">
-        <Wrap>
-          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-            <div className="relative order-last mx-auto min-h-[400px] w-full max-w-[560px] sm:min-h-[480px] lg:order-first lg:min-h-[560px] lg:max-w-none">
-              <div
-                aria-hidden
-                className="absolute top-1/2 start-[-16%] size-[115%] max-h-[640px] max-w-[640px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#ED8340_0%,var(--color-accent)_48%,var(--color-accent-2)_100%)]"
-              />
-              {HERO_CARDS.map((c, i) => (
-                <div
-                  key={c.src}
-                  className={`absolute aspect-square overflow-hidden rounded-2xl shadow-deep motion-safe:animate-[floaty_6s_ease-in-out_infinite] ${c.cls}`}
-                >
-                  <Image
-                    src={c.src}
-                    alt=""
-                    fill
-                    priority={i < 2}
-                    sizes="(max-width: 1024px) 34vw, 18vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <h1 className="max-w-[14ch] text-[clamp(2.3rem,1.4rem+3.6vw,4.2rem)] leading-[1.08] text-paper">
-                {t("hero.v2.h1")}
-              </h1>
-              <p className="mt-6 max-w-[44ch] text-[clamp(1rem,0.95rem+0.3vw,1.18rem)] leading-relaxed text-paper/75">
-                {t("hero.v2.lead")}
-              </p>
-              <hr className="my-8 max-w-[440px] border-paper/15" />
-              <div className="grid max-w-[520px] grid-cols-3 gap-5">
-                {HERO_STEPS.map(({ icon: Icon, k }, i) => (
-                  <div key={k} className="grid content-start gap-2.5">
-                    <Icon className="size-7 text-paper/90" strokeWidth={1.5} />
-                    <span className="flex items-start gap-2">
-                      <span className="text-[2rem] font-extrabold leading-none text-accent">{i + 1}</span>
-                      <span className="pt-0.5 text-[0.86rem] font-bold leading-snug text-paper">{t(k)}</span>
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-7 text-[0.82rem] text-paper/60">{t("hero.v2.foot")}</p>
-              <Button asChild size="lg" className="mt-8 rounded-full bg-accent px-9 text-[1rem] font-bold hover:bg-accent-2">
-                <Link href="/contact">{t("hero.v2.cta")}</Link>
-              </Button>
-            </div>
-          </div>
-        </Wrap>
-      </section>
-
-      {/* ================================================== 2. capability strip */}
-      <div className="overflow-hidden border-y border-line bg-paper-2 py-4" aria-hidden>
-        <div className="flex w-max animate-[marquee_34s_linear_infinite] gap-12 rtl:[animation-direction:reverse]">
-          {[...MARQUEE, ...MARQUEE].map(({ icon: Icon, k }, i) => (
-            <span key={`${k}-${i}`} className="inline-flex items-center gap-2 whitespace-nowrap text-[0.95rem] font-semibold text-muted">
-              <Icon className="size-4 text-accent" />
-              {t(k)}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* ============================================ 1. hero */}
+      <HomeHero />
 
       {/* ============================================ 3. client wall (dark) */}
-      <Section ink>
+      {/* its background is the hero photo's blurred reflection */}
+      <Section ink className="relative isolate overflow-hidden pb-14! md:pb-20! lg:pb-24!">
+        <HeroReflection />
         <Reveal>
-          <SectionHead onInk eyebrow={t("home.clients.eyebrow")} title={t("home.clients.h2")} lead={t("home.clients.lead")} />
+          <SectionHead center onInk eyebrow={t("home.clients.eyebrow")} title={t("home.clients.h2")} lead={t("home.clients.lead")} />
         </Reveal>
-        <div className="grid gap-8 md:gap-10">
-          {CLIENTS.map((g, gi) => (
-            <Reveal key={g.labelKey} delay={gi * 0.08}>
-              <div className="grid gap-4">
-                <span className="flex items-center gap-3 whitespace-nowrap text-[0.8rem] font-bold uppercase tracking-[0.11em] text-accent">
-                  {t(g.labelKey)}
-                  <span className="h-px flex-1 bg-white/15" />
-                </span>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                  {g.names.map((c) => (
-                    <figure
-                      key={c.name}
-                      className="m-0 flex h-full flex-col items-center gap-3 rounded-2xl border border-white/12 bg-white/5 p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:bg-white/10"
-                    >
-                      {/* white plate so every logo keeps its own colours on the dark band —
-                          darkPlate flips this for logos that are themselves white-on-transparent */}
-                      <span
-                        className={`grid h-16 w-full place-items-center overflow-hidden rounded-xl px-3 py-2 ${
-                          c.darkPlate ? "bg-ink" : "bg-white"
-                        }`}
-                      >
-                        {c.logo ? (
-                          // eslint-disable-next-line @next/next/no-img-element -- tiny static logos, no optimizer needed (and it can't serve the .svg)
-                          <img src={c.logo} alt="" loading="lazy" className="max-h-12 w-auto max-w-full object-contain" />
-                        ) : (
-                          <span aria-hidden className="text-[1.5rem] font-extrabold text-ink/80">
-                            {c.name.charAt(0)}
-                          </span>
-                        )}
-                      </span>
-                      <figcaption className="leading-tight">
-                        <span className="block text-[0.9rem] font-semibold text-paper">{c.name}</span>
-                        {c.sub && <span className="block text-[0.74rem] font-medium text-paper/55">{c.sub}</span>}
-                      </figcaption>
-                    </figure>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={0.08}>
+          <ClientMarquee />
+        </Reveal>
       </Section>
 
       {/* ============================================ 4. choose your industry */}
