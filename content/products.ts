@@ -257,17 +257,24 @@ export const PRODUCTS: CatalogueProduct[] = [
 
 export interface ClientGroup {
   labelKey: string;
-  names: { name: string; sub?: string; logo?: string; darkPlate?: boolean }[];
+  names: {
+    name: string;
+    sub?: string;
+    logo?: string;
+    darkPlate?: boolean;
+    /** detailed/multi-colour mark that turns into a blob when flattened to white — show it in colour */
+    keepColor?: boolean;
+  }[];
 }
 
 export const CLIENTS: ClientGroup[] = [
   {
     labelKey: "clients.food",
     names: [
-      { name: "Haj Arafa", logo: "/clients/haj-arafa.png" },
+      { name: "Haj Arafa", logo: "/clients/haj-arafa.png", keepColor: true },
       { name: "Coca-Cola", logo: "/clients/coca-cola.png" },
-      { name: "Gomla Market", logo: "/clients/gomla-market.png" },
-      { name: "TASTE PURE", logo: "/clients/taste-pure.png" },
+      { name: "Gomla Market", logo: "/clients/gomla-market.png", keepColor: true },
+      { name: "TASTE PURE", logo: "/clients/taste-pure.png", keepColor: true },
       { name: "Fridal", logo: "/clients/frida.png", darkPlate: true },
     ],
   },
@@ -275,13 +282,13 @@ export const CLIENTS: ClientGroup[] = [
     labelKey: "clients.cosmetics",
     names: [
       { name: "Parkvilla", logo: "/clients/parkvilla.png" },
-      { name: "Capixy", logo: "/clients/capixy.jpg" },
+      { name: "Capixy", logo: "/clients/capixy.png" },
       { name: "Marico", sub: "Fiancée · Hair Code", logo: "/clients/marico.png" },
-      { name: "RawAfrica", logo: "/clients/rawafrica.jpg" },
-      { name: "FEVELIN", logo: "/clients/fevelin.jpg" },
+      { name: "RawAfrica", logo: "/clients/rawafrica.png", keepColor: true },
+      { name: "FEVELIN", logo: "/clients/fevelin.png" },
       { name: "LUNA", logo: "/clients/luna.png" },
       { name: "Willy", logo: "/clients/willy.png" },
-      { name: "Joviality", logo: "/clients/joviality.jpg" },
+      { name: "Joviality", logo: "/clients/joviality.png" },
       { name: "Nuit Fragrance", logo: "/clients/nuit.png" },
       { name: "Era Care", logo: "/clients/era-care.png" },
       { name: "SORELLA", logo: "/clients/sorella.png" },
@@ -290,7 +297,7 @@ export const CLIENTS: ClientGroup[] = [
   {
     labelKey: "clients.clothing",
     names: [
-      { name: "Carina", logo: "/clients/carina.jpg" },
+      { name: "Carina", logo: "/clients/carina.png" },
       { name: "DXLR", logo: "/clients/dxlr.png" },
       { name: "SLEEKZ", logo: "/clients/sleekz.png" },
       { name: "FATM" },

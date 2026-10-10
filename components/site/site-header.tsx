@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Menu, Globe, Package, Calendar, ChevronDown } from "lucide-react";
+import { Globe } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { NavDropdown, type NavMenuItem } from "./nav-dropdown";
 import { PRODUCTS } from "@/content/products";
 import { INDUSTRIES } from "@/content/industries";
 import { cn } from "@/lib/utils";
-import { SALES_PHONE } from "@/lib/contact";
-import { WhatsAppIcon } from "./brand-icons";
+import { MobileMenu } from "./mobile-menu";
 
 /** Plain links, shown after the two dropdowns. */
 const LINKS = [
@@ -25,14 +22,23 @@ export function SiteHeader() {
   const t = useTranslations();
   const locale = useLocale();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState<"browse" | "markets" | null>(null);
-  const [mobileSection, setMobileSection] = useState<"browse" | "markets" | null>(null);
 
   const other = locale === "ar" ? "en" : "ar";
 
+  // On the homepage the header floats, transparent, over the hero photo
+  // (HomeHero pulls itself up underneath); it turns solid once scrolled.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const sync = () => setScrolled(window.scrollY > 24);
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => window.removeEventListener("scroll", sync);
+  }, []);
+  const overlay = pathname === "/" && !scrolled;
+
   // No effect is needed to close on navigation: dropdown links call onClose
-  // themselves, sheet links call setOpen(false), and clicking anything else
+  // themselves, mobile-menu links close the menu, and clicking anything else
   // fires NavDropdown's outside-pointerdown handler.
 
   // every product on the site, each to its own page
@@ -56,24 +62,51 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-transparent bg-paper/85 backdrop-blur-md backdrop-saturate-150 transition-[border-color,box-shadow] has-[.stuck]:border-line">
-      <div className="mx-auto flex w-[min(1200px,100%-2.5rem)] items-center gap-6 py-3">
-        <Link href="/" className="me-auto flex items-center gap-3">
-          <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px] shadow-soft">
+    // The header strip itself is always transparent and click-through; the bar
+    // inside is what changes — flat over the homepage hero, a floating frosted
+    // capsule with an orange glow everywhere else. Height stays 72px either way
+    // so HomeHero's -mt-[72px] still lines up.
+    <header
+      className={cn(
+        "pointer-events-none sticky top-0 z-50 flow-root h-[72px] transition-colors duration-300",
+        overlay ? "text-white" : "text-ink",
+      )}
+    >
+      <div
+        className={cn(
+          "pointer-events-auto mx-auto flex items-center gap-4 border transition-all duration-500 ease-out",
+          overlay
+            ? "mt-0 h-[72px] w-[min(1200px,100%-2.5rem)] rounded-none border-transparent px-0"
+            : "mt-2 h-[58px] w-[min(1240px,100%-1rem)] rounded-full border-accent/20 bg-paper/70 bg-[radial-gradient(400px_100px_at_0%_50%,rgb(237_131_64/0.22),transparent_70%)] ps-2.5 pe-2 shadow-[0_12px_34px_-10px_rgb(221_99_32/0.35)] backdrop-blur-xl backdrop-saturate-150 rtl:bg-[radial-gradient(400px_100px_at_100%_50%,rgb(237_131_64/0.22),transparent_70%)]",
+        )}
+      >
+        <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
+          <span className="grid size-9 shrink-0 sm:size-10 place-items-center overflow-hidden rounded-xl bg-white p-[3px] shadow-soft">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="" className="size-full object-contain" />
           </span>
           <span className="leading-tight">
-            <span className="block text-[1.06rem] font-extrabold tracking-tight">
+            <span className="block whitespace-nowrap text-[0.98rem] font-extrabold tracking-tight sm:text-[1.04rem]">
               {t("brand.name")}
             </span>
-            <span className="hidden text-[0.74rem] font-medium text-muted sm:block">
+            <span
+              className={cn(
+                "hidden text-[0.72rem] font-medium sm:block",
+                overlay ? "text-white/65" : "text-muted",
+              )}
+            >
               {t("brand.tag")}
             </span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        {/* the centre pill */}
+        <nav
+          className={cn(
+            "hidden items-center gap-0.5 rounded-full border p-1 transition-colors duration-300 lg:flex",
+            overlay ? "border-white/15 bg-white/10 backdrop-blur-md" : "border-transparent",
+          )}
+        >
           {MENUS.map((m) => (
             <NavDropdown
               key={m.id}
@@ -82,136 +115,67 @@ export function SiteHeader() {
               isOpen={menu === m.id}
               onOpen={() => setMenu(m.id)}
               onClose={() => setMenu((cur) => (cur === m.id ? null : cur))}
+              onDark={overlay}
             />
           ))}
 
-          {LINKS.map(({ href, key }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "rounded-full px-4 py-2 text-[0.96rem] font-semibold text-ink-2 transition-colors hover:bg-paper-2",
-                pathname.startsWith(href) && "bg-accent-soft text-accent-2",
-              )}
-            >
-              {t(`nav.${key}`)}
-            </Link>
-          ))}
+          {LINKS.map(({ href, key }) => {
+            const active = pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-[0.93rem] font-semibold transition-colors",
+                  overlay
+                    ? "text-white/85 hover:bg-white/10 hover:text-white"
+                    : active
+                      ? "bg-paper text-accent-2 shadow-soft"
+                      : "text-ink-2 hover:bg-paper",
+                )}
+              >
+                {t(`nav.${key}`)}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm" className="rounded-full">
-            <Link href={pathname} locale={other}>
-              <Globe className="size-4 opacity-60" />
-              {t("lang.label")}
-            </Link>
-          </Button>
+        <div className="flex flex-1 items-center justify-end gap-1.5">
+          <Link
+            href={pathname}
+            locale={other}
+            className={cn(
+              "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-[0.93rem] font-semibold transition-colors",
+              overlay ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-ink-2 hover:bg-paper-2",
+            )}
+          >
+            <Globe className="size-4 opacity-70" />
+            {t("lang.label")}
+          </Link>
 
-          <Button asChild variant="outline" className="hidden rounded-full sm:inline-flex">
-            <Link href="/book">{t("cta.book")}</Link>
-          </Button>
+          <Link
+            href="/book"
+            className={cn(
+              "hidden whitespace-nowrap rounded-full px-3 py-2 text-[0.93rem] font-semibold transition-colors xl:inline-flex",
+              overlay ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-ink-2 hover:bg-paper-2",
+            )}
+          >
+            {t("cta.book")}
+          </Link>
 
-          <Button asChild className="hidden rounded-full bg-accent hover:bg-accent-2 sm:inline-flex">
-            <Link href="/contact">{t("cta.quote")}</Link>
-          </Button>
+          <Link
+            href="/contact"
+            className={cn(
+              "ms-1 hidden whitespace-nowrap rounded-full px-5 py-2.5 text-[0.93rem] font-bold transition-colors sm:inline-flex",
+              overlay
+                ? "bg-white text-ink hover:bg-accent hover:text-white"
+                : "bg-accent text-white hover:bg-accent-2",
+            )}
+          >
+            {t("cta.quote")}
+          </Link>
 
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-xl lg:hidden"
-                aria-label={t("nav.menu_arialabel")}
-              >
-                <Menu className="size-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side={locale === "ar" ? "left" : "right"}
-              className="w-[min(340px,88vw)] overflow-y-auto p-6 pt-16"
-            >
-              <SheetTitle className="sr-only">{t("nav.menu_arialabel")}</SheetTitle>
-              <nav className="flex flex-col gap-1">
-                {/* the same two menus, as accordions */}
-                {MENUS.map((m) => {
-                  const expanded = mobileSection === m.id;
-                  return (
-                    <div key={m.id}>
-                      <button
-                        type="button"
-                        aria-expanded={expanded}
-                        onClick={() => setMobileSection(expanded ? null : m.id)}
-                        className="flex w-full items-center justify-between rounded-full px-4 py-3 text-[1.05rem] font-semibold hover:bg-paper-2"
-                      >
-                        {m.label}
-                        <ChevronDown
-                          className={cn(
-                            "size-4 transition-transform duration-200",
-                            expanded && "rotate-180",
-                          )}
-                        />
-                      </button>
-                      {expanded && (
-                        <ul className="mb-1 grid gap-0.5 ps-3">
-                          {m.items.map((it) => (
-                            <li key={it.href}>
-                              <Link
-                                href={it.href}
-                                onClick={() => setOpen(false)}
-                                className="block rounded-full px-4 py-2 text-[0.95rem] text-ink-2 hover:bg-paper-2 hover:text-accent-2"
-                              >
-                                {it.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {LINKS.map(({ href, key }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={() => setOpen(false)}
-                    className="rounded-full px-4 py-3 text-[1.05rem] font-semibold hover:bg-paper-2"
-                  >
-                    {t(`nav.${key}`)}
-                  </Link>
-                ))}
-
-                <Link
-                  href="/contact"
-                  onClick={() => setOpen(false)}
-                  className="mt-3 flex items-center gap-2 rounded-full bg-accent px-4 py-3 font-semibold text-white"
-                >
-                  <Package className="size-4" />
-                  {t("cta.quote")}
-                </Link>
-
-                <Link
-                  href="/book"
-                  onClick={() => setOpen(false)}
-                  className="mt-2 flex items-center gap-2 rounded-full bg-accent-soft px-4 py-3 font-semibold text-accent-2"
-                >
-                  <Calendar className="size-4" />
-                  {t("cta.book")}
-                </Link>
-
-                <a
-                  href={`https://wa.me/20${SALES_PHONE}`}
-                  target="_blank"
-                  rel="noopener"
-                  onClick={() => setOpen(false)}
-                  className="mt-2 flex items-center gap-2 rounded-full bg-[#1DA851] px-4 py-3 font-semibold text-white"
-                >
-                  <WhatsAppIcon className="size-4" />
-                  {t("cta.whatsapp")}
-                </a>
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <MobileMenu menus={MENUS} links={LINKS} overlay={overlay} />
         </div>
       </div>
     </header>

@@ -15,7 +15,8 @@ export function PageHero({
 }) {
   const t = useTranslations();
   return (
-    <section className="border-b border-line bg-paper-2 py-12 md:py-16">
+    // pulled up under the floating header capsule so the tint runs to the top
+    <section className="-mt-[72px] border-b border-line bg-paper-2 pb-12 pt-[calc(72px+3rem)] md:pb-16 md:pt-[calc(72px+4rem)]">
       <Wrap>
         <div className="mb-4 flex items-center gap-2 text-[0.87rem] text-muted">
           <Link href="/" className="hover:text-accent-2">

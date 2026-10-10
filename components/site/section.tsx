@@ -48,16 +48,18 @@ export function SectionHead({
   lead,
   onInk,
   action,
+  center,
 }: {
   eyebrow?: string;
   title: string;
   lead?: string;
   onInk?: boolean;
   action?: React.ReactNode;
+  center?: boolean;
 }) {
   return (
     <div className={cn("mb-10 md:mb-14", action && "flex flex-wrap items-end justify-between gap-6")}>
-      <div className="max-w-[62ch]">
+      <div className={cn("max-w-[62ch]", center && "mx-auto text-center")}>
         {eyebrow && <Eyebrow onInk={onInk}>{eyebrow}</Eyebrow>}
         <h2 className="mt-0.2 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{title}</h2>
         {lead && (
