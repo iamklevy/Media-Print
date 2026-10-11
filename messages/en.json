@@ -231,6 +231,23 @@
     }
   },
   "industry": {
+    "chip": {
+      "packaging": "Packaging",
+      "labels": "Labels",
+      "bags": "Bags",
+      "cards": "Cards",
+      "zipper_pouch_bags": "Zipper Pouch Bags",
+      "flyers": "Flyers",
+      "hang_tags": "Hang Tags",
+      "zipper_bags": "Zipper Bags",
+      "boxes": "Boxes",
+      "shipping_boxes": "Shipping Boxes",
+      "shipping_bags": "Shipping Bags",
+      "labels_stickers": "Labels & Stickers",
+      "cards_inserts": "Cards & Inserts"
+    },
+    "view": "See all {name} products",
+    "pick": "Industries",
     "all": "All industries",
     "cosmetics": {
       "name": "Cosmetics & Perfumes",
@@ -249,6 +266,14 @@
       "blurb": "Shipping boxes, shipping bags, labels and inserts built to survive a courier."
     }
   },
+  "solutionDesc": {
+    "labels": "Printed stickers and product labels, on paper or clear film.",
+    "boxes": "Printed cartons and corrugated mailer boxes.",
+    "bags": "Paper bags, fabric totes, courier bags and sacks.",
+    "cards": "Hang tags and printed cards carrying your brand.",
+    "flyers": "Flyers and printed inserts to go in every order.",
+    "zipperpouches": "Resealable zipper bags, including aluminium pouches."
+  },
   "solution": {
     "labels": "Labels",
     "boxes": "Boxes",
@@ -259,12 +284,10 @@
   },
   "home": {
     "industry": {
-      "eyebrow": "Who we pack for",
       "h2": "Choose your industry",
       "lead": "Pick the industry closest to your product and we will show you exactly what we make for it."
     },
     "solutions": {
-      "eyebrow": "Browse by type",
       "h2": "Browse by product type",
       "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
     },
@@ -402,7 +425,7 @@
   },
   "band": {
     "h2": "Send us your product, we will tell you how to pack it",
-    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: 01005750973."
+    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 100 575 0973."
   },
   "ft": {
     "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
@@ -413,6 +436,8 @@
     "nav": "Site",
     "prod": "Products",
     "contact": "Get in touch",
+    "sales": "Sales",
+    "inquiries": "Inquiries / Complaints",
     "rights": "© 2026 Media Print Pack. All rights reserved.",
     "made": "323 Sudan Street, Mohandessin, Giza"
   },
@@ -545,7 +570,7 @@
     "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
     "error_upload": "We couldn't upload your attached files — please check your connection and try again.",
     "submit": "Send quote request",
-    "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
+    "note": "Or call sales directly on +20 100 575 0973 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
   },
   "quantity_ranges": {
@@ -572,7 +597,7 @@
       "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
-      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm.",
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 100 575 0973 — open Saturday to Thursday, 10am to 6pm.",
       "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world.",
       "faq": "Minimum orders, artwork requirements, sampling, lead times, delivery and design — answered."
     }

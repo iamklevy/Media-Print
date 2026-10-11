@@ -11,7 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHead, Eyebrow } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
-import { IndustryCarousel } from "@/components/site/industry-carousel";
+import { IndustryShowcase } from "@/components/site/industry-showcase";
 import { CtaBand } from "@/components/site/cta-band";
 import { HomeHero, HeroReflection } from "@/components/site/home-hero";
 import { ClientMarquee } from "@/components/site/client-marquee";
@@ -84,38 +84,42 @@ export default async function HomePage({
       {/* ============================================ 4. choose your industry */}
       <Section>
         <Reveal>
-          <SectionHead eyebrow={t("home.industry.eyebrow")} title={t("home.industry.h2")} lead={t("home.industry.lead")} />
+          <SectionHead title={t("home.industry.h2")} lead={t("home.industry.lead")} />
         </Reveal>
         <Reveal delay={0.08}>
-          <IndustryCarousel industries={INDUSTRIES} />
+          <IndustryShowcase industries={INDUSTRIES} />
         </Reveal>
       </Section>
 
       {/* ============================================ 5. browse by type */}
       <Section tint>
         <Reveal>
-          <SectionHead eyebrow={t("home.solutions.eyebrow")} title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
+          <SectionHead title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
         </Reveal>
-        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <Stagger className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {SOLUTION_TYPES.map((s) => (
             <StaggerItem key={s.slug}>
-              <HoverLift>
+              <HoverLift className="h-full">
                 <Link
                   href={`/products?type=${s.slug}`}
-                  className="group relative isolate flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-[22px] p-4 shadow-soft transition-shadow duration-500 hover:shadow-deep"
+                  className="group flex h-full flex-col rounded-[22px] border border-line bg-paper p-2 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/35 hover:shadow-deep sm:p-2.5"
                 >
-                  <Image
-                    src={s.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                    className="-z-20 object-cover transition-transform duration-[1200ms] group-hover:scale-105"
-                  />
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(18,15,12,0.05)_0%,rgba(18,15,12,0.35)_55%,rgba(18,15,12,0.88)_100%)]"
-                  />
-                  <span className="font-semibold text-paper">{t(s.key)}</span>
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[16px] bg-paper-2">
+                    <Image
+                      src={s.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col px-2 pb-2 pt-4 sm:px-3 sm:pb-3">
+                    <span className="flex items-center justify-between gap-3 text-[clamp(1.02rem,0.95rem+0.35vw,1.2rem)] font-bold">
+                      {t(s.key)}
+                      <ArrowRight className="size-4 shrink-0 text-faint transition-all group-hover:translate-x-0.5 group-hover:text-accent rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+                    </span>
+                    <span className="mt-1.5 text-[0.86rem] leading-relaxed text-muted sm:text-[0.92rem]">{t(s.descKey)}</span>
+                  </div>
                 </Link>
               </HoverLift>
             </StaggerItem>

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { SALES_PHONE } from "@/lib/contact";
+import { SALES_PHONE, formatPhone } from "@/lib/contact";
 import { createCustomerArtworkUploadUrls, createOrderFromQuote } from "@/lib/orders/actions";
 import { ArtworkInput } from "@/components/site/artwork-input";
 import { putToSignedUrl } from "@/lib/storage/signed-upload";
@@ -194,7 +194,7 @@ export function QuoteForm() {
 
       <p className="text-[0.85rem] text-muted">{t("f.note")}</p>
       <p className="text-[0.85rem] text-muted" dir="ltr">
-        {SALES_PHONE}
+        {formatPhone(SALES_PHONE)}
       </p>
     </form>
   );

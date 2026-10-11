@@ -37,7 +37,8 @@ export function HomeHero() {
         src={HERO_IMAGE}
         alt=""
         fill
-        priority
+        loading="eager"
+        fetchPriority="high"
         sizes="100vw"
         className="-z-20 object-cover"
       />

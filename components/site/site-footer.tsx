@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   SALES_PHONE,
   ADMIN_PHONE,
+  formatPhone,
   FOOTER_EMAIL,
   FACEBOOK,
   INSTAGRAM,
@@ -110,13 +111,15 @@ export function SiteFooter() {
             <h4 className="mb-4 text-[0.95rem] font-bold text-paper">{t("ft.contact")}</h4>
             <ul className="grid gap-2.5 text-[0.93rem]">
               <li>
+                <span className="me-2 text-paper">{t("ft.sales")}:</span>
                 <a href={`tel:+2${SALES_PHONE}`} dir="ltr" className="transition hover:text-accent">
-                  {SALES_PHONE}
+                  {formatPhone(SALES_PHONE)}
                 </a>
               </li>
               <li>
+                <span className="me-2 text-paper">{t("ft.inquiries")}:</span>
                 <a href={`tel:+2${ADMIN_PHONE}`} dir="ltr" className="transition hover:text-accent">
-                  {ADMIN_PHONE}
+                  {formatPhone(ADMIN_PHONE)}
                 </a>
               </li>
               <li>

@@ -122,7 +122,8 @@ export function ProductGallery({
               src={images[active]}
               alt={alt}
               fill
-              priority
+              loading="eager"
+              fetchPriority="high"
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
               draggable={false}
@@ -403,7 +404,7 @@ function Lightbox({
                     sizes="100vw"
                     className="object-contain"
                     draggable={false}
-                    priority
+                    loading="eager"
                   />
                 </div>
               </motion.div>

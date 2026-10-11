@@ -1,5 +1,5 @@
 import type { ArtworkFile, Order } from "@/lib/orders/types";
-import { SALES_PHONE } from "@/lib/contact";
+import { SALES_PHONE, formatPhone } from "@/lib/contact";
 import { quantityRangeLabel } from "@/lib/orders/quantity";
 
 const isAr = (locale: string): locale is "ar" => locale === "ar";
@@ -25,7 +25,7 @@ function layout(locale: string, bodyHtml: string): string {
             </tr>
             <tr>
               <td style="padding:16px 28px;background:#f4f2ee;color:#6b6b6b;font-size:12px;" dir="ltr">
-                ${SALES_PHONE} · mediaprint-eg.com
+                ${formatPhone(SALES_PHONE)} · mediaprint-eg.com
               </td>
             </tr>
           </table>
