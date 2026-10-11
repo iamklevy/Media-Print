@@ -6,7 +6,7 @@
   },
   "brand": {
     "name": "Media Print Pack",
-    "tag": "Printing &amp; Packaging"
+    "tag": "Printing & Packaging"
   },
   "nav": {
     "home": "Home",
@@ -14,27 +14,32 @@
     "products": "Products",
     "stickers": "Stickers",
     "services": "Services",
+    "finishing": "Finishing",
+    "portfolio": "Portfolio",
+    "about": "About Us",
+    "faq": "FAQ",
     "contact": "Contact",
     "menu_arialabel": "Open menu",
-    "book": "Book a meeting"
+    "close_arialabel": "Close menu",
+    "book": "Book a meeting",
+    "browse": "Browse All Products",
+    "markets": "Industries"
   },
   "lang": {
     "label": "العربية"
   },
   "cta": {
     "book": "Book a meeting",
-    "quote": "Request a quote",
+    "quote": "Get pricing",
     "whatsapp": "WhatsApp us",
     "details": "Details",
     "call": "Call us",
-    "askprice": "Ask for a price",
     "products": "Browse products"
   },
   "hero": {
-    "badge": "The Alibaba of packaging in Egypt",
     "h1a": "Packaging that makes",
-    "h1b": "your product",
-    "h1c": "look the part",
+    "h1b": "your brand",
+    "h1c": "stand out",
     "lead": "We manufacture and print bags, sacks, cartons and labels from our workshop in Mohandessin, Giza. No importing from China, no middlemen — we design it, print it, and ship it anywhere in Egypt and the Arab world.",
     "chip1": "A sample before production",
     "chip2": "Printed runs from 1,000 bags",
@@ -47,13 +52,25 @@
     "float2": {
       "n": "6 days",
       "l": "Open every week"
+    },
+    "v2": {
+      "h1": "Packaging that does more",
+      "lead": "That means more sales. More connection with your customers. More options. More flexibility.",
+      "s1": "Pick your packaging",
+      "s2": "Upload your design",
+      "s3": "Approve, then we ship",
+      "foot": "*Production starts the moment you approve your sample — then we ship to every governorate.",
+      "cta": "Get pricing"
+    },
+    "v3": {
+      "word": "MEDIA PRINT"
     }
   },
   "mq": {
     "1": "Printing up to 4 colours",
     "2": "Two-ply lamination",
     "3": "Die-cut shapes",
-    "4": "3 &amp; 5-ply corrugated",
+    "4": "3 & 5-ply corrugated",
     "5": "Sample before production",
     "6": "Artwork designed in-house",
     "7": "Food-safe materials",
@@ -63,7 +80,11 @@
     "eyebrow": "What we make",
     "h2": "One workshop, every kind of packaging",
     "lead": "From a zipper bag for a spice brand to five-ply corrugated cartons for a shipping line — printed, finished and delivered by the same team.",
-    "all": "See the full catalogue"
+    "all": "See the full catalogue",
+    "related": {
+      "eyebrow": "You may also like",
+      "h2": "Similar packaging you might need"
+    }
   },
   "p": {
     "zipper": {
@@ -81,7 +102,7 @@
       "s3": "Small quantities accepted"
     },
     "apparel": {
-      "t": "Garment &amp; Apparel Bags",
+      "t": "Garment & Apparel Bags",
       "d": "Clear polyester garment bags with a frosted 3-mil zip lock, resealable and quick to pack — no extra tape or materials needed.",
       "s1": "Clear polyester, 3 mil",
       "s2": "Zip lock or snap close",
@@ -123,7 +144,7 @@
       "s3": "Logo and product details printed"
     },
     "tags": {
-      "t": "Hang Tags &amp; Cards",
+      "t": "Hang Tags & Cards",
       "d": "Card stock in several weights, punched with string, printed one or two sides.",
       "s1": "Card stock in several weights",
       "s2": "Punched with string",
@@ -146,6 +167,13 @@
       "s1": "Printed up to 2 colours from 300 sacks",
       "s2": "Plain from 100 sacks (black, white, yellow, green, red)",
       "s3": "Zip, base and side gussets"
+    },
+    "flyers": {
+      "t": "Flyers & Leaflets",
+      "d": "Printed flyers and leaflets for menus, product inserts and promotions, finished on the same press as your packaging.",
+      "s1": "Single or double-sided printing",
+      "s2": "Gloss, matte or uncoated stock",
+      "s3": "Any size, small or large runs"
     }
   },
   "why": {
@@ -176,10 +204,11 @@
   "clients": {
     "eyebrow": "Trusted by",
     "h2": "Brands that already print with us",
-    "lead": "From multinationals to growing local labels &mdash; a selection of the names we have produced packaging and print for.",
-    "food": "Food &amp; Beverage",
-    "cosmetics": "Cosmetics &amp; Personal Care",
-    "clothing": "Clothing &amp; Fashion"
+    "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for.",
+    "food": "Food & Beverage",
+    "cosmetics": "Cosmetics & Personal Care",
+    "clothing": "Clothing & Fashion",
+    "appliances": "Home Appliances & Electronics"
   },
   "proc": {
     "eyebrow": "How it works",
@@ -201,18 +230,154 @@
       "d": "The run is produced and shipped to your door anywhere in Egypt or the Arab world."
     }
   },
-  "ind": {
-    "eyebrow": "Who we pack for",
-    "h2": "Sectors we already supply",
-    "lead": "If your product needs to sit on a shelf, survive a courier, or carry your name — we have probably packed something like it.",
-    "1": "Food &amp; coffee roasters",
-    "2": "Fertilisers &amp; pesticides",
-    "3": "Clothing &amp; fashion",
-    "4": "Cosmetics &amp; personal care",
-    "5": "Nutritional supplements",
-    "6": "E-commerce &amp; shipping",
-    "7": "Animal feed",
-    "8": "Chemicals"
+  "industry": {
+    "chip": {
+      "packaging": "Packaging",
+      "labels": "Labels",
+      "bags": "Bags",
+      "cards": "Cards",
+      "zipper_pouch_bags": "Zipper Pouch Bags",
+      "flyers": "Flyers",
+      "hang_tags": "Hang Tags",
+      "zipper_bags": "Zipper Bags",
+      "boxes": "Boxes",
+      "shipping_boxes": "Shipping Boxes",
+      "shipping_bags": "Shipping Bags",
+      "labels_stickers": "Labels & Stickers",
+      "cards_inserts": "Cards & Inserts"
+    },
+    "view": "See all {name} products",
+    "pick": "Industries",
+    "all": "All industries",
+    "cosmetics": {
+      "name": "Cosmetics & Perfumes",
+      "blurb": "Boxes, labels, bags and cards finished to make a premium product feel premium."
+    },
+    "food": {
+      "name": "Food & Beverage",
+      "blurb": "Food-safe labels, zipper pouches, bags and flyers for kitchens, roasters and grocers."
+    },
+    "clothing": {
+      "name": "Clothing Packaging",
+      "blurb": "Labels, hang tags, zipper bags, boxes, flyers and cards for fashion brands."
+    },
+    "ecommerce": {
+      "name": "E-commerce & Shipping",
+      "blurb": "Shipping boxes, shipping bags, labels and inserts built to survive a courier."
+    }
+  },
+  "solutionDesc": {
+    "labels": "Printed stickers and product labels, on paper or clear film.",
+    "boxes": "Printed cartons and corrugated mailer boxes.",
+    "bags": "Paper bags, fabric totes, courier bags and sacks.",
+    "cards": "Hang tags and printed cards carrying your brand.",
+    "flyers": "Flyers and printed inserts to go in every order.",
+    "zipperpouches": "Resealable zipper bags, including aluminium pouches."
+  },
+  "solution": {
+    "labels": "Labels",
+    "boxes": "Boxes",
+    "bags": "Bags",
+    "cards": "Cards",
+    "flyers": "Flyers",
+    "zipperpouches": "Zipper Pouches"
+  },
+  "home": {
+    "industry": {
+      "h2": "Choose your industry",
+      "lead": "Pick the industry closest to your product and we will show you exactly what we make for it."
+    },
+    "solutions": {
+      "h2": "Browse by product type",
+      "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
+    },
+    "finishing": {
+      "eyebrow": "Beyond the print",
+      "h2": "Premium finishing",
+      "lead": "UV spot, foil stamping, embossing, lamination and die-cutting — the details that make a pack feel expensive.",
+      "cta": "See our finishing options"
+    },
+    "work": {
+      "eyebrow": "Our work",
+      "h2": "Packaging we have actually shipped",
+      "lead": "A few of the runs that left our workshop, printed and finished for the brands below.",
+      "all": "See the full portfolio"
+    },
+    "why": {
+      "eyebrow": "Why work with us",
+      "h2": "Why MediaPrint?"
+    },
+    "stats": {
+      "eyebrow": "In numbers",
+      "h2": "A workshop, not a middleman",
+      "lead": "Plain facts about how we work — every figure here comes from our own price list and opening hours, not from marketing.",
+      "products_n": "Products we make in-house",
+      "moq_n": "Lowest printed minimum, in pieces",
+      "days_n": "Days a week the workshop runs",
+      "gov_n": "Egyptian governorates we ship to"
+    },
+    "clients": {
+      "eyebrow": "Trusted by",
+      "h2": "Brands already printing with us",
+      "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for."
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "h2": "From enquiry to delivery in four steps",
+      "lead": "Every job runs the same way, and you approve a physical sample before we print the quantity."
+    },
+    "voices": {
+      "eyebrow": "In their words",
+      "h2": "What our customers say",
+      "lead": "Brand owners and procurement teams we print for, on what it's like to work with us.",
+      "list": {
+        "carina": {
+          "quote": "Media Print runs our polybags and hang tags for every drop. The print stays consistent across reorders, the sizing is on spec, and they hold the delivery date even when we pull a launch forward.",
+          "name": "Nour Selim",
+          "role": "Packaging & Procurement Manager, Carina"
+        },
+        "joviality": {
+          "quote": "Half of our product is the unboxing. They matched our Pantones on the first proof and the soft-touch boxes have come back flawless three reorders in a row.",
+          "name": "Yara Fahmy",
+          "role": "Brand Operations Lead, Joviality"
+        },
+        "hajarafa": {
+          "quote": "We buy kraft sacks and printed cartons at real volume. Pricing held through the year, the quality is steady, and their sampling turnaround is faster than anyone else we've used.",
+          "name": "Ahmed Zaki",
+          "role": "Supply Chain Manager, Haj Arafa"
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "Before you ask",
+      "h2": "Questions we get every week",
+      "blurb": "Common questions on minimums, artwork, samples and delivery.",
+      "cta": "See all FAQs",
+      "moq": {
+        "q": "What is your minimum order?",
+        "a": "It depends on the product. Printed bags start at 1,000, printed sacks at 300, corrugated boxes and hang tags at 100, and plain sacks at 100. Every product page shows its own minimum next to the live price."
+      },
+      "artwork": {
+        "q": "What artwork files do you need?",
+        "a": "Send whatever you have. If you already have print-ready artwork we will check it and proof it; if you do not, our team prepares it for you."
+      },
+      "sample": {
+        "q": "Do I get a sample before the full run?",
+        "a": "Yes, always. We produce a physical sample and production only begins once you approve it. What you sign off on is what gets delivered."
+      },
+      "lead": {
+        "q": "How long does an order take?",
+        "a": "CONFIRM WITH MEDIA PRINT — we have not published a lead time. Production starts the moment you approve the sample; talk to sales for a date on your specific job."
+      },
+      "shipping": {
+        "q": "Where do you deliver?",
+        "a": "Every governorate in Egypt, and to the Arab countries. Shipping is arranged once the run is finished and quality-checked."
+      },
+      "design": {
+        "q": "Can you design the packaging for me?",
+        "a": "Yes. Design and artwork are done in-house alongside the printing, so nothing gets lost between suppliers."
+      }
+    }
   },
   "srv": {
     "eyebrow": "Beyond packaging",
@@ -238,11 +403,11 @@
       "d": "Roll-up banners for exhibitions, showrooms and points of sale."
     },
     "letterhead": {
-      "t": "Letterheads &amp; Stationery",
+      "t": "Letterheads & Stationery",
       "d": "Company stationery and notebooks, consistent with the rest of your identity."
     },
     "sticker": {
-      "t": "Paper &amp; Plastic Stickers",
+      "t": "Paper & Plastic Stickers",
       "d": "Stickers on paper or plastic stock, for large runs and short ones alike."
     },
     "duplex": {
@@ -250,7 +415,7 @@
       "d": "Printed duplex board boxes, sized and finished around the product they hold."
     },
     "flyer": {
-      "t": "Flyers, Brochures &amp; Catalogues",
+      "t": "Flyers, Brochures & Catalogues",
       "d": "Marketing print produced at high quality, in the quantity you actually need."
     },
     "promo": {
@@ -260,16 +425,19 @@
   },
   "band": {
     "h2": "Send us your product, we will tell you how to pack it",
-    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: 01005750973."
+    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 100 575 0973."
   },
   "ft": {
     "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
     "fb_arialabel": "Facebook page",
+    "in_arialabel": "Instagram page",
     "wa_arialabel": "WhatsApp",
     "tel_arialabel": "Phone",
     "nav": "Site",
     "prod": "Products",
     "contact": "Get in touch",
+    "sales": "Sales",
+    "inquiries": "Inquiries / Complaints",
     "rights": "© 2026 Media Print Pack. All rights reserved.",
     "made": "323 Sudan Street, Mohandessin, Giza"
   },
@@ -282,42 +450,33 @@
       "v": "Every day 10am – 6pm, closed Friday",
       "t": "Working hours"
     },
-    "map_title": "Media Print Pack location on the map",
-    "sales": {
-      "t": "Sales",
-      "d": "Prices, quantities and samples"
-    },
-    "admin": {
-      "t": "Administration",
-      "d": "Orders and follow-up"
-    },
-    "mail": {
-      "t": "Email",
-      "d": "Artwork and enquiries"
-    },
-    "social": {
-      "t": "Follow us"
-    }
+    "map_title": "Media Print Pack location on the map"
   },
   "crumb": {
     "home": "Home"
   },
+  "about": {
+    "story_eyebrow": "Our story",
+    "story_h2": "One workshop, start to finish",
+    "story_p": "Media Print Pack is a printing and packaging workshop in Mohandessin, Giza. We design, print and finish bags, sacks, cartons and labels ourselves — no importing from China, no middlemen — then ship anywhere in Egypt and the Arab world. Every order gets a physical sample before we run the full quantity, so what you approve is what you get.",
+    "clients_h2": "Brands that print with us"
+  },
   "ph": {
     "best": {
-      "h1": "Bestsellers",
-      "lead": "The packs our customers reorder most, with live pricing on every size and quantity."
+      "h1": "Portfolio",
+      "lead": "A look at the packs we have actually printed and shipped — the packs our customers reorder most, with live pricing on every size and quantity."
     },
     "products": {
       "h1": "Products",
-      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by material, or ask us and we will point you to the right one."
-    },
-    "stick": {
-      "h1": "Printed Stickers",
-      "lead": "Paper, plastic, transparent and metalized stickers, die-cut to any shape, for packs, products and sealing."
+      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by industry, or ask us and we will point you to the right one."
     },
     "services": {
-      "h1": "Printing Services",
-      "lead": "Commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+      "h1": "Finishing & Printing Services",
+      "lead": "The finishing touches and commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+    },
+    "about": {
+      "h1": "About Us",
+      "lead": "A printing and packaging workshop in Mohandessin, Giza — design, printing and finishing under one roof."
     },
     "book": {
       "h1": "Book a Meeting",
@@ -326,46 +485,46 @@
     "contact": {
       "h1": "Contact Us",
       "lead": "Call, message, or fill in the form and it goes straight to our sales line on WhatsApp."
+    },
+    "faq": {
+      "h1": "Frequently Asked Questions",
+      "lead": "Everything we get asked about minimums, artwork, samples, lead times and delivery."
     }
   },
   "cat": {
-    "plastic": "Plastic &amp; flexible",
-    "paper": "Paper &amp; board",
-    "print": "Labels &amp; print",
+    "plastic": "Plastic & flexible",
+    "paper": "Paper & board",
+    "print": "Labels & print",
     "fabric": "Fabric",
-    "all": "Everything"
+    "all": "Everything",
+    "empty": "Nothing in this category yet — message us and we'll point you to the right product."
   },
   "best": {
     "note": "Prices exclude VAT and are confirmed on the sample before production."
   },
   "stick": {
     "browse": "Browse by sector",
-    "offers": "This week&rsquo;s offers",
     "all": "Everything",
     "material": "Material",
     "size": "Size (cm)",
-    "from": "from",
-    "ask": "Price on request",
-    "offersEmpty": "No promotions are published right now. Message us on WhatsApp and we will quote the best price for the quantity you need.",
-    "moq": "Min.",
-    "each": "each"
+    "moq": "Min."
   },
   "book": {
     "mode": "Where would you like to meet?",
     "online": {
       "t": "Online meeting",
       "d": "A video or WhatsApp call. Best for running through artwork and prices quickly.",
-      "m": "20&ndash;30 minutes"
+      "m": "20–30 minutes"
     },
     "yours": {
       "t": "We come to your office",
       "d": "Our sales rep visits with physical samples of the materials and sizes.",
-      "m": "Cairo &amp; Giza"
+      "m": "Cairo & Giza"
     },
     "ours": {
       "t": "You visit our office",
       "d": "323 Sudan Street, Mohandessin, Giza. See the materials and printed work in person.",
-      "m": "Sat&ndash;Thu, 10am &ndash; 6pm"
+      "m": "Sat–Thu, 10am – 6pm"
     },
     "topic": "What is it about?",
     "topic_choose": "Choose a topic",
@@ -379,7 +538,10 @@
     "notes": "Notes",
     "notes_placeholder": "Anything you would like us to prepare before the meeting…",
     "submit": "Send booking request",
-    "note": "Bookings are confirmed by a WhatsApp message from sales. We are open Saturday to Thursday, 10am to 6pm."
+    "sending": "Sending…",
+    "sent": "Thanks — we've received your request and will confirm shortly.",
+    "error": "Something went wrong sending your request — please try again or call us directly.",
+    "note": "Bookings are confirmed by our sales team. We are open Saturday to Thursday, 10am to 6pm."
   },
   "f": {
     "name": "Your name",
@@ -388,57 +550,57 @@
     "company_placeholder": "Optional",
     "phone": "Phone number",
     "phone_placeholder": "01xxxxxxxxx",
+    "email": "Email address",
+    "email_placeholder": "you@company.com",
     "h2": "Request a quote",
-    "lead": "Fill this in and it opens WhatsApp with your details ready to send — no account or sign-up needed.",
-    "qty": "Quantity required",
-    "qty_placeholder": "e.g. 5,000 bags",
+    "lead": "Fill this in and we'll get back to you — no account or sign-up needed.",
+    "qty": "Quantity",
+    "qty_choose": "Choose a quantity",
     "product": "Type of packaging",
     "product_choose": "Choose a product",
     "product_other": "Something else",
     "msg": "Details of the request",
     "msg_placeholder": "Sizes, number of print colours, material, delivery date…",
-    "submit": "Send on WhatsApp",
-    "note": "Or call sales directly on 01005750973 — Saturday to Thursday, 10am to 6pm.",
+    "artwork": "Design file (optional)",
+    "artwork_hint": "PDF, AI, EPS, SVG, image or ZIP — up to 10MB, max 3 files.",
+    "artwork_add": "Attach a file",
+    "artwork_remove": "Remove",
+    "artwork_too_many": "You can attach up to 3 files.",
+    "artwork_too_large": "That file is over 10MB — please attach a smaller one.",
+    "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
+    "error_upload": "We couldn't upload your attached files — please check your connection and try again.",
+    "submit": "Send quote request",
+    "note": "Or call sales directly on +20 100 575 0973 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
+  },
+  "quantity_ranges": {
+    "100_500": "100 – 500",
+    "500_1000": "500 – 1,000",
+    "1000_5000": "1,000 – 5,000",
+    "5000_10000": "5,000 – 10,000",
+    "10000_plus": "10,000+"
   },
   "meta": {
     "title": {
       "home": "Media Print Pack — Printed Packaging Manufacturer in Egypt",
       "best": "Bestsellers — Media Print Pack",
       "products": "Products — Media Print Pack",
-      "stick": "Printed Stickers — Media Print Pack",
       "services": "Printing Services — Media Print Pack",
       "book": "Book a Meeting — Media Print Pack",
-      "contact": "Contact Us — Media Print Pack"
+      "contact": "Contact Us — Media Print Pack",
+      "about": "About Us — Media Print Pack",
+      "faq": "FAQ — Media Print Pack"
     },
     "desc": {
       "home": "Zipper bags, paper sacks, courier bags, non-woven totes, printed cartons and labels. Manufactured and printed in Mohandessin, Giza. Samples before production, shipping across Egypt and the Arab world.",
       "best": "Our most reordered packaging: garment bags, kraft bags, corrugated boxes, hang tags, aluminium pouches and fabric totes — with live tiered pricing.",
       "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
-      "stick": "Paper, plastic, transparent and metalized stickers for food, cafes, cosmetics, events and retail. Die-cut to any shape, large and short runs.",
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
-      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales 01005750973 — open Saturday to Thursday, 10am to 6pm."
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 100 575 0973 — open Saturday to Thursday, 10am to 6pm.",
+      "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world.",
+      "faq": "Minimum orders, artwork requirements, sampling, lead times, delivery and design — answered."
     }
-  },
-  "pricer": {
-    "open": "See tiered pricing",
-    "from": "from",
-    "size": "Size (cm)",
-    "colour": "Colour",
-    "finish": "Finishing",
-    "qty": "Quantity",
-    "pieces": "pieces",
-    "each": "each",
-    "unit": "Unit price",
-    "total": "Total",
-    "printing": "Add printing — one colour, one side",
-    "included": "One-colour printing included",
-    "moq": "Minimum order: {n} pieces",
-    "below": "Below the minimum of {n} pieces",
-    "perkg": "{price}/kg · {n} pieces per kg",
-    "send": "Send this spec on WhatsApp",
-    "novat": "Prices exclude VAT. Final price is confirmed on the sample."
   },
   "track": {
     "gate": {
@@ -453,10 +615,12 @@
       "error_not_found": "We couldn't find that order."
     },
     "phase": {
-      "order_confirmed": "Order confirmed",
+      "order_confirmed": "Order created",
+      "quote_pending": "Preparing your quote",
+      "quote_review": "Quote awaiting your approval",
       "artwork_pre_press": "Artwork & pre-press",
       "artwork_approved": "Artwork approved",
-      "sample_produced": "Sample produced",
+      "sample_produced": "Sample production",
       "sample_approved": "Sample approved",
       "plates_tooling": "Plates & tooling",
       "printing": "Printing",
@@ -466,28 +630,175 @@
       "out_for_delivery": "Out for delivery",
       "delivered": "Delivered"
     },
+    "phase_desc": {
+      "order_confirmed": "We've received and confirmed your order.",
+      "quote_pending": "Our team is working out pricing for your order.",
+      "quote_review": "Please review the price quote and approve it or ask for changes.",
+      "artwork_pre_press": "Our team is preparing your artwork for print.",
+      "artwork_approved": "You approved the artwork — production is starting.",
+      "sample_produced": "A sample is being produced for your review.",
+      "sample_approved": "You approved the sample — full production is starting.",
+      "plates_tooling": "Plates and tooling are being prepared.",
+      "printing": "Your order is being printed.",
+      "finishing_die_cut": "Finishing and die-cutting are underway.",
+      "quality_check": "A quality check is being completed.",
+      "packed": "Your order has been packed.",
+      "out_for_delivery": "Your order is on the way.",
+      "delivered": "Expect delivery soon."
+    },
+    "today": "Today",
+    "yesterday": "Yesterday",
     "in_progress": {
       "estimated_delivery": "Estimated delivery",
-      "message_prefix": "Hi, I'd like an update on order",
-      "message_sales": "Message sales on WhatsApp"
+      "message_sales": "Call sales",
+      "download_invoice": "Download invoice",
+      "your_files": "Files you sent us"
     },
     "approval": {
       "badge": "Your approval is needed",
+      "quote_title": "Your price quote is ready",
       "artwork_title": "The artwork is ready to review",
       "sample_title": "The sample is ready to review",
+      "quote_price_label": "Quoted price",
+      "quote_invoice_link": "View invoice",
       "approve": "Approve",
       "approving": "Approving…",
       "request_changes": "Request changes",
       "changes_placeholder": "What should we change?",
       "changes_submit": "Send request",
+      "quote_deny": "Deny",
+      "quote_deny_placeholder": "Tell us why, so we can send a better price.",
+      "quote_deny_submit": "Send",
+      "quote_note_required": "Please add a note before sending.",
       "submitting": "Sending…",
-      "footer_note": "Production starts the moment you approve."
+      "download_hint": "Tap to download.",
+      "error": "Something went wrong — please try again.",
+      "footer_note": "Production starts the moment you approve.",
+      "footer_note_quote": "We'll start on your artwork the moment you approve the price."
     },
     "delivered": {
       "title": "Delivered",
+      "order_number": "Order number",
       "product": "Product",
       "quantity": "Quantity",
-      "order_total": "Order total"
+      "order_total": "Order total",
+      "download_invoice": "Download invoice",
+      "reorder": "Reorder this",
+      "rate_title": "How was your experience?",
+      "rate_prompt": "Tap a star to rate your order.",
+      "comment_placeholder": "Anything you'd like to add? (optional)",
+      "rate_submit": "Submit rating",
+      "rate_submitting": "Submitting…",
+      "rate_thanks": "Thanks for the feedback!"
+    }
+  },
+  "ops": {
+    "title": "Media Print Operations",
+    "logout": "Log out",
+    "search_placeholder": "Search order or customer",
+    "tabs": {
+      "all": "All jobs",
+      "needs_action": "Needs our action",
+      "waiting": "Waiting on customer",
+      "overdue": "Overdue"
+    },
+    "stats": {
+      "live": "live jobs",
+      "waiting": "waiting on customer",
+      "overdue": "overdue",
+      "due_this_week": "due this week",
+      "avg_rating": "avg. rating"
+    },
+    "columns": {
+      "Quote": "Quote",
+      "Pre-press": "Pre-press",
+      "Sample": "Sample",
+      "Printing": "Printing",
+      "Finishing": "Finishing",
+      "Dispatch": "Dispatch"
+    },
+    "empty_column": "Nothing here.",
+    "overdue_by": "Overdue by {days, plural, one {# day} other {# days}}",
+    "status": {
+      "done": "Done",
+      "in_progress": "In progress",
+      "waiting_on_customer": "Waiting on customer",
+      "overdue": "Overdue",
+      "not_started": "Not started"
+    },
+    "detail": {
+      "created_at": "Created {date}",
+      "order_details": "Order details",
+      "product": "Product",
+      "quantity": "Requested quantity",
+      "quantity_readonly_hint": "Set by the customer on the quote form — not editable here.",
+      "confirmed_quantity": "Confirmed quantity",
+      "confirmed_quantity_placeholder": "e.g. 400",
+      "confirmed_quantity_hint": "Exact quantity agreed with the customer — used to calculate the total below once set.",
+      "lead_time": "Lead time (days)",
+      "unit_price": "Unit price (EGP)",
+      "order_total": "Order total (EGP)",
+      "order_total_auto": "Auto-calculated: unit price × confirmed quantity",
+      "order_total_estimated": "Estimated using the low end of the requested range — enter a confirmed quantity above for an exact total.",
+      "estimated_delivery": "Estimated delivery",
+      "request_details": "Request details",
+      "customer_artwork": "Files from the customer",
+      "customer_artwork_hint": "Attached to the quote request — not the staff-prepared proof below.",
+      "lead_time_note_pending": "Starts counting once the sample is approved.",
+      "lead_time_note_started": "Started {started} — due {due}",
+      "lead_time_note_toggle": "Show lead time info",
+      "sample_photos": "Sample photos",
+      "sample_photos_hint": "JPEG, PNG, WebP, or MP4/MOV/WebM video · up to 25MB each",
+      "artwork_files": "Artwork files",
+      "artwork_files_hint": "JPEG, PNG or WebP · up to 5MB each",
+      "remove_photo": "Remove photo",
+      "upload_too_large": "That photo is too large to upload — try a smaller file.",
+      "upload_failed": "Upload failed — try again.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "pipeline": "Pipeline",
+      "your_turn": "— your turn",
+      "delivered": "Delivered.",
+      "waiting_note": "Waiting on the customer to respond — nudge them if it's been a while.",
+      "waiting_note_quote": "Waiting on the customer to approve the price — nudge them if it's been a while.",
+      "quote_missing_hint": "Set a price, confirm the exact quantity, and upload the invoice above before sending the quote for approval.",
+      "remind": "Send WhatsApp reminder",
+      "reminding": "Sending…",
+      "advance": "Advance to {phase}",
+      "advancing": "Advancing…",
+      "advance_failed": "Couldn't advance the order — try again.",
+      "custom_invoice": "Invoice",
+      "custom_invoice_hint": "Upload the invoice for this order — PDF only, up to 10MB. Shown here and on the customer's tracking page.",
+      "upload_invoice": "Upload invoice",
+      "uploading": "Uploading…",
+      "remove_invoice": "Remove invoice",
+      "invoice_upload_failed": "Upload failed — try again.",
+      "copy_tracking_link": "Copy tracking link",
+      "link_copied": "Copied!",
+      "message_whatsapp": "Message on WhatsApp",
+      "delete": "Delete order",
+      "deleting": "Deleting…",
+      "delete_confirm_title": "Delete this order?",
+      "delete_confirm_desc": "This permanently removes {order_number} and all its files, activity and history. This can't be undone.",
+      "delete_confirm_action": "Delete permanently",
+      "delete_cancel": "Cancel",
+      "delete_failed": "Couldn't delete the order — try again.",
+      "activity": "Activity",
+      "no_activity": "No activity yet.",
+      "event_by": "by {name}",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "event": {
+        "created": "Order created",
+        "phase_change": "Moved to",
+        "customer_approved": "Customer approved",
+        "customer_requested_changes": "Customer requested changes",
+        "reminder_sent": "Reminder sent",
+        "rated": "Customer left a rating",
+        "note": "Internal note"
+      },
+      "rating_title": "Customer rating",
+      "rating_none": "Not rated yet."
     }
   }
 }

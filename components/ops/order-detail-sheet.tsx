@@ -1,17 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { Check, Copy, Trash2 } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/site/brand-icons";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { StatusBadge } from "@/components/orders/status-badge";
+import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
+import { ArtworkFileUploader } from "@/components/ops/artwork-file-uploader";
+import { CustomInvoiceUploader } from "@/components/ops/custom-invoice-uploader";
+import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
-import { advancePhase, sendReminder, updateOrderFields } from "@/lib/orders/actions";
-import type { Order, SampleImage } from "@/lib/orders/types";
+import { formatRelativeDay } from "@/lib/utils";
+import { trackingUrl } from "@/lib/orders/tracking";
+import { advancePhase, sendReminder, updateOrderFields, getOrderEvents, deleteOrder } from "@/lib/orders/actions";
+import { isQuantityRange, quantityRangeLowerBound } from "@/lib/orders/quantity";
+import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
+
+/**
+ * New orders store a fixed range code (e.g. "1000_5000") — use its lower bound
+ * as a conservative estimate for the order-total math. Orders created before
+ * this change may still carry free text (e.g. "5,000 bags"); pull the leading
+ * number out of those instead.
+ */
+function parseQuantityNumber(quantity: string): number | null {
+  if (isQuantityRange(quantity)) return quantityRangeLowerBound(quantity);
+  const match = quantity.replace(/,/g, "").match(/\d+(\.\d+)?/);
+  return match ? parseFloat(match[0]) : null;
+}
 
 export function OrderDetailSheet({
   order,
@@ -24,36 +58,87 @@ export function OrderDetailSheet({
   onOpenChange: (open: boolean) => void;
   onChanged: () => void;
 }) {
+  const t = useTranslations("ops.detail");
+  const tPhase = useTranslations("track.phase");
+  const tQty = useTranslations("quantity_ranges");
+  const locale = useLocale();
+  const [events, setEvents] = useState<OrderEvent[]>([]);
   const [fields, setFields] = useState({
     product_label: order.product_label,
-    quantity: order.quantity,
+    confirmed_quantity: order.confirmed_quantity?.toString() ?? "",
     unit_price: order.unit_price?.toString() ?? "",
-    order_total: order.order_total?.toString() ?? "",
     lead_time_days: order.lead_time_days?.toString() ?? "",
     estimated_delivery: order.estimated_delivery ?? "",
   });
-  const [sampleImages, setSampleImages] = useState<SampleImage[]>(
-    order.sample_images.length ? order.sample_images : [{ url: "" }, { url: "" }, { url: "" }]
-  );
+  const [sampleImages, setSampleImages] = useState<SampleImage[]>(order.sample_images);
+  const [artworkFiles, setArtworkFiles] = useState<ArtworkFile[]>(order.artwork_files);
+  const [invoiceFile, setInvoiceFile] = useState<ArtworkFile | null>(order.invoice_file);
   const [saving, setSaving] = useState(false);
   const [advancing, setAdvancing] = useState(false);
+  const [advanceError, setAdvanceError] = useState<string | null>(null);
   const [reminding, setReminding] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const status = deriveStatus(order);
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
+  const quoteMissing =
+    order.phase === "quote_pending" &&
+    (order.unit_price == null || !order.invoice_file || order.confirmed_quantity == null);
   const showSampleImages = order.phase === "sample_produced" || order.phase === "sample_approved";
+  const showArtworkFiles = order.phase === "artwork_pre_press" || order.phase === "artwork_approved";
+  const trackUrl = trackingUrl(order.tracking_slug, locale);
+
+  const leadTimeDue = useMemo(() => {
+    if (!order.lead_time_started_at || !fields.lead_time_days) return null;
+    const days = Number(fields.lead_time_days);
+    if (!Number.isFinite(days)) return null;
+    const due = new Date(order.lead_time_started_at);
+    due.setDate(due.getDate() + days);
+    return due;
+  }, [order.lead_time_started_at, fields.lead_time_days]);
+
+  const confirmedQty = fields.confirmed_quantity ? Number(fields.confirmed_quantity) : null;
+  const hasConfirmedQty = confirmedQty !== null && Number.isFinite(confirmedQty) && confirmedQty > 0;
+
+  const orderTotal = useMemo(() => {
+    const price = parseFloat(fields.unit_price);
+    const qty = hasConfirmedQty ? confirmedQty : parseQuantityNumber(order.quantity);
+    if (Number.isNaN(price) || qty === null) return null;
+    return price * qty;
+  }, [fields.unit_price, order.quantity, hasConfirmedQty, confirmedQty]);
+  const orderTotalIsEstimate = !hasConfirmedQty;
+
+  useEffect(() => {
+    getOrderEvents(order.id).then(setEvents);
+    // Re-fetch whenever the order changes too (not just on first open) — the
+    // ops board polls every 20s, so if the customer requests changes while
+    // this sheet is already open, the new note should show up without the
+    // staff having to close and reopen it.
+  }, [order.id, order.updated_at]);
+
+  const dayLabels = { today: t("today"), yesterday: t("yesterday") };
+  const EVENT_LABEL: Record<OrderEvent["type"], string> = {
+    created: t("event.created"),
+    phase_change: t("event.phase_change"),
+    customer_approved: t("event.customer_approved"),
+    customer_requested_changes: t("event.customer_requested_changes"),
+    reminder_sent: t("event.reminder_sent"),
+    rated: t("event.rated"),
+    note: t("event.note"),
+  };
 
   async function save() {
     setSaving(true);
     await updateOrderFields(order.id, {
       product_label: fields.product_label,
-      quantity: fields.quantity,
+      confirmed_quantity: hasConfirmedQty ? confirmedQty : null,
       unit_price: fields.unit_price ? Number(fields.unit_price) : null,
-      order_total: fields.order_total ? Number(fields.order_total) : null,
+      order_total: orderTotal,
       lead_time_days: fields.lead_time_days ? Number(fields.lead_time_days) : null,
       estimated_delivery: fields.estimated_delivery || null,
-      sample_images: showSampleImages ? sampleImages.filter((s) => s.url.trim()) : undefined,
     });
     setSaving(false);
     onChanged();
@@ -61,10 +146,46 @@ export function OrderDetailSheet({
 
   async function advance() {
     setAdvancing(true);
-    await advancePhase(order.id);
+    const res = await advancePhase(order.id);
     setAdvancing(false);
+    if (!res.ok) {
+      setAdvanceError(res.error ?? t("advance_failed"));
+      return;
+    }
+    setAdvanceError(null);
     onChanged();
     onOpenChange(false);
+  }
+
+  async function copyTrackingLink() {
+    if (window.isSecureContext && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(trackUrl);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+        return;
+      } catch {
+        // permission denied — fall through to the silent fallback below
+      }
+    }
+
+    // On plain HTTP (e.g. a LAN IP the ops tablets hit), navigator.clipboard
+    // is undefined. Copy via a temporary off-screen textarea instead of
+    // popping a native prompt() dialog — no visible UI, just the clipboard.
+    const el = document.createElement("textarea");
+    el.value = trackUrl;
+    el.style.position = "fixed";
+    el.style.opacity = "0";
+    document.body.appendChild(el);
+    el.focus();
+    el.select();
+    try {
+      document.execCommand("copy");
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } finally {
+      document.body.removeChild(el);
+    }
   }
 
   async function remind() {
@@ -77,23 +198,78 @@ export function OrderDetailSheet({
     }
   }
 
+  async function remove() {
+    setDeleting(true);
+    const res = await deleteOrder(order.id);
+    setDeleting(false);
+    if (!res.ok) {
+      setDeleteError(res.error ?? t("delete_failed"));
+      return;
+    }
+    onChanged();
+    onOpenChange(false);
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full gap-0 overflow-y-auto bg-paper text-ink sm:max-w-md">
+      <SheetContent side="center" className="gap-0 overflow-x-hidden overflow-y-auto bg-paper text-ink">
         <SheetHeader className="border-b border-line">
           <SheetTitle className="text-ink">{order.order_number}</SheetTitle>
+          <p className="text-xs text-muted">
+            {t("created_at", { date: formatRelativeDay(new Date(order.created_at), locale, dayLabels) })}
+          </p>
           <SheetDescription>
             {order.customer_name}
             {order.customer_company ? ` · ${order.customer_company}` : ""} · <span dir="ltr">{order.customer_phone}</span>
           </SheetDescription>
-          <StatusBadge status={status} className="mt-1" />
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <StatusBadge status={status} />
+            <Button onClick={copyTrackingLink} variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
+              {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
+              {linkCopied ? t("link_copied") : t("copy_tracking_link")}
+            </Button>
+            <Button
+              asChild
+              size="sm"
+              className="h-6 gap-1 border-transparent bg-[#1DA851] px-2 text-xs text-white hover:bg-[#25D366]"
+            >
+              <a href={waLinkTo(order.customer_phone, "")} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon className="size-3" />
+                {t("message_whatsapp")}
+              </a>
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" className="h-6 gap-1 px-2 text-xs">
+                  <Trash2 className="size-3" />
+                  {t("delete")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("delete_confirm_title")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("delete_confirm_desc", { order_number: order.order_number })}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("delete_cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={remove} disabled={deleting}>
+                    {deleting ? t("deleting") : t("delete_confirm_action")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          {deleteError && <p className="mt-1 text-xs font-semibold text-danger">{deleteError}</p>}
         </SheetHeader>
 
         <div className="grid gap-5 p-4">
           <section className="grid gap-3">
-            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">Order details</h3>
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("order_details")}</h3>
             <div className="grid gap-1.5">
-              <Label htmlFor="product_label">Product</Label>
+              <Label htmlFor="product_label">{t("product")}</Label>
               <Input
                 id="product_label"
                 value={fields.product_label}
@@ -102,15 +278,39 @@ export function OrderDetailSheet({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
-                <Label htmlFor="quantity">Quantity</Label>
+                <Label htmlFor="quantity">{t("quantity")}</Label>
                 <Input
                   id="quantity"
-                  value={fields.quantity}
-                  onChange={(e) => setFields((f) => ({ ...f, quantity: e.target.value }))}
+                  value={isQuantityRange(order.quantity) ? tQty(order.quantity) : order.quantity}
+                  disabled
+                  readOnly
+                  title={t("quantity_readonly_hint")}
+                  className="disabled:opacity-70"
                 />
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="lead_time_days">Lead time (days)</Label>
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="lead_time_days">{t("lead_time")}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={t("lead_time_note_toggle")}
+                        className="flex h-4 w-4 items-center justify-center rounded-full border border-line text-[10px] font-semibold leading-none text-faint hover:bg-canvas hover:text-ink"
+                      >
+                        !
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      {leadTimeDue
+                        ? t("lead_time_note_started", {
+                            started: new Date(order.lead_time_started_at!).toLocaleDateString(locale),
+                            due: leadTimeDue.toLocaleDateString(locale),
+                          })
+                        : t("lead_time_note_pending")}
+                    </PopoverContent>
+                  </Popover>
+                </div>
                 <Input
                   id="lead_time_days"
                   type="number"
@@ -120,9 +320,21 @@ export function OrderDetailSheet({
                 />
               </div>
             </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="confirmed_quantity">{t("confirmed_quantity")}</Label>
+              <Input
+                id="confirmed_quantity"
+                type="number"
+                min={1}
+                value={fields.confirmed_quantity}
+                onChange={(e) => setFields((f) => ({ ...f, confirmed_quantity: e.target.value }))}
+                placeholder={t("confirmed_quantity_placeholder")}
+              />
+              <p className="text-xs text-faint">{t("confirmed_quantity_hint")}</p>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
-                <Label htmlFor="unit_price">Unit price (EGP)</Label>
+                <Label htmlFor="unit_price">{t("unit_price")}</Label>
                 <Input
                   id="unit_price"
                   type="number"
@@ -133,19 +345,30 @@ export function OrderDetailSheet({
                 />
               </div>
               <div className="grid gap-1.5">
-                <Label htmlFor="order_total">Order total (EGP)</Label>
+                <Label htmlFor="order_total">{t("order_total")}</Label>
                 <Input
                   id="order_total"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  value={fields.order_total}
-                  onChange={(e) => setFields((f) => ({ ...f, order_total: e.target.value }))}
+                  type="text"
+                  value={
+                    orderTotal != null
+                      ? `${orderTotalIsEstimate ? "≈ " : ""}${orderTotal.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}`
+                      : ""
+                  }
+                  disabled
+                  readOnly
+                  title={orderTotalIsEstimate ? t("order_total_estimated") : t("order_total_auto")}
+                  className="disabled:opacity-70"
                 />
+                {orderTotal != null && orderTotalIsEstimate && (
+                  <p className="text-xs text-faint">{t("order_total_estimated")}</p>
+                )}
               </div>
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="estimated_delivery">Estimated delivery</Label>
+              <Label htmlFor="estimated_delivery">{t("estimated_delivery")}</Label>
               <Input
                 id="estimated_delivery"
                 type="date"
@@ -154,29 +377,110 @@ export function OrderDetailSheet({
               />
             </div>
 
-            {showSampleImages && (
+            {order.notes && (
               <div className="grid gap-1.5">
-                <Label>Sample photo URLs</Label>
-                {sampleImages.map((img, i) => (
-                  <Input
-                    key={i}
-                    placeholder={`Sample ${i + 1} image URL`}
-                    value={img.url}
-                    onChange={(e) =>
-                      setSampleImages((prev) => prev.map((p, j) => (j === i ? { ...p, url: e.target.value } : p)))
-                    }
-                  />
-                ))}
+                <Label>{t("request_details")}</Label>
+                <p className="rounded-md bg-paper-2 p-2 text-sm text-ink/80">{order.notes}</p>
               </div>
             )}
 
-            <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
-              {saving ? "Saving…" : "Save changes"}
-            </Button>
+            <ArtworkFileList
+              label={t("customer_artwork")}
+              hint={t("customer_artwork_hint")}
+              files={order.customer_artwork_files}
+            />
+
+            {showArtworkFiles && (
+              <ArtworkFileUploader
+                orderId={order.id}
+                files={artworkFiles}
+                onChanged={(next) => {
+                  setArtworkFiles(next);
+                  onChanged();
+                }}
+              />
+            )}
+
+            {showSampleImages && (
+              <SamplePhotoUploader
+                orderId={order.id}
+                images={sampleImages}
+                onChanged={(next) => {
+                  setSampleImages(next);
+                  onChanged();
+                }}
+              />
+            )}
+
+            <CustomInvoiceUploader
+              orderId={order.id}
+              file={invoiceFile}
+              onChanged={(next) => {
+                setInvoiceFile(next);
+                onChanged();
+              }}
+            />
+
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
+                {saving ? t("saving") : t("save")}
+              </Button>
+            </div>
           </section>
 
           <section className="grid gap-2">
-            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">Pipeline</h3>
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("activity")}</h3>
+            {events.length === 0 ? (
+              <p className="text-sm text-faint">{t("no_activity")}</p>
+            ) : (
+              <ol className="grid gap-2">
+                {events.map((e) => (
+                  <li key={e.id} className="grid gap-1 text-sm">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span
+                        className={
+                          e.type === "customer_requested_changes" ? "font-semibold text-danger" : "font-medium text-ink"
+                        }
+                      >
+                        {EVENT_LABEL[e.type]}
+                        {e.type === "phase_change" && e.phase ? `: ${tPhase(e.phase)}` : ""}
+                        {e.actor_name && (
+                          <span className="font-normal text-muted"> · {t("event_by", { name: e.actor_name })}</span>
+                        )}
+                      </span>
+                      <span className="shrink-0 text-xs text-muted whitespace-nowrap" dir="ltr">
+                        {formatRelativeDay(new Date(e.created_at), locale, dayLabels)}
+                      </span>
+                    </div>
+                    {e.message && (
+                      <p
+                        className={`rounded-md p-2 text-ink/80 ${
+                          e.type === "customer_requested_changes" ? "bg-danger-soft" : "bg-paper-2"
+                        }`}
+                      >
+                        {e.message}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+
+          <section className="grid gap-2">
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("rating_title")}</h3>
+            {order.rating != null ? (
+              <div className="grid gap-1">
+                <span className="text-amber">{"★".repeat(order.rating)}{"☆".repeat(5 - order.rating)}</span>
+                {order.rating_comment && <p className="text-sm text-ink/80">{order.rating_comment}</p>}
+              </div>
+            ) : (
+              <p className="text-sm text-faint">{t("rating_none")}</p>
+            )}
+          </section>
+
+          <section className="grid gap-2">
+            <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">{t("pipeline")}</h3>
             <ol className="grid gap-1.5">
               {PHASES.map((p) => {
                 const done = phaseIndex(p.key) < phaseIndex(order.phase);
@@ -193,8 +497,8 @@ export function OrderDetailSheet({
                         done ? "bg-leaf" : current ? (p.gate ? "bg-amber" : "bg-accent") : "bg-line"
                       }`}
                     />
-                    {p.label}
-                    {current && p.gate && <span className="text-xs font-normal text-amber">— your turn</span>}
+                    {tPhase(p.key)}
+                    {current && p.gate && <span className="ms-2 text-xs font-normal text-amber">{t("your_turn")}</span>}
                   </li>
                 );
               })}
@@ -204,18 +508,24 @@ export function OrderDetailSheet({
 
         <SheetFooter className="border-t border-line">
           {order.phase === "delivered" ? (
-            <p className="text-sm font-semibold text-leaf">Delivered.</p>
+            <p className="text-sm font-semibold text-leaf">{t("delivered")}</p>
           ) : gate ? (
             <>
-              <p className="text-sm text-muted">Waiting on the customer to respond — nudge them if it&apos;s been a while.</p>
-              <Button onClick={remind} disabled={reminding} className="bg-accent hover:bg-accent-2">
-                {reminding ? "Sending…" : "Send WhatsApp reminder"}
+              <p className="text-sm text-muted">
+                {order.phase === "quote_review" ? t("waiting_note_quote") : t("waiting_note")}
+              </p>
+              <Button onClick={remind} disabled={reminding} className="bg-[#1DA851] text-white hover:bg-[#25D366]">
+                {reminding ? t("reminding") : t("remind")}
               </Button>
             </>
           ) : (
-            <Button onClick={advance} disabled={advancing || !next} className="bg-accent hover:bg-accent-2">
-              {advancing ? "Advancing…" : `Advance to ${next ? PHASES.find((p) => p.key === next)?.label : "—"}`}
-            </Button>
+            <>
+              {quoteMissing && <p className="text-sm text-muted">{t("quote_missing_hint")}</p>}
+              {advanceError && <p className="text-sm font-semibold text-danger">{advanceError}</p>}
+              <Button onClick={advance} disabled={advancing || !next || quoteMissing} className="bg-accent hover:bg-accent-2">
+                {advancing ? t("advancing") : t("advance", { phase: next ? tPhase(next) : "—" })}
+              </Button>
+            </>
           )}
         </SheetFooter>
       </SheetContent>

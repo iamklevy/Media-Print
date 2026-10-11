@@ -82,7 +82,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Jar & cheese-box sticker",
       "ar": "استيكر برطمان وعلبة جبن",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1702724122836-b3bba37a1303?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "pastry-10",
@@ -92,7 +92,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Pastry box sticker",
       "ar": "استيكر علبة معجنات",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1702724122836-b3bba37a1303?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "cake-4",
@@ -102,7 +102,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Cake box sticker",
       "ar": "استيكر علبة تورت",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1702724122836-b3bba37a1303?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "meat-5",
@@ -112,7 +112,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Meat packaging sticker",
       "ar": "استيكر تغليف لحوم",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1702724122836-b3bba37a1303?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "produce-2",
@@ -122,7 +122,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Fruit & vegetable sticker",
       "ar": "استيكر خضار وفاكهة",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1702724122836-b3bba37a1303?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "cup-5",
@@ -132,7 +132,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Coffee cup sticker",
       "ar": "استيكر كوب قهوة",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1574585046455-827418063fc1?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "cup-clear",
@@ -142,7 +142,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Transparent café sticker",
       "ar": "استيكر كافيه شفاف",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1574585046455-827418063fc1?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "coffee-bag",
@@ -152,7 +152,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Coffee bag sticker",
       "ar": "استيكر كيس بن",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1574585046455-827418063fc1?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "cream-jar",
@@ -162,7 +162,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Cream jar wrap",
       "ar": "استيكر برطمان كريم",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "perfume",
@@ -172,7 +172,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Perfume bottle sticker",
       "ar": "استيكر زجاجة عطر",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "splash",
@@ -182,7 +182,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Body splash label",
       "ar": "ليبل بودي سبلاش",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "tube-label",
@@ -192,7 +192,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Tube & bottle label",
       "ar": "ليبل تيوب وزجاجة",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1706111584162-416d0f49748a?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "baby-6",
@@ -202,7 +202,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Celebration sticker",
       "ar": "استيكر مناسبات",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1638560927109-062a7e7bdf03?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "bouquet-3",
@@ -212,7 +212,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Flower bouquet sticker",
       "ar": "استيكر بوكيه ورد",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1638560927109-062a7e7bdf03?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "round-8",
@@ -222,7 +222,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Round paper sticker",
       "ar": "استيكر ورق دائري",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1540908187087-eeabb5040af5?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "furniture-6",
@@ -232,7 +232,7 @@ export const STICKERS: StickerCatalogue = {
       "en": "Furniture sticker",
       "ar": "استيكر أثاث",
       "price": null,
-      "img": null
+      "img": "https://images.unsplash.com/photo-1540908187087-eeabb5040af5?w=600&q=72&auto=format&fit=crop"
     },
     {
       "id": "metalize",
@@ -243,7 +243,7 @@ export const STICKERS: StickerCatalogue = {
       "ar": "استيكر ميتالايز",
       "price": 15,
       "moq": 500,
-      "img": null,
+      "img": "https://images.unsplash.com/photo-1540908187087-eeabb5040af5?w=600&q=72&auto=format&fit=crop",
       "noteEn": "One colour, one side. White, black or pink.",
       "noteAr": "لون واحد وش واحد. أبيض أو أسود أو بينك."
     }

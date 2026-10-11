@@ -3,20 +3,15 @@ import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
-import { PriceCalculator } from "./price-calculator";
 import type { CatalogueProduct } from "@/content/products";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({
   product,
-  rank,
   showSpecs = true,
-  withPricer = true,
 }: {
   product: CatalogueProduct;
-  rank?: number;
   showSpecs?: boolean;
-  withPricer?: boolean;
 }) {
   const t = useTranslations();
   const catKey = `cat.${product.cat === "print" ? "print" : product.cat}`;
@@ -26,19 +21,14 @@ export function ProductCard({
       id={product.slug}
       className="group flex flex-col overflow-hidden rounded-card border border-line bg-paper transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-paper-2">
+      <div className="relative aspect-square overflow-hidden bg-paper-2">
         <Image
-          src={product.img}
+          src={product.images[0]}
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        {rank && (
-          <span className="absolute end-3 top-3 z-10 grid size-8 place-items-center rounded-full bg-accent text-[0.82rem] font-extrabold text-white shadow-soft">
-            {rank}
-          </span>
-        )}
         <span className="absolute start-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[0.74rem] font-bold text-paper backdrop-blur-sm">
           {t(catKey)}
         </span>
@@ -61,10 +51,6 @@ export function ProductCard({
               </li>
             ))}
           </ul>
-        )}
-
-        {withPricer && product.pricing && (
-          <PriceCalculator productId={product.pricing} title={t(`${product.key}.t`)} />
         )}
 
         <div className={cn("mt-auto pt-4")}>

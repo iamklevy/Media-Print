@@ -3,7 +3,12 @@ export interface CatalogueProduct {
   /** i18n key prefix, e.g. "p.zipper" -> p.zipper.t / .d / .s1 */
   key: string;
   cat: "plastic" | "paper" | "fabric" | "print";
-  img: string;
+  /** Industry slugs this product is sold under — see content/industries.ts */
+  industries: string[];
+  /** Solution-type slugs (labels/boxes/bags/cards/flyers/zipper-pouches/hang-tags) */
+  types: string[];
+  /** First entry is the cover image, used by the catalogue grid, OG tags and JSON-LD. */
+  images: string[];
   specs: string[];
   /** key into PRICING.products, or null when we have no verified prices */
   pricing: string | null;
@@ -14,7 +19,9 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "zipper",
     "key": "p.zipper",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/1.jpg",
+    "industries": ["food", "clothing"],
+    "types": ["zipper-pouches"],
+    "images": ["/products/zipper-loops-travel-bottle-ziplock.jpg"],
     "specs": [
       "p.zipper.s1",
       "p.zipper.s2",
@@ -26,7 +33,9 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-sacks",
     "key": "p.sacks",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/mmm.jpeg",
+    "industries": ["food"],
+    "types": ["bags"],
+    "images": ["https://images.unsplash.com/photo-1695245503558-5cdb37f49092?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks.s1",
       "p.sacks.s2",
@@ -38,7 +47,15 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "apparel",
     "key": "p.apparel",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/clothes1.jpg",
+    "industries": ["clothing"],
+    "types": ["zipper-pouches", "bags"],
+    "images": [
+      "/products/apparel-monest-london-grey-ziplock.jpg",
+      "/products/apparel-pilot-gold-foil-ziplock.jpg",
+      "/products/apparel-smart-outlet-clear-ziplock.png",
+      "/products/apparel-black-typographic-shirt-bag.jpg",
+      "/products/apparel-black-gold-ziplock-fatem-hijab.jpg",
+    ],
     "specs": [
       "p.apparel.s1",
       "p.apparel.s2",
@@ -50,7 +67,9 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "nonwoven",
     "key": "p.nonwoven",
     "cat": "fabric",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/%D8%B4%D9%86%D8%B7-%D9%82%D9%85%D8%A7%D8%B4.jpg",
+    "industries": ["clothing", "food"],
+    "types": ["bags"],
+    "images": ["https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.nonwoven.s1",
       "p.nonwoven.s2",
@@ -62,7 +81,9 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "courier",
     "key": "p.courier",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2023/05/Screen-Shot-2023-05-03-at-10.56.35-AM.png",
+    "industries": ["ecommerce"],
+    "types": ["bags"],
+    "images": ["/products/courier-lanelle-navy-poly-mailer.jpg"],
     "specs": [
       "p.courier.s1",
       "p.courier.s2",
@@ -74,7 +95,15 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "paper-bags",
     "key": "p.paperbags",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/4.jpg",
+    "industries": ["cosmetics", "food", "clothing"],
+    "types": ["bags"],
+    "images": [
+      "/products/paper-bags-biomedica-teal-flat.jpg",
+      "/products/paper-bags-nuit-cream-coated.jpg",
+      "/products/paper-bags-favelin-pink-ribbon-pair.jpg",
+      "/products/paper-bags-biomedica-teal-rope-angle.jpg",
+      "/products/paper-bags-elshobaki-kraft-herb-bag.jpg",
+    ],
     "specs": [
       "p.paperbags.s1",
       "p.paperbags.s2",
@@ -86,7 +115,24 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "stickers",
     "key": "p.stickers",
     "cat": "print",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Bath-Shower-Just-Gentle-Organic.jpeg",
+    "industries": ["cosmetics", "food", "clothing", "ecommerce"],
+    "types": ["labels"],
+    "images": [
+      "/products/stickers-clear-label-roll-pair.jpg",
+      "/products/stickers-bafi-care-bottle-label.jpg",
+      "/products/stickers-eternelle-cleansing-gel-label.jpg",
+      "/products/stickers-dhabia-jojoba-oil-label-pair.jpg",
+      "/products/stickers-organic-mango-juice-label.jpg",
+      "/products/stickers-aljabal-olive-oil-top-view.jpeg",
+      "/products/industry-food-aljabal-olive-oil-bottles.jpg",
+      "/products/stickers-dhabia-black-seed-oil-label.jpeg",
+      "/products/stickers-dhabia-jojoba-oil-angled.jpeg",
+      "/products/stickers-aljabal-spice-jar-lineup.png",
+      "/products/stickers-muscle-show-mass-gainer-label.png",
+      "/products/stickers-mega-power-whey-black-label.png",
+      "/products/stickers-muscle-show-whey-green-label.png",
+      "/products/stickers-pickles-sizzle-oil-label-pair.png",
+    ],
     "specs": [
       "p.stickers.s1",
       "p.stickers.s2",
@@ -98,7 +144,31 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "cartons",
     "key": "p.cartons",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/11/Luxury-saffron-packaging-design.jpeg",
+    "industries": ["cosmetics", "clothing", "food"],
+    "types": ["boxes"],
+    "images": [
+      "/products/cartons-smile-wonders-mouthwash-trio.jpg",
+      "/products/cartons-luvira-serum-box-unfolded.png",
+      "/products/cartons-luvira-serum-box-tilted-open.png",
+      "/products/cartons-luvira-serum-box-front.png",
+      "/products/cartons-raw-african-brow-serum-box.png",
+      "/products/cartons-raw-african-frizzfade-box-front.png",
+      "/products/cartons-raw-african-frizzfade-box-side.png",
+      "/products/cartons-raw-african-frizzfade-box-back.png",
+      "/products/cartons-musk-altahara-lavender-box.png",
+      "/products/cartons-musk-altahara-emblem-closeup.png",
+      "/products/cartons-kemet-kunafa-chocolate-box.jpg",
+      "/products/cartons-nutriville-melatonin-box.png",
+      "/products/cartons-luvira-whitening-cream-side.png",
+      "/products/cartons-ema-beauty-deodorant-box.png",
+      "/products/cartons-tersus-facial-serum-box.png",
+      "/products/cartons-bobai-sunscreen-box.png",
+      "/products/cartons-smile-wonders-mouthwash-bottle-box.png",
+      "/products/cartons-nuit-perfume-box-bottle.png",
+      "/products/cartons-franklin-boutique-floral-box.png",
+      "/products/cartons-nuit-perfume-oil-pastel-lineup.png",
+      "/products/cartons-utopielle-serum-box-gold.png",
+    ],
     "specs": [
       "p.cartons.s1",
       "p.cartons.s2",
@@ -110,7 +180,13 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "tags",
     "key": "p.tags",
     "cat": "print",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2022/03/1.jpeg",
+    "industries": ["clothing", "cosmetics", "ecommerce"],
+    "types": ["hang-tags", "cards"],
+    "images": [
+      "/products/tags-nasaq-women-hang-tag.jpg",
+      "/products/tags-carakiri-crafts-round-tag.jpg",
+      "/products/tags-arena-for-love-floral-tag.jpg",
+    ],
     "specs": [
       "p.tags.s1",
       "p.tags.s2",
@@ -122,7 +198,12 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "corrugated",
     "key": "p.corrugated",
     "cat": "paper",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/50-%D1%88%D1%82_-%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BE%D1%87%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D1%80%D0%BE%D0%B1%D0%BA%D0%B8-%D0%B8%D0%B7-%D0%BA%D1%80%D0%B0%D1%84%D1%82-%D0%B1%D1%83%D0%BC%D0%B0%D0%B3%D0%B8-%D0%B4%D0%BB%D1%8F-%D1%83%D0%BA%D1%80%D0%B0%D1%88%D0%B5%D0%BD%D0%B8%D0%B9-_-%D0%94%D0%BE%D0%BC-%D0%B8-%D1%81%D0%B0%D0%B4-_-%D0%90%D0%BB%D0%B8%D0%AD%D0%BA%D1%81%D0%BF%D1%80%D0%B5%D1%81%D1%81.jpeg",
+    "industries": ["ecommerce", "clothing"],
+    "types": ["boxes"],
+    "images": [
+      "/products/corrugated-nuit-mailer-box-open-perfume.jpg",
+      "/products/corrugated-antidote-shoe-kit-box-pair.jpg",
+    ],
     "specs": [
       "p.corrugated.s1",
       "p.corrugated.s2",
@@ -134,7 +215,9 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "sacks-5kg",
     "key": "p.sacks5",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Main_2024_3.jpg",
+    "industries": ["food"],
+    "types": ["bags"],
+    "images": ["https://images.unsplash.com/photo-1706881811917-6590b1054050?w=1100&q=72&auto=format&fit=crop"],
     "specs": [
       "p.sacks5.s1",
       "p.sacks5.s2",
@@ -146,95 +229,88 @@ export const PRODUCTS: CatalogueProduct[] = [
     "slug": "aluminium",
     "key": "p.alu",
     "cat": "plastic",
-    "img": "https://mediaprint-eg.com/wp-content/uploads/2024/06/Main_2024_3.jpg",
+    "industries": ["food"],
+    "types": ["zipper-pouches"],
+    "images": ["https://images.unsplash.com/photo-1708746333892-f01eee85b7a4?w=1100&q=72&auto=format&fit=crop"],
     "specs": [],
     "pricing": "aluminium"
+  },
+  {
+    "slug": "flyers",
+    "key": "p.flyers",
+    "cat": "print",
+    "industries": ["food", "clothing"],
+    "types": ["flyers"],
+    "images": [
+      "/products/flyers-nounas-bakery-iced-coffee.jpg",
+      "/products/flyers-nounas-bakery-cookie.jpg",
+      "/products/flyers-nounas-bakery-flatbread.jpg",
+    ],
+    "specs": [
+      "p.flyers.s1",
+      "p.flyers.s2",
+      "p.flyers.s3"
+    ],
+    "pricing": null
   }
 ];
 
-export interface ClientGroup { labelKey: string; names: { name: string; sub?: string }[] }
+export interface ClientGroup {
+  labelKey: string;
+  names: {
+    name: string;
+    sub?: string;
+    logo?: string;
+    darkPlate?: boolean;
+    /** detailed/multi-colour mark that turns into a blob when flattened to white — show it in colour */
+    keepColor?: boolean;
+  }[];
+}
 
 export const CLIENTS: ClientGroup[] = [
   {
-    "labelKey": "clients.food",
-    "names": [
-      {
-        "name": "Haj Arafa"
-      },
-      {
-        "name": "Coca-Cola"
-      },
-      {
-        "name": "Gomla Market"
-      },
-      {
-        "name": "TASTE PURE"
-      }
-    ]
+    labelKey: "clients.food",
+    names: [
+      { name: "Haj Arafa", logo: "/clients/haj-arafa.png", keepColor: true },
+      { name: "Coca-Cola", logo: "/clients/coca-cola.png" },
+      { name: "Gomla Market", logo: "/clients/gomla-market.png", keepColor: true },
+      { name: "TASTE PURE", logo: "/clients/taste-pure.png", keepColor: true },
+      { name: "Fridal", logo: "/clients/frida.png", darkPlate: true },
+    ],
   },
   {
-    "labelKey": "clients.cosmetics",
-    "names": [
-      {
-        "name": "Parkvilla"
-      },
-      {
-        "name": "Capixy"
-      },
-      {
-        "name": "Marico",
-        "sub": "Fiancée · Hair Code"
-      },
-      {
-        "name": "RawAfrica"
-      },
-      {
-        "name": "FEVELIN"
-      },
-      {
-        "name": "LUNA"
-      },
-      {
-        "name": "Willy"
-      },
-      {
-        "name": "Joviality"
-      },
-      {
-        "name": "Nuit Fragrance"
-      },
-      {
-        "name": "Era Care"
-      },
-      {
-        "name": "SORELLA"
-      }
-    ]
+    labelKey: "clients.cosmetics",
+    names: [
+      { name: "Parkvilla", logo: "/clients/parkvilla.png" },
+      { name: "Capixy", logo: "/clients/capixy.png" },
+      { name: "Marico", sub: "Fiancée · Hair Code", logo: "/clients/marico.png" },
+      { name: "RawAfrica", logo: "/clients/rawafrica.png", keepColor: true },
+      { name: "FEVELIN", logo: "/clients/fevelin.png" },
+      { name: "LUNA", logo: "/clients/luna.png" },
+      { name: "Willy", logo: "/clients/willy.png" },
+      { name: "Joviality", logo: "/clients/joviality.png" },
+      { name: "Nuit Fragrance", logo: "/clients/nuit.png" },
+      { name: "Era Care", logo: "/clients/era-care.png" },
+      { name: "SORELLA", logo: "/clients/sorella.png" },
+    ],
   },
   {
-    "labelKey": "clients.clothing",
-    "names": [
-      {
-        "name": "Carina"
-      },
-      {
-        "name": "DXLR"
-      },
-      {
-        "name": "SLEEKZ"
-      },
-      {
-        "name": "FATM"
-      },
-      {
-        "name": "ELIGHT"
-      },
-      {
-        "name": "JEANZY"
-      },
-      {
-        "name": "KLEVY"
-      }
-    ]
-  }
+    labelKey: "clients.clothing",
+    names: [
+      { name: "Carina", logo: "/clients/carina.png" },
+      { name: "DXLR", logo: "/clients/dxlr.png" },
+      { name: "SLEEKZ", logo: "/clients/sleekz.png" },
+      { name: "FATM" },
+      { name: "ELIGHT" },
+      { name: "JEANZY", logo: "/clients/jeanzy.svg" },
+    ],
+  },
+  {
+    labelKey: "clients.appliances",
+    names: [
+      // Both logos are white-on-transparent — need the dark plate, not the shared white one.
+      { name: "Beko", logo: "/clients/beko.png", darkPlate: true },
+      { name: "Elaraby Group", logo: "/clients/elaraby.png", darkPlate: true },
+    ],
+  },
 ];

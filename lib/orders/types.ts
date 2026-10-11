@@ -5,25 +5,42 @@ export interface SampleImage {
   label?: string;
 }
 
+export interface ArtworkFile {
+  url: string;
+  label?: string;
+}
+
 export interface Order {
   id: string;
   order_number: string;
   tracking_slug: string;
   customer_name: string;
   customer_phone: string;
+  customer_email: string | null;
   customer_company: string | null;
   product_label: string;
+  /** A QuantityRange code (see lib/orders/quantity.ts) for new orders; older orders may still carry free text. */
   quantity: string;
+  /** Exact quantity agreed with the customer after negotiation, if any; drives order_total once set. */
+  confirmed_quantity: number | null;
   unit_price: number | null;
   order_total: number | null;
   currency: string;
   lead_time_days: number | null;
+  lead_time_started_at: string | null;
   phase: Phase;
   estimated_delivery: string | null;
   delivered_at: string | null;
   sample_images: SampleImage[];
+  artwork_files: ArtworkFile[];
+  customer_artwork_files: ArtworkFile[];
+  invoice_file: ArtworkFile | null;
   source: string;
+  locale: string;
   notes: string | null;
+  rating: number | null;
+  rating_comment: string | null;
+  rated_at: string | null;
   failed_verify_attempts: number;
   verify_locked_until: string | null;
   created_at: string;
@@ -36,7 +53,8 @@ export type OrderEventType =
   | "customer_approved"
   | "customer_requested_changes"
   | "note"
-  | "reminder_sent";
+  | "reminder_sent"
+  | "rated";
 
 export type OrderEventActor = "system" | "staff" | "customer";
 
@@ -46,6 +64,7 @@ export interface OrderEvent {
   type: OrderEventType;
   phase: Phase | null;
   actor: OrderEventActor;
+  actor_name: string | null;
   message: string | null;
   created_at: string;
 }

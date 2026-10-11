@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Check, ChevronRight, ShieldCheck, Truck, Palette } from "lucide-react";
+import { Check, ChevronRight, ShieldCheck, Truck, Palette, ArrowRight } from "lucide-react";
 
-import { PRODUCTS } from "@/content/products";
-import { PRICING } from "@/content/pricing";
+import { PRODUCTS, type CatalogueProduct } from "@/content/products";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/ui/button";
 import { Wrap, Section, SectionHead } from "@/components/site/section";
-import { PriceCalculator } from "@/components/site/price-calculator";
 import { ProductCard } from "@/components/site/product-card";
+import { ProductGallery } from "@/components/site/product-gallery";
 import { CtaBand } from "@/components/site/cta-band";
+
+/** Same-category products first, then whichever others share the most industries/types
+ * with it — so every product (even a category's sole member, like nonwoven) always
+ * gets relevant "you may also like" suggestions instead of an empty section. */
+function relatedProducts(product: CatalogueProduct, count = 3): CatalogueProduct[] {
+  const score = (p: CatalogueProduct) => {
+    const sharedIndustries = p.industries.filter((i) => product.industries.includes(i)).length;
+    const sharedTypes = p.types.filter((t) => product.types.includes(t)).length;
+    return (p.cat === product.cat ? 100 : 0) + sharedIndustries * 10 + sharedTypes;
+  };
+  return PRODUCTS.filter((p) => p.slug !== product.slug)
+    .sort((a, b) => score(b) - score(a))
+    .slice(0, count);
+}
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -39,7 +52,7 @@ export async function generateMetadata({
       canonical: locale === "en" ? `/products/${slug}` : `/${locale}/products/${slug}`,
       languages: { en: `/products/${slug}`, ar: `/ar/products/${slug}` },
     },
-    openGraph: { title, description, images: [product.img] },
+    openGraph: { title, description, images: [product.images[0]] },
   };
 }
 
@@ -55,8 +68,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const t = await getTranslations();
-  const priced = product.pricing ? PRICING.products[product.pricing] : null;
-  const related = PRODUCTS.filter((p) => p.cat === product.cat && p.slug !== product.slug).slice(0, 3);
+  const related = relatedProducts(product);
 
   const title = t(`${product.key}.t`);
 
@@ -71,21 +83,8 @@ export default async function ProductPage({
             "@type": "Product",
             name: title,
             description: t(`${product.key}.d`),
-            image: product.img,
+            image: product.images,
             brand: { "@type": "Brand", name: t("brand.name") },
-            ...(priced && {
-              offers: {
-                "@type": "AggregateOffer",
-                priceCurrency: "EGP",
-                lowPrice: Math.min(
-                  ...priced.variants.flatMap((v) =>
-                    Array.isArray(v.prices)
-                      ? (v.prices as number[])
-                      : Object.values((v.prices ?? {}) as Record<string, number>),
-                  ),
-                ),
-              },
-            }),
           }),
         }}
       />
@@ -105,16 +104,7 @@ export default async function ProductPage({
           </div>
 
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[30px] shadow-deep">
-              <Image
-                src={product.img}
-                alt={title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
+            <ProductGallery images={product.images} alt={title} />
 
             <div>
               <span className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-[0.8rem] font-bold text-accent-2">
@@ -136,18 +126,16 @@ export default async function ProductPage({
                 </ul>
               )}
 
-              {product.pricing ? (
-                <PriceCalculator
-                  productId={product.pricing}
-                  title={title}
-                  defaultOpen
-                />
-              ) : (
-                <div className="mt-6 rounded-card border border-dashed border-line bg-paper p-6">
-                  <p className="font-semibold">{t("cta.askprice")}</p>
-                  <p className="mt-1 text-[0.9rem] text-muted">{t("band.p")}</p>
-                </div>
-              )}
+              <Button
+                asChild
+                size="lg"
+                className="mt-6 w-fit rounded-full bg-accent hover:bg-accent-2"
+              >
+                <Link href={`/contact?product=${encodeURIComponent(title)}`}>
+                  {t("cta.quote")}
+                  <ArrowRight className="size-4 rtl:rotate-180" />
+                </Link>
+              </Button>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
                 {[
@@ -168,10 +156,10 @@ export default async function ProductPage({
 
       {related.length > 0 && (
         <Section>
-          <SectionHead eyebrow={t("prod.eyebrow")} title={t("prod.h2")} />
+          <SectionHead eyebrow={t("prod.related.eyebrow")} title={t("prod.related.h2")} />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => (
-              <ProductCard key={p.slug} product={p} withPricer={false} showSpecs={false} />
+              <ProductCard key={p.slug} product={p} showSpecs={false} />
             ))}
           </div>
         </Section>

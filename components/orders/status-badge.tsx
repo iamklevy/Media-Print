@@ -1,4 +1,6 @@
-import { STATUS_LABEL, type OrderStatus } from "@/lib/orders/status";
+import { useTranslations } from "next-intl";
+
+import type { OrderStatus } from "@/lib/orders/status";
 import { cn } from "@/lib/utils";
 
 const STYLES: Record<OrderStatus, string> = {
@@ -9,8 +11,9 @@ const STYLES: Record<OrderStatus, string> = {
   not_started: "bg-paper-2 text-muted",
 };
 
-/** Shared status pill — same colors/labels on the ops board and the customer page. */
+/** Shared status pill — same colors on the ops board, labels driven by the ops.status.* messages. */
 export function StatusBadge({ status, className }: { status: OrderStatus; className?: string }) {
+  const t = useTranslations("ops.status");
   return (
     <span
       className={cn(
@@ -20,7 +23,7 @@ export function StatusBadge({ status, className }: { status: OrderStatus; classN
       )}
     >
       <span className="size-1.5 shrink-0 rounded-full bg-current" />
-      {STATUS_LABEL[status]}
+      {t(status)}
     </span>
   );
 }

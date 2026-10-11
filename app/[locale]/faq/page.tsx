@@ -3,8 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
 import { PageHero } from "@/components/site/page-hero";
-import { Section, SectionHead } from "@/components/site/section";
-import { StickerCatalogue, StickerOffers } from "@/components/site/sticker-catalogue";
+import { Section } from "@/components/site/section";
+import { Faq } from "@/components/site/faq";
 import { CtaBand } from "@/components/site/cta-band";
 
 export function generateStaticParams() {
@@ -19,16 +19,16 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
   return {
-    title: t("title.stick"),
-    description: t("desc.stick"),
+    title: t("title.faq"),
+    description: t("desc.faq"),
     alternates: {
-      canonical: locale === "en" ? "/stickers" : `/${locale}/stickers`,
-      languages: { en: "/stickers", ar: "/ar/stickers" },
+      canonical: locale === "en" ? "/faq" : `/${locale}/faq`,
+      languages: { en: "/faq", ar: "/ar/faq" },
     },
   };
 }
 
-export default async function StickersPage({
+export default async function FaqPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -39,17 +39,9 @@ export default async function StickersPage({
 
   return (
     <>
-      <PageHero
-        crumb={t("nav.stickers")}
-        title={t("ph.stick.h1")}
-        lead={t("ph.stick.lead")}
-      />
+      <PageHero crumb={t("nav.faq")} title={t("ph.faq.h1")} lead={t("ph.faq.lead")} />
       <Section>
-        <StickerCatalogue />
-      </Section>
-      <Section tint>
-        <SectionHead eyebrow={t("stick.offers")} title={t("stick.offers")} />
-        <StickerOffers />
+        <Faq />
       </Section>
       <CtaBand />
     </>

@@ -1,31 +1,27 @@
 import { useTranslations } from "next-intl";
 import { Phone } from "lucide-react";
-import { FacebookIcon, WhatsAppIcon } from "./brand-icons";
+import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "./brand-icons";
 
 import { Link } from "@/i18n/navigation";
 import {
   SALES_PHONE,
   ADMIN_PHONE,
-  EMAIL,
+  formatPhone,
+  FOOTER_EMAIL,
   FACEBOOK,
+  INSTAGRAM,
 } from "@/lib/contact";
+import { PRODUCTS } from "@/content/products";
 
 const SITE = [
   { href: "/", key: "home" },
-  { href: "/bestsellers", key: "best" },
   { href: "/products", key: "products" },
-  { href: "/stickers", key: "stickers" },
-  { href: "/services", key: "services" },
+  { href: "/services", key: "finishing" },
+  { href: "/bestsellers", key: "portfolio" },
+  { href: "/about", key: "about" },
+  { href: "/faq", key: "faq" },
   { href: "/book", key: "book" },
   { href: "/contact", key: "contact" },
-] as const;
-
-const PRODUCTS = [
-  { href: "/products/zipper", key: "p.zipper.t" },
-  { href: "/products/paper-sacks", key: "p.sacks.t" },
-  { href: "/products/courier", key: "p.courier.t" },
-  { href: "/products/cartons", key: "p.cartons.t" },
-  { href: "/products/nonwoven", key: "p.nonwoven.t" },
 ] as const;
 
 export function SiteFooter() {
@@ -34,7 +30,7 @@ export function SiteFooter() {
   return (
     <footer className="bg-ink pt-12 text-paper/70 md:pt-16">
       <div className="mx-auto w-[min(1200px,100%-2.5rem)]">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-12">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.7fr_1.2fr] lg:gap-10">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px]">
@@ -46,7 +42,7 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="mt-4 max-w-[34ch] text-[0.92rem]">{t("ft.about")}</p>
-            <div className="mt-5 flex gap-2">
+            <div className="mt-5 flex items-center gap-2">
               <a
                 href={FACEBOOK}
                 target="_blank"
@@ -57,7 +53,16 @@ export function SiteFooter() {
                 <FacebookIcon className="size-5" />
               </a>
               <a
-                href={`https://wa.me/20${SALES_PHONE}`}
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener"
+                aria-label={t("ft.in_arialabel")}
+                className="grid size-10 place-items-center rounded-xl bg-white/10 text-paper transition hover:bg-accent"
+              >
+                <InstagramIcon className="size-5" />
+              </a>
+              <a
+                href={`https://wa.me/20${SALES_PHONE}`} 
                 target="_blank"
                 rel="noopener"
                 aria-label={t("ft.wa_arialabel")}
@@ -90,11 +95,12 @@ export function SiteFooter() {
 
           <div>
             <h4 className="mb-4 text-[0.95rem] font-bold text-paper">{t("ft.prod")}</h4>
-            <ul className="grid gap-2.5 text-[0.93rem]">
-              {PRODUCTS.map(({ href, key }) => (
-                <li key={href}>
-                  <Link href={href} className="transition hover:text-accent">
-                    {t(key)}
+            {/* the full catalogue, same source as the header's Browse All Products menu */}
+            <ul className="grid gap-x-6 gap-y-2.5 text-[0.93rem] sm:grid-cols-2">
+              {PRODUCTS.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/products/${p.slug}`} className="transition hover:text-accent">
+                    {t(`${p.key}.t`)}
                   </Link>
                 </li>
               ))}
@@ -105,18 +111,20 @@ export function SiteFooter() {
             <h4 className="mb-4 text-[0.95rem] font-bold text-paper">{t("ft.contact")}</h4>
             <ul className="grid gap-2.5 text-[0.93rem]">
               <li>
+                <span className="me-2 text-paper">{t("ft.sales")}:</span>
                 <a href={`tel:+2${SALES_PHONE}`} dir="ltr" className="transition hover:text-accent">
-                  {SALES_PHONE}
+                  {formatPhone(SALES_PHONE)}
                 </a>
               </li>
               <li>
+                <span className="me-2 text-paper">{t("ft.inquiries")}:</span>
                 <a href={`tel:+2${ADMIN_PHONE}`} dir="ltr" className="transition hover:text-accent">
-                  {ADMIN_PHONE}
+                  {formatPhone(ADMIN_PHONE)}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${EMAIL}`} dir="ltr" className="transition hover:text-accent">
-                  {EMAIL}
+                <a href={`mailto:${FOOTER_EMAIL}`} dir="ltr" className="transition hover:text-accent">
+                  {FOOTER_EMAIL}
                 </a>
               </li>
               <li>{t("c.addr.v")}</li>
