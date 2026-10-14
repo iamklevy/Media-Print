@@ -6,7 +6,6 @@ import { deriveStatus } from "@/lib/orders/status";
 import type { Order } from "@/lib/orders/types";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { formatOrderQuantity } from "@/lib/orders/quantity";
-import { cn } from "@/lib/utils";
 
 export function OrderCard({ order, now, onClick }: { order: Order; now: number; onClick: () => void }) {
   const t = useTranslations("ops");
@@ -20,10 +19,7 @@ export function OrderCard({ order, now, onClick }: { order: Order; now: number; 
     <button
       type="button"
       onClick={onClick}
-      className={cn(
-        "grid w-full gap-1.5 rounded-[14px] border border-line bg-paper p-3 text-start text-sm transition-colors hover:border-accent",
-        status === "cancelled" && "opacity-70"
-      )}
+      className="grid w-full gap-1.5 rounded-[14px] border border-line bg-paper p-3 text-start text-sm transition-colors hover:border-accent"
     >
       <div className="flex items-center justify-between gap-2">
         <span className="shrink-0 font-semibold text-ink">{order.order_number}</span>
