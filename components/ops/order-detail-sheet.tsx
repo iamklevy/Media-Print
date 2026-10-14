@@ -272,13 +272,16 @@ export function OrderDetailSheet({
               {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
               {linkCopied ? t("link_copied") : t("copy_tracking_link")}
             </Button>
+            {/* phones: status + link on line 1, the three actions on line 2 */}
+            <span aria-hidden className="basis-full sm:hidden" />
             <Button
               asChild
               className={cn(OPS_BUTTON_SM, "border-transparent bg-[#1DA851] text-white hover:bg-[#25D366]")}
             >
               <a href={waLinkTo(order.customer_phone, "")} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="size-3" />
-                {t("message_whatsapp")}
+                <span className="sm:hidden">{t("message_whatsapp_short")}</span>
+                <span className="hidden sm:inline">{t("message_whatsapp")}</span>
               </a>
             </Button>
 
@@ -287,7 +290,8 @@ export function OrderDetailSheet({
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" className={cn(OPS_BUTTON_SM, OPS_TONE_NEUTRAL)}>
                     <Ban className="size-3" />
-                    {t("cancel_order")}
+                    <span className="sm:hidden">{t("cancel_order_short")}</span>
+                    <span className="hidden sm:inline">{t("cancel_order")}</span>
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -322,7 +326,8 @@ export function OrderDetailSheet({
               <AlertDialogTrigger asChild>
                 <Button variant="ghost" className={cn(OPS_BUTTON_SM, OPS_TONE_DANGER)}>
                   <Trash2 className="size-3" />
-                  {t("delete")}
+                  <span className="sm:hidden">{t("delete_short")}</span>
+                  <span className="hidden sm:inline">{t("delete")}</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
