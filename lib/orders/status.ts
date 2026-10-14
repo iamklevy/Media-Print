@@ -1,13 +1,14 @@
 import { GATE_PHASES } from "./phases";
 import type { Order } from "./types";
 
-export type OrderStatus = "done" | "in_progress" | "waiting_on_customer" | "overdue" | "not_started";
+export type OrderStatus = "done" | "in_progress" | "waiting_on_customer" | "overdue" | "not_started" | "cancelled";
 
 /**
  * Single derivation used by both the ops board and the customer page so the
  * two surfaces can never disagree on an order's badge.
  */
-export function deriveStatus(order: Pick<Order, "phase" | "estimated_delivery">): OrderStatus {
+export function deriveStatus(order: Pick<Order, "phase" | "estimated_delivery" | "cancelled_at">): OrderStatus {
+  if (order.cancelled_at) return "cancelled";
   if (order.phase === "delivered") return "done";
   if (GATE_PHASES.includes(order.phase)) return "waiting_on_customer";
   if (order.phase === "order_confirmed") return "not_started";

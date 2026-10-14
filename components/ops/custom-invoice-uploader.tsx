@@ -6,6 +6,8 @@ import { FileText, Upload, X } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { OPS_BUTTON, OPS_ICON_BUTTON } from "@/components/ops/button-styles";
+import { cn } from "@/lib/utils";
 import { saveCustomInvoice, removeCustomInvoice } from "@/lib/orders/actions";
 import { uploadStaffFile } from "@/components/ops/upload-staff-file";
 import type { ArtworkFile } from "@/lib/orders/types";
@@ -73,8 +75,7 @@ export function CustomInvoiceUploader({
           <Button
             type="button"
             variant="ghost"
-            size="icon-sm"
-            className="text-faint hover:text-danger"
+            className={cn(OPS_ICON_BUTTON, "text-faint hover:text-danger")}
             onClick={onRemove}
             disabled={busy}
             aria-label={t("remove_invoice")}
@@ -86,11 +87,11 @@ export function CustomInvoiceUploader({
         <Button
           type="button"
           variant="outline"
-          className="w-fit border-line"
+          className={cn(OPS_BUTTON, "w-fit border-line")}
           onClick={() => inputRef.current?.click()}
           disabled={busy}
         >
-          <Upload className="size-4" />
+          <Upload className="size-3.5" />
           {busy ? t("uploading") : t("upload_invoice")}
         </Button>
       )}

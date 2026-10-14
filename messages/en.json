@@ -9,6 +9,7 @@
     "tag": "Printing & Packaging"
   },
   "nav": {
+    "back_to_top": "Back to top",
     "home": "Home",
     "best": "Bestsellers",
     "products": "Products",
@@ -62,9 +63,7 @@
       "foot": "*Production starts the moment you approve your sample — then we ship to every governorate.",
       "cta": "Get pricing"
     },
-    "v3": {
-      "word": "MEDIA PRINT"
-    }
+    "v3": {}
   },
   "mq": {
     "1": "Printing up to 4 colours",
@@ -77,12 +76,10 @@
     "8": "Shipping nationwide"
   },
   "prod": {
-    "eyebrow": "What we make",
     "h2": "One workshop, every kind of packaging",
     "lead": "From a zipper bag for a spice brand to five-ply corrugated cartons for a shipping line — printed, finished and delivered by the same team.",
     "all": "See the full catalogue",
     "related": {
-      "eyebrow": "You may also like",
       "h2": "Similar packaging you might need"
     }
   },
@@ -177,7 +174,6 @@
     }
   },
   "why": {
-    "eyebrow": "Why work with us",
     "h2": "Fewer people between you and the finished box",
     "lead": "From the first sample to the pallet leaving our door, this is what actually changes when the workshop printing your packaging is the one that made it.",
     "3": {
@@ -202,7 +198,6 @@
     }
   },
   "clients": {
-    "eyebrow": "Trusted by",
     "h2": "Brands that already print with us",
     "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for.",
     "food": "Food & Beverage",
@@ -211,7 +206,6 @@
     "appliances": "Home Appliances & Electronics"
   },
   "proc": {
-    "eyebrow": "How it works",
     "h2": "Four steps from enquiry to delivery",
     "1": {
       "t": "Tell us what you need",
@@ -264,7 +258,8 @@
     "ecommerce": {
       "name": "E-commerce & Shipping",
       "blurb": "Shipping boxes, shipping bags, labels and inserts built to survive a courier."
-    }
+    },
+    "show": "Show {name}"
   },
   "solutionDesc": {
     "labels": "Printed stickers and product labels, on paper or clear film.",
@@ -292,23 +287,19 @@
       "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
     },
     "finishing": {
-      "eyebrow": "Beyond the print",
       "h2": "Premium finishing",
       "lead": "UV spot, foil stamping, embossing, lamination and die-cutting — the details that make a pack feel expensive.",
       "cta": "See our finishing options"
     },
     "work": {
-      "eyebrow": "Our work",
       "h2": "Packaging we have actually shipped",
       "lead": "A few of the runs that left our workshop, printed and finished for the brands below.",
       "all": "See the full portfolio"
     },
     "why": {
-      "eyebrow": "Why work with us",
       "h2": "Why MediaPrint?"
     },
     "stats": {
-      "eyebrow": "In numbers",
       "h2": "A workshop, not a middleman",
       "lead": "Plain facts about how we work — every figure here comes from our own price list and opening hours, not from marketing.",
       "products_n": "Products we make in-house",
@@ -317,17 +308,14 @@
       "gov_n": "Egyptian governorates we ship to"
     },
     "clients": {
-      "eyebrow": "Trusted by",
       "h2": "Brands already printing with us",
       "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for."
     },
     "process": {
-      "eyebrow": "How it works",
       "h2": "From enquiry to delivery in four steps",
       "lead": "Every job runs the same way, and you approve a physical sample before we print the quantity."
     },
     "voices": {
-      "eyebrow": "In their words",
       "h2": "What our customers say",
       "lead": "Brand owners and procurement teams we print for, on what it's like to work with us.",
       "list": {
@@ -349,7 +337,6 @@
       }
     },
     "faq": {
-      "eyebrow": "Before you ask",
       "h2": "Questions we get every week",
       "blurb": "Common questions on minimums, artwork, samples and delivery.",
       "cta": "See all FAQs",
@@ -380,7 +367,6 @@
     }
   },
   "srv": {
-    "eyebrow": "Beyond packaging",
     "h2": "Commercial printing too",
     "lead": "The same press that prints your packaging handles the rest of your printed material.",
     "all": "All printing services",
@@ -425,7 +411,7 @@
   },
   "band": {
     "h2": "Send us your product, we will tell you how to pack it",
-    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 100 575 0973."
+    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 100 575 0973 or +20 114 066 3658."
   },
   "ft": {
     "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
@@ -456,7 +442,6 @@
     "home": "Home"
   },
   "about": {
-    "story_eyebrow": "Our story",
     "story_h2": "One workshop, start to finish",
     "story_p": "Media Print Pack is a printing and packaging workshop in Mohandessin, Giza. We design, print and finish bags, sacks, cartons and labels ourselves — no importing from China, no middlemen — then ship anywhere in Egypt and the Arab world. Every order gets a physical sample before we run the full quantity, so what you approve is what you get.",
     "clients_h2": "Brands that print with us"
@@ -570,7 +555,7 @@
     "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
     "error_upload": "We couldn't upload your attached files — please check your connection and try again.",
     "submit": "Send quote request",
-    "note": "Or call sales directly on +20 100 575 0973 — Saturday to Thursday, 10am to 6pm.",
+    "note": "Or call sales directly on +20 100 575 0973 or +20 114 066 3658 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
   },
   "quantity_ranges": {
@@ -597,7 +582,7 @@
       "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
-      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 100 575 0973 — open Saturday to Thursday, 10am to 6pm.",
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 100 575 0973 or +20 114 066 3658 — open Saturday to Thursday, 10am to 6pm.",
       "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world.",
       "faq": "Minimum orders, artwork requirements, sampling, lead times, delivery and design — answered."
     }
@@ -690,6 +675,13 @@
       "rate_submit": "Submit rating",
       "rate_submitting": "Submitting…",
       "rate_thanks": "Thanks for the feedback!"
+    },
+    "cancelled": {
+      "title": "Order cancelled",
+      "body": "This order has been cancelled. If you think this is a mistake, please get in touch with us.",
+      "order_number": "Order number",
+      "product": "Product",
+      "quantity": "Quantity"
     }
   },
   "ops": {
@@ -700,7 +692,8 @@
       "all": "All jobs",
       "needs_action": "Needs our action",
       "waiting": "Waiting on customer",
-      "overdue": "Overdue"
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
     },
     "stats": {
       "live": "live jobs",
@@ -724,7 +717,8 @@
       "in_progress": "In progress",
       "waiting_on_customer": "Waiting on customer",
       "overdue": "Overdue",
-      "not_started": "Not started"
+      "not_started": "Not started",
+      "cancelled": "Cancelled"
     },
     "detail": {
       "created_at": "Created {date}",
@@ -795,10 +789,30 @@
         "customer_requested_changes": "Customer requested changes",
         "reminder_sent": "Reminder sent",
         "rated": "Customer left a rating",
-        "note": "Internal note"
+        "note": "Internal note",
+        "cancelled": "Order cancelled",
+        "reopened": "Order reopened"
       },
       "rating_title": "Customer rating",
-      "rating_none": "Not rated yet."
+      "rating_none": "Not rated yet.",
+      "cancel_order": "Cancel order",
+      "cancel_confirm_title": "Cancel this order?",
+      "cancel_confirm_desc": "{order_number} moves to the Cancelled tab and the customer's tracking page will show it as cancelled. Its files and history are kept, and you can reopen it later.",
+      "cancel_reason": "Reason (optional, staff only)",
+      "cancel_reason_placeholder": "e.g. Customer changed their mind",
+      "cancel_keep": "Keep order",
+      "cancel_confirm_action": "Cancel order",
+      "cancelling": "Cancelling…",
+      "cancel_failed": "Couldn't cancel the order — try again.",
+      "cancelled_on": "Cancelled {date}",
+      "cancelled_note": "This order is cancelled.",
+      "reopen": "Reopen order",
+      "reopening": "Reopening…",
+      "reopen_failed": "Couldn't reopen the order — try again.",
+      "staff_notes": "Staff notes",
+      "staff_notes_placeholder": "Calls, agreements, reminders… anything the team should know",
+      "staff_notes_info": "Internal notes for the team about this order. Only staff can see them, the customer never does. Press Save to update.",
+      "staff_notes_info_toggle": "Show staff notes info"
     }
   }
 }

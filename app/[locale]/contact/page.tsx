@@ -45,7 +45,7 @@ export default async function ContactPage({
       <Section>
         <div className="grid items-start gap-10 lg:grid-cols-2">
           <div>
-            <SectionHead eyebrow={t("prod.eyebrow")} title={t("f.h2")} lead={t("f.lead")} />
+            <SectionHead title={t("f.h2")} lead={t("f.lead")} />
             <Suspense fallback={null}>
               <QuoteForm />
             </Suspense>

@@ -31,6 +31,9 @@ export interface Order {
   phase: Phase;
   estimated_delivery: string | null;
   delivered_at: string | null;
+  /** Set when staff cancel the order; `phase` is left where it was so a reopen resumes from there. */
+  cancelled_at: string | null;
+  cancel_reason: string | null;
   sample_images: SampleImage[];
   artwork_files: ArtworkFile[];
   customer_artwork_files: ArtworkFile[];
@@ -38,6 +41,8 @@ export interface Order {
   source: string;
   locale: string;
   notes: string | null;
+  /** Internal notes the team keeps on the order; never sent to the customer. */
+  staff_notes: string | null;
   rating: number | null;
   rating_comment: string | null;
   rated_at: string | null;
@@ -54,7 +59,9 @@ export type OrderEventType =
   | "customer_requested_changes"
   | "note"
   | "reminder_sent"
-  | "rated";
+  | "rated"
+  | "cancelled"
+  | "reopened";
 
 export type OrderEventActor = "system" | "staff" | "customer";
 

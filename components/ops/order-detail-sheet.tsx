@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Check, Copy, Trash2 } from "lucide-react";
+import { Ban, Check, Copy, RotateCcw, Trash2 } from "lucide-react";
 
 import { WhatsAppIcon } from "@/components/site/brand-icons";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
@@ -18,8 +18,10 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { OPS_BUTTON, OPS_BUTTON_SM, OPS_TONE_DANGER, OPS_TONE_NEUTRAL } from "@/components/ops/button-styles";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { SamplePhotoUploader } from "@/components/ops/sample-photo-uploader";
@@ -29,9 +31,17 @@ import { ArtworkFileList } from "@/components/orders/artwork-file-list";
 import { deriveStatus } from "@/lib/orders/status";
 import { PHASES, isGatePhase, nextPhase, phaseIndex } from "@/lib/orders/phases";
 import { waLinkTo } from "@/lib/contact";
-import { formatRelativeDay } from "@/lib/utils";
+import { cn, formatRelativeDay } from "@/lib/utils";
 import { trackingUrl } from "@/lib/orders/tracking";
-import { advancePhase, sendReminder, updateOrderFields, getOrderEvents, deleteOrder } from "@/lib/orders/actions";
+import {
+  advancePhase,
+  sendReminder,
+  updateOrderFields,
+  getOrderEvents,
+  deleteOrder,
+  cancelOrder,
+  reopenOrder,
+} from "@/lib/orders/actions";
 import { isQuantityRange, quantityRangeLowerBound } from "@/lib/orders/quantity";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
@@ -69,6 +79,7 @@ export function OrderDetailSheet({
     unit_price: order.unit_price?.toString() ?? "",
     lead_time_days: order.lead_time_days?.toString() ?? "",
     estimated_delivery: order.estimated_delivery ?? "",
+    staff_notes: order.staff_notes ?? "",
   });
   const [sampleImages, setSampleImages] = useState<SampleImage[]>(order.sample_images);
   const [artworkFiles, setArtworkFiles] = useState<ArtworkFile[]>(order.artwork_files);
@@ -80,8 +91,13 @@ export function OrderDetailSheet({
   const [linkCopied, setLinkCopied] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelling, setCancelling] = useState(false);
+  const [reopening, setReopening] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const status = deriveStatus(order);
+  const cancelled = !!order.cancelled_at;
   const gate = isGatePhase(order.phase);
   const next = nextPhase(order.phase);
   const quoteMissing =
@@ -128,6 +144,8 @@ export function OrderDetailSheet({
     reminder_sent: t("event.reminder_sent"),
     rated: t("event.rated"),
     note: t("event.note"),
+    cancelled: t("event.cancelled"),
+    reopened: t("event.reopened"),
   };
 
   async function save() {
@@ -139,6 +157,7 @@ export function OrderDetailSheet({
       order_total: orderTotal,
       lead_time_days: fields.lead_time_days ? Number(fields.lead_time_days) : null,
       estimated_delivery: fields.estimated_delivery || null,
+      staff_notes: fields.staff_notes.trim() || null,
     });
     setSaving(false);
     onChanged();
@@ -198,6 +217,31 @@ export function OrderDetailSheet({
     }
   }
 
+  async function cancel() {
+    setCancelling(true);
+    const res = await cancelOrder(order.id, cancelReason);
+    setCancelling(false);
+    if (!res.ok) {
+      setCancelError(res.error ?? t("cancel_failed"));
+      return;
+    }
+    setCancelError(null);
+    setCancelReason("");
+    onChanged();
+  }
+
+  async function reopen() {
+    setReopening(true);
+    const res = await reopenOrder(order.id);
+    setReopening(false);
+    if (!res.ok) {
+      setCancelError(res.error ?? t("reopen_failed"));
+      return;
+    }
+    setCancelError(null);
+    onChanged();
+  }
+
   async function remove() {
     setDeleting(true);
     const res = await deleteOrder(order.id);
@@ -224,14 +268,13 @@ export function OrderDetailSheet({
           </SheetDescription>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
-            <Button onClick={copyTrackingLink} variant="outline" size="sm" className="h-6 gap-1 border-line px-2 text-xs">
+            <Button onClick={copyTrackingLink} variant="outline" className={cn(OPS_BUTTON_SM, "border-line")}>
               {linkCopied ? <Check className="size-3" /> : <Copy className="size-3" />}
               {linkCopied ? t("link_copied") : t("copy_tracking_link")}
             </Button>
             <Button
               asChild
-              size="sm"
-              className="h-6 gap-1 border-transparent bg-[#1DA851] px-2 text-xs text-white hover:bg-[#25D366]"
+              className={cn(OPS_BUTTON_SM, "border-transparent bg-[#1DA851] text-white hover:bg-[#25D366]")}
             >
               <a href={waLinkTo(order.customer_phone, "")} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="size-3" />
@@ -239,9 +282,45 @@ export function OrderDetailSheet({
               </a>
             </Button>
 
+            {!cancelled && order.phase !== "delivered" && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" className={cn(OPS_BUTTON_SM, OPS_TONE_NEUTRAL)}>
+                    <Ban className="size-3" />
+                    {t("cancel_order")}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t("cancel_confirm_title")}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t("cancel_confirm_desc", { order_number: order.order_number })}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="cancel_reason">{t("cancel_reason")}</Label>
+                    <Textarea
+                      id="cancel_reason"
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      placeholder={t("cancel_reason_placeholder")}
+                      maxLength={1000}
+                      className="border-line"
+                    />
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className={cn(OPS_BUTTON, OPS_TONE_NEUTRAL)}>{t("cancel_keep")}</AlertDialogCancel>
+                    <AlertDialogAction className={cn(OPS_BUTTON, OPS_TONE_DANGER)} onClick={cancel} disabled={cancelling}>
+                      {cancelling ? t("cancelling") : t("cancel_confirm_action")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm" className="h-6 gap-1 px-2 text-xs">
+                <Button variant="ghost" className={cn(OPS_BUTTON_SM, OPS_TONE_DANGER)}>
                   <Trash2 className="size-3" />
                   {t("delete")}
                 </Button>
@@ -254,8 +333,8 @@ export function OrderDetailSheet({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>{t("delete_cancel")}</AlertDialogCancel>
-                  <AlertDialogAction onClick={remove} disabled={deleting}>
+                  <AlertDialogCancel className={cn(OPS_BUTTON, OPS_TONE_NEUTRAL)}>{t("delete_cancel")}</AlertDialogCancel>
+                  <AlertDialogAction className={cn(OPS_BUTTON, OPS_TONE_DANGER)} onClick={remove} disabled={deleting}>
                     {deleting ? t("deleting") : t("delete_confirm_action")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -263,6 +342,15 @@ export function OrderDetailSheet({
             </AlertDialog>
           </div>
           {deleteError && <p className="mt-1 text-xs font-semibold text-danger">{deleteError}</p>}
+          {cancelError && <p className="mt-1 text-xs font-semibold text-danger">{cancelError}</p>}
+          {cancelled && (
+            <div className="mt-2 grid gap-1 rounded-md bg-paper-2 p-3 text-sm">
+              <p className="font-semibold text-ink">
+                {t("cancelled_on", { date: formatRelativeDay(new Date(order.cancelled_at!), locale, dayLabels) })}
+              </p>
+              {order.cancel_reason && <p className="text-ink/80">{order.cancel_reason}</p>}
+            </div>
+          )}
         </SheetHeader>
 
         <div className="grid gap-5 p-4">
@@ -384,6 +472,32 @@ export function OrderDetailSheet({
               </div>
             )}
 
+            <div className="grid gap-1.5">
+              <div className="flex items-center gap-1.5">
+                <Label htmlFor="staff_notes">{t("staff_notes")}</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={t("staff_notes_info_toggle")}
+                      className="flex h-4 w-4 items-center justify-center rounded-full border border-line text-[10px] font-semibold leading-none text-faint hover:bg-canvas hover:text-ink"
+                    >
+                      !
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent>{t("staff_notes_info")}</PopoverContent>
+                </Popover>
+              </div>
+              <Textarea
+                id="staff_notes"
+                value={fields.staff_notes}
+                onChange={(e) => setFields((f) => ({ ...f, staff_notes: e.target.value }))}
+                placeholder={t("staff_notes_placeholder")}
+                maxLength={5000}
+                className="border-line"
+              />
+            </div>
+
             <ArtworkFileList
               label={t("customer_artwork")}
               hint={t("customer_artwork_hint")}
@@ -422,7 +536,7 @@ export function OrderDetailSheet({
             />
 
             <div className="flex flex-wrap gap-2">
-              <Button onClick={save} disabled={saving} variant="outline" className="w-fit border-line">
+              <Button onClick={save} disabled={saving} variant="outline" className={cn(OPS_BUTTON, "w-fit border-line")}>
                 {saving ? t("saving") : t("save")}
               </Button>
             </div>
@@ -439,7 +553,9 @@ export function OrderDetailSheet({
                     <div className="flex items-baseline justify-between gap-2">
                       <span
                         className={
-                          e.type === "customer_requested_changes" ? "font-semibold text-danger" : "font-medium text-ink"
+                          e.type === "customer_requested_changes" || e.type === "cancelled"
+                            ? "font-semibold text-danger"
+                            : "font-medium text-ink"
                         }
                       >
                         {EVENT_LABEL[e.type]}
@@ -507,14 +623,22 @@ export function OrderDetailSheet({
         </div>
 
         <SheetFooter className="border-t border-line">
-          {order.phase === "delivered" ? (
+          {cancelled ? (
+            <>
+              <p className="text-sm text-muted">{t("cancelled_note")}</p>
+              <Button onClick={reopen} disabled={reopening} variant="outline" className={cn(OPS_BUTTON, "border-line")}>
+                <RotateCcw className="size-3.5" />
+                {reopening ? t("reopening") : t("reopen")}
+              </Button>
+            </>
+          ) : order.phase === "delivered" ? (
             <p className="text-sm font-semibold text-leaf">{t("delivered")}</p>
           ) : gate ? (
             <>
               <p className="text-sm text-muted">
                 {order.phase === "quote_review" ? t("waiting_note_quote") : t("waiting_note")}
               </p>
-              <Button onClick={remind} disabled={reminding} className="bg-[#1DA851] text-white hover:bg-[#25D366]">
+              <Button onClick={remind} disabled={reminding} className={cn(OPS_BUTTON, "bg-[#1DA851] text-white hover:bg-[#25D366]")}>
                 {reminding ? t("reminding") : t("remind")}
               </Button>
             </>
@@ -522,7 +646,7 @@ export function OrderDetailSheet({
             <>
               {quoteMissing && <p className="text-sm text-muted">{t("quote_missing_hint")}</p>}
               {advanceError && <p className="text-sm font-semibold text-danger">{advanceError}</p>}
-              <Button onClick={advance} disabled={advancing || !next || quoteMissing} className="bg-accent hover:bg-accent-2">
+              <Button onClick={advance} disabled={advancing || !next || quoteMissing} className={cn(OPS_BUTTON, "bg-accent text-white hover:bg-accent-2")}>
                 {advancing ? t("advancing") : t("advance", { phase: next ? tPhase(next) : "—" })}
               </Button>
             </>

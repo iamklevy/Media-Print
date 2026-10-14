@@ -1,10 +1,18 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { useTranslations } from "next-intl";
 import { ArrowUpRight } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 
-const HERO_IMAGE = "/hero/packaging.jpg";
+const HERO_IMAGE = "/hero/hero_nologo.png";
+/**
+ * Phones get their own portrait version, swapped in via <picture>: the same
+ * products, cut from the desktop photo and re-staged on a three-step podium
+ * (bags on top, boxes in the middle, Ropel + bottles in front) so every one
+ * stays visible. Products fill the top ~60%; the bottom is floor for the text.
+ */
+const HERO_IMAGE_MOBILE = "/hero/hero_mobile_podium.jpg";
+const MOBILE_MEDIA = "(max-width: 639px)";
 
 /**
  * The blurred reflection under the hero — a mirrored, blurred copy of the
@@ -24,38 +32,35 @@ const STATS = [
 /**
  * Homepage hero: a full-screen photo the site header floats over (the section
  * pulls itself up under the sticky header — see SiteHeader's overlay mode),
- * with an oversized translucent word, stats and the pricing CTA.
- *
- * Photo: Unsplash (photo-1680034977375), free under the Unsplash License.
+ * with stats and the pricing CTA.
  */
 export function HomeHero() {
   const t = useTranslations();
 
+  const common = { alt: "", fill: true, sizes: "100vw", loading: "eager", fetchPriority: "high" } as const;
+  const { props: desktop } = getImageProps({ ...common, src: HERO_IMAGE });
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({ ...common, src: HERO_IMAGE_MOBILE });
+
   return (
     <section className="relative isolate z-10 -mt-[72px] flex min-h-[max(620px,100svh)] flex-col overflow-hidden bg-ink text-white">
-      <Image
-        src={HERO_IMAGE}
-        alt=""
-        fill
-        loading="eager"
-        fetchPriority="high"
-        sizes="100vw"
-        className="-z-20 object-cover"
-      />
+      <picture>
+        <source media={MOBILE_MEDIA} srcSet={mobileSrcSet} sizes="100vw" />
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- decorative; alt="" comes from getImageProps */}
+        <img {...desktop} className="-z-20 object-cover object-top sm:object-center" />
+      </picture>
+      {/* dims the photo so the white text and buttons read cleanly; on phones
+          the text sits over the image's plain floor, so the bottom goes darker */}
       <span
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(14,11,8,0.72)_0%,rgba(14,11,8,0.3)_32%,rgba(14,11,8,0.4)_58%,rgba(14,11,8,0.8)_100%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(14,11,8,0.7)_0%,rgba(14,11,8,0.38)_22%,rgba(14,11,8,0.42)_52%,rgba(14,11,8,0.86)_70%,rgba(14,11,8,0.94)_100%)] sm:bg-[linear-gradient(180deg,rgba(14,11,8,0.74)_0%,rgba(14,11,8,0.45)_32%,rgba(14,11,8,0.55)_58%,rgba(14,11,8,0.88)_100%)]"
       />
-
-      {/* the oversized word, Winzy-style — always one line: the size is the
-          viewport width over the word's measured width-to-font-size ratio
-          ("MEDIA PRINT" ≈ 5.8em, "ميديا برنت" ≈ 4.2em, plus a little slack) */}
-      <p
+      {/* desktop: the stats/CTA sit bottom-left over busy product shots — a soft shade just there */}
+      <span
         aria-hidden
-        className="mt-[96px] select-none bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.12)_100%)] bg-clip-text whitespace-nowrap px-4 text-center text-[min(calc((100vw-2rem)/6.1),13rem)] font-extrabold leading-[0.9] tracking-[-0.045em] text-transparent rtl:text-[min(calc((100vw-2rem)/4.4),13rem)] rtl:tracking-normal sm:mt-[120px]"
-      >
-        {t("hero.v3.word")}
-      </p>
+        className="absolute inset-0 -z-10 hidden bg-[radial-gradient(ellipse_70%_60%_at_18%_88%,rgba(14,11,8,0.6),transparent_70%)] rtl:bg-[radial-gradient(ellipse_70%_60%_at_82%_88%,rgba(14,11,8,0.6),transparent_70%)] sm:block"
+      />
 
       <div className="mx-auto mt-auto w-[min(1200px,100%-2.5rem)] pb-10 pt-12 md:pb-14">
         <dl className="grid max-w-[620px] grid-cols-3 gap-4 border-t border-white/15 pt-6 sm:gap-10 sm:border-0 sm:pt-0">
@@ -107,7 +112,9 @@ export function HeroReflection() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[clamp(360px,45vw,640px)] overflow-hidden"
+      // faded to fully transparent before its bottom edge: a hard clip there can
+      // render as a light hairline on high-DPR phones (it lands between logo rows)
+      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[clamp(360px,45vw,640px)] overflow-hidden [mask-image:linear-gradient(to_bottom,black_70%,transparent_96%)]"
     >
       {/* starts above the layer so the soft blurred top edge stays out of view */}
       <div
@@ -122,6 +129,10 @@ export function HeroReflection() {
           alt=""
           fill
           sizes="50vw"
+          // blurred to mush anyway; a distinct quality also gives it a different
+          // URL from the hero's, so Next's dev LCP check doesn't mistake this
+          // lazy copy for the (eager) hero image
+          quality={40}
           className="object-cover"
         />
       </div>

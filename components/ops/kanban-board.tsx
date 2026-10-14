@@ -8,6 +8,8 @@ import { Globe } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { OPS_BUTTON, OPS_ICON_BUTTON } from "@/components/ops/button-styles";
+import { cn } from "@/lib/utils";
 import { OrderCard } from "@/components/ops/order-card";
 import { OrderDetailSheet } from "@/components/ops/order-detail-sheet";
 import { KANBAN_COLUMNS } from "@/lib/orders/phases";
@@ -18,7 +20,8 @@ import type { Order } from "@/lib/orders/types";
 
 const POLL_MS = 20_000;
 
-type Filter = "all" | "needs_action" | "waiting" | "overdue";
+// "all" means every active job; cancelled orders only show under their own tab.
+type Filter = "all" | "needs_action" | "waiting" | "overdue" | "cancelled";
 
 const TAB_TRIGGER_CLASS =
   "text-paper/70 hover:bg-paper/10 hover:text-paper data-[state=active]:bg-linear-to-r data-[state=active]:from-accent data-[state=active]:to-accent-2 data-[state=active]:text-paper data-[state=active]:hover:from-accent data-[state=active]:hover:to-accent-2";
@@ -88,11 +91,11 @@ function Board({
   const avgRating = rated.length ? rated.reduce((sum, o) => sum + (o.rating ?? 0), 0) / rated.length : null;
 
   const counts = {
-    live: orders.filter((o) => o.phase !== "delivered").length,
+    live: orders.filter((o) => o.phase !== "delivered" && !o.cancelled_at).length,
     waiting: withStatus.filter((o) => o.status === "waiting_on_customer").length,
     overdue: withStatus.filter((o) => o.status === "overdue").length,
     dueThisWeek: orders.filter((o) => {
-      if (!o.estimated_delivery || o.phase === "delivered") return false;
+      if (!o.estimated_delivery || o.phase === "delivered" || o.cancelled_at) return false;
       const days = (new Date(o.estimated_delivery).getTime() - now) / 86_400_000;
       return days >= 0 && days <= 7;
     }).length,
@@ -100,6 +103,7 @@ function Board({
 
   const q = query.trim().toLowerCase();
   const visible = withStatus.filter(({ order, status }) => {
+    if ((filter === "cancelled") !== (status === "cancelled")) return false;
     if (filter === "needs_action" && !["not_started", "in_progress", "overdue"].includes(status)) return false;
     if (filter === "waiting" && status !== "waiting_on_customer") return false;
     if (filter === "overdue" && status !== "overdue") return false;
@@ -147,14 +151,13 @@ function Board({
               </span>
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={toggleLocale}
                 disabled={switching}
-                className="text-paper/80 hover:bg-paper/10 hover:text-paper"
+                className={cn(OPS_ICON_BUTTON, "text-paper/80 hover:bg-paper/10 hover:text-paper")}
               >
-                <Globe className="size-4 opacity-70" />
+                <Globe className="size-3.5 opacity-70" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={logout} className="text-paper/80 hover:bg-paper/10 hover:text-paper">
+              <Button variant="ghost" onClick={logout} className={cn(OPS_BUTTON, "text-paper/80 hover:bg-paper/10 hover:text-paper")}>
                 {t("logout")}
               </Button>
             </div>
@@ -175,6 +178,9 @@ function Board({
                 <TabsTrigger value="overdue" className={TAB_TRIGGER_CLASS}>
                   {t("tabs.overdue")}
                 </TabsTrigger>
+                <TabsTrigger value="cancelled" className={TAB_TRIGGER_CLASS}>
+                  {t("tabs.cancelled")}
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -191,15 +197,14 @@ function Board({
             </span>
             <Button
               variant="ghost"
-              size="sm"
               onClick={toggleLocale}
               disabled={switching}
-              className="text-paper/80 hover:bg-paper/10 hover:text-paper"
+              className={cn(OPS_BUTTON, "text-paper/80 hover:bg-paper/10 hover:text-paper")}
             >
-              <Globe className="size-4 opacity-70" />
+              <Globe className="size-3.5 opacity-70" />
               {locale === "ar" ? "English" : "العربية"}
             </Button>
-            <Button variant="ghost" size="sm" onClick={logout} className="text-paper/80 hover:bg-paper/10 hover:text-paper">
+            <Button variant="ghost" onClick={logout} className={cn(OPS_BUTTON, "text-paper/80 hover:bg-paper/10 hover:text-paper")}>
               {t("logout")}
             </Button>
           </div>

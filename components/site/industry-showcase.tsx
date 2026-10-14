@@ -1,130 +1,86 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { Industry } from "@/content/industries";
 import { cn } from "@/lib/utils";
+import { SnapScroller } from "@/components/site/snap-scroller";
 
 /**
- * Split showcase: industry list on one side, a detail panel (photo, blurb and
- * the product types that industry uses) on the other. Hover/focus/tap picks an
- * industry; on mobile the list collapses to a scrolling row of pills.
+ * "Choose your industry" cards: on phones one swipeable row with dots
+ * (SnapScroller), from tablets up a 2-column grid of equal cards. Each card is a photo with a frosted
+ * strip carrying the name, blurb, product-type chips and an arrow; the whole
+ * card links to that industry's products, the chips to a filtered view.
  */
 export function IndustryShowcase({ industries }: { industries: Industry[] }) {
   const t = useTranslations();
-  const reduceMotion = useReducedMotion();
-  const [active, setActive] = useState(0);
-  const current = industries[active];
-  const name = t(`${current.key}.name`);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
-      {/* picker — pills on mobile, a numbered list on desktop */}
-      <div
-        role="tablist"
-        aria-label={t("industry.pick")}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden"
-      >
-        {industries.map((ind, i) => {
-          const selected = i === active;
-          return (
-            <button
-              key={ind.slug}
-              type="button"
-              role="tab"
-              id={`industry-tab-${ind.slug}`}
-              aria-selected={selected}
-              aria-controls="industry-panel"
-              onClick={() => setActive(i)}
-              onMouseEnter={() => setActive(i)}
-              onFocus={() => setActive(i)}
-              className={cn(
-                "group shrink-0 rounded-full border px-4 py-2 text-[0.92rem] font-semibold transition-all",
-                "lg:flex lg:items-center lg:gap-5 lg:rounded-none lg:border-0 lg:border-b lg:border-line lg:px-1 lg:py-6 lg:text-start lg:first:border-t",
-                selected
-                  ? "border-ink bg-ink text-paper lg:bg-transparent lg:text-ink"
-                  : "border-line text-ink hover:border-ink lg:text-muted lg:hover:text-ink"
-              )}
-            >
-              <span className="lg:flex-1 lg:text-[clamp(1.2rem,1rem+0.7vw,1.55rem)] lg:font-bold">
-                {t(`${ind.key}.name`)}
-              </span>
-              <ArrowRight
-                className={cn(
-                  "hidden size-5 transition-all rtl:rotate-180 lg:block",
-                  selected ? "translate-x-0 text-accent opacity-100" : "-translate-x-2 opacity-0 rtl:translate-x-2"
-                )}
-              />
-            </button>
-          );
-        })}
-      </div>
-
-      {/* detail panel */}
-      <div
-        id="industry-panel"
-        role="tabpanel"
-        aria-labelledby={`industry-tab-${current.slug}`}
-        className="overflow-hidden rounded-[28px] bg-paper-2 shadow-soft"
-      >
-        <div className="relative aspect-[16/10] overflow-hidden">
-          {/* every photo stays mounted so switching is an instant crossfade */}
-          {industries.map((ind, i) => (
+    <SnapScroller
+      labels={industries.map((ind) => t("industry.show", { name: t(`${ind.key}.name`) }))}
+      gridClassName="sm:grid sm:grid-cols-2"
+    >
+      {industries.map((ind) => {
+        const name = t(`${ind.key}.name`);
+        return (
+          <div
+            key={ind.slug}
+            style={ind.backdrop ? { backgroundColor: ind.backdrop } : undefined}
+            className="group relative isolate aspect-[4/5] overflow-hidden rounded-[22px] bg-paper-2 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:border after:border-ink/10 after:content-[''] sm:rounded-[28px] lg:aspect-[16/11]"
+          >
             <Image
-              key={ind.slug}
               src={ind.image}
-              alt={i === active ? t(`${ind.key}.name`) : ""}
+              alt=""
               fill
-              sizes="(max-width: 1024px) 100vw, 58vw"
+              sizes="(max-width: 640px) 100vw, 50vw"
+              // cut-outs: nudge the crop up a little so the top of the product clears the card edge on wide cards
               className={cn(
-                "object-cover transition-[opacity,transform] duration-700",
-                i === active ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
+                "-z-10 object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]",
+                ind.backdrop && "object-[50%_40%]",
               )}
             />
-          ))}
-        </div>
 
-        <div className="p-6 md:p-8">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={current.slug}
-              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-            >
-              <h3 className="text-[clamp(1.3rem,1.05rem+0.8vw,1.6rem)]">{name}</h3>
-              <p className="mt-2 max-w-[52ch] leading-relaxed text-muted">{t(`${current.key}.blurb`)}</p>
+            {/* the whole card is the link; the strip's chips sit above it (z-10) */}
+            <Link
+              href={`/products?industry=${ind.slug}`}
+              aria-label={t("industry.view", { name })}
+              className="absolute inset-0 rounded-[inherit] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent"
+            />
 
-              <ul className="mt-5 flex flex-wrap gap-2">
-                {current.types.map((type) => (
+            <div className="pointer-events-none absolute inset-x-2 bottom-2 rounded-[16px] border border-white/60 bg-paper/85 p-4 text-ink shadow-[0_10px_30px_-10px_rgb(38_28_18/0.25)] backdrop-blur-xl backdrop-saturate-150 sm:inset-x-3 sm:bottom-3 sm:rounded-[20px] sm:p-5">
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-[1.2rem] font-extrabold leading-[1.1] tracking-[-0.02em] sm:text-[1.3rem] lg:text-[1.6rem] rtl:tracking-normal">
+                  {name}
+                </h3>
+                <span
+                  aria-hidden
+                  className="grid size-9 shrink-0 place-items-center rounded-full bg-ink text-white transition-colors group-hover:bg-accent sm:size-10"
+                >
+                  <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:rotate-45 rtl:-scale-x-100 rtl:group-hover:-rotate-45 sm:size-5" />
+                </span>
+              </div>
+
+              <p className="mt-2 line-clamp-3 max-w-[46ch] text-[0.88rem] lg:text-[0.95rem] leading-relaxed text-muted">
+                {t(`${ind.key}.blurb`)}
+              </p>
+
+              <ul className="pointer-events-auto relative z-10 mt-3 flex flex-wrap gap-1.5">
+                {ind.types.map((type) => (
                   <li key={type.labelKey}>
                     <Link
-                      href={`/products?industry=${current.slug}&type=${type.typeSlug}`}
-                      className="inline-flex rounded-full border border-line bg-paper px-3.5 py-1.5 text-[0.88rem] font-semibold transition-colors hover:border-accent hover:text-accent"
+                      href={`/products?industry=${ind.slug}&type=${type.typeSlug}`}
+                      className="inline-flex rounded-full border border-line bg-paper px-2.5 py-1 text-[0.78rem] font-semibold transition-colors hover:border-accent hover:text-accent"
                     >
                       {t(type.labelKey)}
                     </Link>
                   </li>
                 ))}
               </ul>
-
-              <Link
-                href={`/products?industry=${current.slug}`}
-                className="group mt-6 inline-flex items-center gap-1.5 font-semibold text-accent transition-all hover:gap-2.5"
-              >
-                {t("industry.view", { name })}
-                <ArrowRight className="size-4 rtl:rotate-180" />
-              </Link>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
+            </div>
+          </div>
+        );
+      })}
+    </SnapScroller>
   );
 }

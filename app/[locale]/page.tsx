@@ -9,7 +9,7 @@ import { INDUSTRIES, SOLUTION_TYPES } from "@/content/industries";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Section, SectionHead, Eyebrow } from "@/components/site/section";
+import { Section, SectionHead } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { IndustryShowcase } from "@/components/site/industry-showcase";
 import { CtaBand } from "@/components/site/cta-band";
@@ -74,7 +74,7 @@ export default async function HomePage({
       <Section ink className="relative isolate overflow-hidden pb-14! md:pb-20! lg:pb-24!">
         <HeroReflection />
         <Reveal>
-          <SectionHead center onInk eyebrow={t("home.clients.eyebrow")} title={t("home.clients.h2")} lead={t("home.clients.lead")} />
+          <SectionHead center onInk title={t("home.clients.h2")} lead={t("home.clients.lead")} />
         </Reveal>
         <Reveal delay={0.08}>
           <ClientMarquee />
@@ -130,7 +130,7 @@ export default async function HomePage({
       {/* ============================================ 6. proof in numbers */}
       <Section>
         <Reveal>
-          <SectionHead eyebrow={t("home.stats.eyebrow")} title={t("home.stats.h2")} lead={t("home.stats.lead")} />
+          <SectionHead title={t("home.stats.h2")} lead={t("home.stats.lead")} />
         </Reveal>
         <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {STATS.map(({ icon: Icon, value, suffix, k }) => (
@@ -152,7 +152,7 @@ export default async function HomePage({
       {/* ============================================ 7. our work */}
       <Section>
         <Reveal>
-          <SectionHead eyebrow={t("home.work.eyebrow")} title={t("home.work.h2")} lead={t("home.work.lead")} />
+          <SectionHead title={t("home.work.h2")} lead={t("home.work.lead")} />
         </Reveal>
         <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {ourWork.map((p) => (
@@ -174,7 +174,7 @@ export default async function HomePage({
       {/* ============================================ 8. process (rail) */}
       <Section tint>
         <Reveal>
-          <SectionHead eyebrow={t("home.process.eyebrow")} title={t("home.process.h2")} lead={t("home.process.lead")} />
+          <SectionHead title={t("home.process.h2")} lead={t("home.process.lead")} />
         </Reveal>
         <div className="relative">
           {/* the rail the steps sit on — desktop only */}
@@ -201,7 +201,7 @@ export default async function HomePage({
       {/* ============================================ 9. why us (graphic) */}
       <Section>
         <Reveal>
-          <SectionHead eyebrow={t("home.why.eyebrow")} title={t("home.why.h2")} />
+          <SectionHead title={t("home.why.h2")} />
         </Reveal>
         <Stagger className="grid gap-4 md:grid-cols-2">
           {WHY.map((b, i) => (
@@ -278,8 +278,7 @@ export default async function HomePage({
           </Reveal>
           <Reveal delay={0.12}>
             <div>
-              <Eyebrow>{t("home.finishing.eyebrow")}</Eyebrow>
-              <h2 className="mt-3 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("home.finishing.h2")}</h2>
+              <h2 className="text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("home.finishing.h2")}</h2>
               <p className="mt-4 max-w-[52ch] text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
                 {t("home.finishing.lead")}
               </p>
@@ -297,7 +296,7 @@ export default async function HomePage({
       {/* ============================================ 11. testimonials */}
       <Section>
         <Reveal>
-          <SectionHead eyebrow={t("home.voices.eyebrow")} title={t("home.voices.h2")} lead={t("home.voices.lead")} />
+          <SectionHead title={t("home.voices.h2")} lead={t("home.voices.lead")} />
         </Reveal>
         <Stagger className="grid gap-5 md:grid-cols-3">
           {VOICES.map((v) => (
@@ -326,7 +325,7 @@ export default async function HomePage({
       {/* ============================================ 12. FAQ */}
       <Section tint>
         <Reveal>
-          <SectionHead eyebrow={t("home.faq.eyebrow")} title={t("home.faq.h2")} lead={t("home.faq.blurb")} />
+          <SectionHead title={t("home.faq.h2")} lead={t("home.faq.blurb")} />
         </Reveal>
         <Reveal delay={0.08}>
           <div className="flex justify-center">

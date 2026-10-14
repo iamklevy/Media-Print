@@ -1,4 +1,5 @@
 export const SALES_PHONE = "01005750973";
+export const SALES_PHONE_2 = "01140663658";
 export const ADMIN_PHONE = "01070226790";
 export const ADMIN_PHONE_2 = "01114537488";
 export const FOOTER_EMAIL = "m.mostafa@mediaprint-eg.com";
