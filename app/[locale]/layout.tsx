@@ -8,6 +8,7 @@ import Script from "next/script";
 import { routing, isRtl } from "@/i18n/routing";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
+import { BackToTop } from "@/components/site/back-to-top";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -115,6 +116,7 @@ export default async function LocaleLayout({
           <SiteHeader />
           <main>{children}</main>
           <SiteFooter />
+          <BackToTop />
         </NextIntlClientProvider>
       </body>
     </html>

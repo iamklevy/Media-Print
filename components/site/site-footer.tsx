@@ -5,6 +5,7 @@ import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "./brand-icons";
 import { Link } from "@/i18n/navigation";
 import {
   SALES_PHONE,
+  SALES_PHONE_2,
   ADMIN_PHONE,
   formatPhone,
   FOOTER_EMAIL,
@@ -30,7 +31,7 @@ export function SiteFooter() {
   return (
     <footer className="bg-ink pt-12 text-paper/70 md:pt-16">
       <div className="mx-auto w-[min(1200px,100%-2.5rem)]">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.7fr_1.2fr] lg:gap-10">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_1.4fr_1.7fr] lg:gap-10">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px]">
@@ -110,11 +111,17 @@ export function SiteFooter() {
           <div>
             <h4 className="mb-4 text-[0.95rem] font-bold text-paper">{t("ft.contact")}</h4>
             <ul className="grid gap-2.5 text-[0.93rem]">
-              <li>
+              <li className="xl:whitespace-nowrap">
                 <span className="me-2 text-paper">{t("ft.sales")}:</span>
-                <a href={`tel:+2${SALES_PHONE}`} dir="ltr" className="transition hover:text-accent">
-                  {formatPhone(SALES_PHONE)}
-                </a>
+                <span dir="ltr">
+                  <a href={`tel:+2${SALES_PHONE}`} className="transition hover:text-accent">
+                    {formatPhone(SALES_PHONE)}
+                  </a>
+                  <span className="mx-1.5">/</span>
+                  <a href={`tel:+2${SALES_PHONE_2}`} className="transition hover:text-accent">
+                    {formatPhone(SALES_PHONE_2)}
+                  </a>
+                </span>
               </li>
               <li>
                 <span className="me-2 text-paper">{t("ft.inquiries")}:</span>

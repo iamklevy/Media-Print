@@ -9,6 +9,7 @@ const STYLES: Record<OrderStatus, string> = {
   waiting_on_customer: "bg-amber-soft text-amber",
   overdue: "bg-danger-soft text-danger",
   not_started: "bg-paper-2 text-muted",
+  cancelled: "bg-ink/10 text-ink-2",
 };
 
 /** Shared status pill — same colors on the ops board, labels driven by the ops.status.* messages. */

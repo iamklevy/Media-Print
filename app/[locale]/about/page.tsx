@@ -45,11 +45,7 @@ export default async function AboutPage({
       <Section>
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
-            <span className="inline-flex items-center gap-2 text-[0.8rem] font-bold uppercase tracking-[0.12em] text-accent-2">
-              <span className="inline-block h-0.5 w-6 rounded-sm bg-accent" />
-              {t("about.story_eyebrow")}
-            </span>
-            <h2 className="mt-3 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("about.story_h2")}</h2>
+            <h2 className="text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("about.story_h2")}</h2>
             <p className="mt-4 max-w-[62ch] text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
               {t("about.story_p")}
             </p>
@@ -84,7 +80,7 @@ export default async function AboutPage({
       </Section>
 
       <Section tint>
-        <SectionHead eyebrow={t("why.eyebrow")} title={t("about.clients_h2")} />
+        <SectionHead title={t("about.clients_h2")} />
         <div className="grid gap-8 md:gap-10">
           {CLIENTS.map((g) => (
             <div key={g.labelKey} className="grid gap-4">

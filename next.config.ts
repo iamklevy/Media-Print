@@ -5,6 +5,8 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   images: {
+    // 40: the blurred hero reflection (HeroReflection); 75: everything else
+    qualities: [40, 75],
     remotePatterns: [
       { protocol: "https", hostname: "mediaprint-eg.com" },
       { protocol: "https", hostname: "images.unsplash.com" },

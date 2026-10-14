@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 import { hasCustomerSession } from "@/lib/auth/customer";
 import { supabaseServer } from "@/lib/supabase/server";
+import { toCustomerEvents, toCustomerOrder } from "@/lib/orders/customer-view";
+import type { Order, OrderEvent } from "@/lib/orders/types";
 
 export const dynamic = "force-dynamic";
 
@@ -24,5 +26,8 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
     .eq("order_id", order.id)
     .order("created_at", { ascending: true });
 
-  return NextResponse.json({ order, events: events ?? [] });
+  return NextResponse.json({
+    order: toCustomerOrder(order as Order),
+    events: toCustomerEvents((events ?? []) as OrderEvent[]),
+  });
 }

@@ -7,6 +7,8 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { staffLogin } from "@/lib/orders/actions";
 import { Button } from "@/components/ui/button";
+import { OPS_BUTTON } from "@/components/ops/button-styles";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -101,7 +103,7 @@ export default function OpsLoginPage() {
         <Button
           type="submit"
           disabled={pending || !email || !password}
-          className="bg-linear-to-r from-accent to-accent-2 text-paper hover:from-accent-2 hover:to-accent-2"
+          className={cn(OPS_BUTTON, "bg-linear-to-r from-accent to-accent-2 text-paper hover:from-accent-2 hover:to-accent-2")}
         >
           {pending ? "Signing in…" : "Sign in"}
         </Button>

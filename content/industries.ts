@@ -11,6 +11,9 @@ export interface Industry {
   /** i18n key prefix -> industry.<slug>.name / .blurb */
   key: string;
   image: string;
+  /** Tile colour behind a cut-out (transparent PNG) product shot, so it
+   * doesn't sit on the same white as the page. */
+  backdrop?: string;
   types: IndustryType[];
 }
 
@@ -18,7 +21,8 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "cosmetics",
     key: "industry.cosmetics",
-    image: "/products/cartons-luvira-serum-box-unfolded.png",
+    image: "/products/cartons-bobai-sunscreen-box-front-cutout.png",
+    backdrop: "var(--color-kraft)",
     types: [
       { labelKey: "industry.chip.packaging", typeSlug: "boxes" },
       { labelKey: "industry.chip.labels", typeSlug: "labels" },

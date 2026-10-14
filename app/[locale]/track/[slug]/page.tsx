@@ -4,6 +4,7 @@ import { hasCustomerSession } from "@/lib/auth/customer";
 import { supabaseServer } from "@/lib/supabase/server";
 import { PhoneGateForm } from "@/components/track/phone-gate-form";
 import { Tracker } from "@/components/track/tracker";
+import { toCustomerEvents, toCustomerOrder } from "@/lib/orders/customer-view";
 import type { Order, OrderEvent } from "@/lib/orders/types";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +33,11 @@ export default async function TrackPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="px-4 py-10 sm:py-16">
-      <Tracker slug={slug} initialOrder={order as Order} initialEvents={(events ?? []) as OrderEvent[]} />
+      <Tracker
+        slug={slug}
+        initialOrder={toCustomerOrder(order as Order)}
+        initialEvents={toCustomerEvents((events ?? []) as OrderEvent[])}
+      />
     </div>
   );
 }

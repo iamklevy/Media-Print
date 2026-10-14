@@ -13,6 +13,7 @@ import { trackingUrl } from "@/lib/orders/tracking";
 import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
 import { isQuantityRange } from "@/lib/orders/quantity";
 import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
+import { toCustomerOrder } from "@/lib/orders/customer-view";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
 
 const FAILED_ATTEMPT_LIMIT = 5;
@@ -271,6 +272,7 @@ export async function advancePhase(orderId: string): Promise<{ ok: boolean; erro
     .eq("id", orderId)
     .single();
   if (fetchError || !order) return { ok: false, error: "Order not found." };
+  if (order.cancelled_at) return { ok: false, error: "Order is cancelled — reopen it first." };
   if (isGatePhase(order.phase)) {
     return { ok: false, error: "Order is waiting on customer approval." };
   }
@@ -582,6 +584,7 @@ export async function updateOrderFields(
       | "estimated_delivery"
       | "confirmed_quantity"
       | "product_label"
+      | "staff_notes"
     >
   >
 ): Promise<{ ok: boolean; error?: string }> {
@@ -602,10 +605,11 @@ export async function sendReminder(orderId: string): Promise<{ ok: boolean; mess
 
   const { data: order, error } = await db
     .from("orders")
-    .select("order_number, product_label, phase")
+    .select("order_number, product_label, phase, cancelled_at")
     .eq("id", orderId)
     .single();
   if (error || !order) return { ok: false, error: "Order not found." };
+  if (order.cancelled_at) return { ok: false, error: "Order is cancelled." };
 
   await db
     .from("order_events")
@@ -615,6 +619,77 @@ export async function sendReminder(orderId: string): Promise<{ ok: boolean; mess
     ok: true,
     message: `Hi! Order ${order.order_number} (${order.product_label}) is waiting on your approval — could you take a look when you get a chance?`,
   };
+}
+
+const CANCEL_REASON_MAX = 1000;
+
+/**
+ * Cancels an order without deleting it: the row, its files and history stay,
+ * the board files it under the "Cancelled" tab, and the customer's tracking
+ * page shows it as cancelled. `phase` is left untouched so reopenOrder can
+ * put it straight back where it was.
+ */
+export async function cancelOrder(orderId: string, reason: string): Promise<{ ok: boolean; error?: string }> {
+  const staff = await requireStaffSession();
+  const db = supabaseServer();
+
+  const { data: order, error: fetchError } = await db
+    .from("orders")
+    .select("id, phase, cancelled_at")
+    .eq("id", orderId)
+    .single();
+  if (fetchError || !order) return { ok: false, error: "Order not found." };
+  if (order.cancelled_at) return { ok: false, error: "Order is already cancelled." };
+  if (order.phase === "delivered") return { ok: false, error: "Delivered orders can't be cancelled." };
+
+  const note = String(reason ?? "").trim().slice(0, CANCEL_REASON_MAX) || null;
+  const now = new Date().toISOString();
+
+  // Guarded on cancelled_at so two staff cancelling at once can't both log it.
+  const { data: updated, error: updateError } = await db
+    .from("orders")
+    .update({ cancelled_at: now, cancel_reason: note, updated_at: now })
+    .eq("id", orderId)
+    .is("cancelled_at", null)
+    .select("id");
+  if (updateError) return { ok: false, error: updateError.message };
+  if (!updated?.length) return { ok: false, error: "Order is already cancelled." };
+
+  await db.from("order_events").insert({
+    order_id: orderId,
+    type: "cancelled",
+    phase: order.phase,
+    actor: "staff",
+    actor_name: staff.name,
+    message: note,
+  });
+
+  return { ok: true };
+}
+
+export async function reopenOrder(orderId: string): Promise<{ ok: boolean; error?: string }> {
+  const staff = await requireStaffSession();
+  const db = supabaseServer();
+
+  const now = new Date().toISOString();
+  const { data: updated, error: updateError } = await db
+    .from("orders")
+    .update({ cancelled_at: null, cancel_reason: null, updated_at: now })
+    .eq("id", orderId)
+    .not("cancelled_at", "is", null)
+    .select("id, phase");
+  if (updateError) return { ok: false, error: updateError.message };
+  if (!updated?.length) return { ok: false, error: "Order isn't cancelled." };
+
+  await db.from("order_events").insert({
+    order_id: orderId,
+    type: "reopened",
+    phase: updated[0].phase,
+    actor: "staff",
+    actor_name: staff.name,
+  });
+
+  return { ok: true };
 }
 
 /** Recovers a storage object's path from the public URL Supabase handed back for it. */
@@ -719,10 +794,11 @@ export async function approveGate(
 
   const { data: order, error } = await db
     .from("orders")
-    .select("id, phase, order_number, customer_name")
+    .select("id, phase, order_number, customer_name, cancelled_at")
     .eq("tracking_slug", slug)
     .single();
   if (error || !order) return { ok: false, error: "Order not found." };
+  if (order.cancelled_at) return { ok: false, error: "This order was cancelled." };
   if (!isGatePhase(order.phase)) return { ok: false, error: "Nothing to approve." };
 
   const next = nextPhase(order.phase);
@@ -752,7 +828,7 @@ export async function approveGate(
 
   await notifyStaffGateResponse(order, "approved", order.phase as "quote_review" | "artwork_approved" | "sample_approved");
 
-  return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
+  return { ok: true, order: toCustomerOrder(updated as Order), events: (events ?? []) as OrderEvent[] };
 }
 
 export async function submitRating(
@@ -788,10 +864,11 @@ export async function requestChanges(
 
   const { data: order, error } = await db
     .from("orders")
-    .select("id, phase, order_number, customer_name")
+    .select("id, phase, order_number, customer_name, cancelled_at")
     .eq("tracking_slug", slug)
     .single();
   if (error || !order) return { ok: false, error: "Order not found." };
+  if (order.cancelled_at) return { ok: false, error: "This order was cancelled." };
   if (!isGatePhase(order.phase)) return { ok: false, error: "Nothing to revise." };
   if (order.phase === "quote_review" && !note.trim()) {
     return { ok: false, error: "Please tell us why so we can send a new quote." };
@@ -823,5 +900,5 @@ export async function requestChanges(
 
   await notifyStaffGateResponse(order, "changes_requested", order.phase as "quote_review" | "artwork_approved" | "sample_approved", note);
 
-  return { ok: true, order: updated as Order, events: (events ?? []) as OrderEvent[] };
+  return { ok: true, order: toCustomerOrder(updated as Order), events: (events ?? []) as OrderEvent[] };
 }

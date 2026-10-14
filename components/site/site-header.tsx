@@ -64,7 +64,7 @@ export function SiteHeader() {
   return (
     // The header strip itself is always transparent and click-through; the bar
     // inside is what changes — flat over the homepage hero, a floating frosted
-    // capsule with an orange glow everywhere else. Height stays 72px either way
+    // capsule everywhere else. Height stays 72px either way
     // so HomeHero's -mt-[72px] still lines up.
     <header
       className={cn(
@@ -77,7 +77,7 @@ export function SiteHeader() {
           "pointer-events-auto mx-auto flex items-center gap-4 border transition-all duration-500 ease-out",
           overlay
             ? "mt-0 h-[72px] w-[min(1200px,100%-2.5rem)] rounded-none border-transparent px-0"
-            : "mt-2 h-[58px] w-[min(1240px,100%-1rem)] rounded-full border-accent/20 bg-paper/70 bg-[radial-gradient(400px_100px_at_0%_50%,rgb(237_131_64/0.22),transparent_70%)] ps-2.5 pe-2 shadow-[0_12px_34px_-10px_rgb(221_99_32/0.35)] backdrop-blur-xl backdrop-saturate-150 rtl:bg-[radial-gradient(400px_100px_at_100%_50%,rgb(237_131_64/0.22),transparent_70%)]",
+            : "mt-2 h-[58px] w-[min(1240px,100%-1rem)] rounded-full border-line bg-paper/75 ps-2.5 pe-2 shadow-soft backdrop-blur-xl backdrop-saturate-150",
         )}
       >
         <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">

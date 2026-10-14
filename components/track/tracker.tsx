@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { InProgressState } from "@/components/track/in-progress-state";
 import { ApprovalGateState } from "@/components/track/approval-gate-state";
 import { DeliveredState } from "@/components/track/delivered-state";
+import { CancelledState } from "@/components/track/cancelled-state";
 import { isGatePhase } from "@/lib/orders/phases";
 import type { Order, OrderEvent } from "@/lib/orders/types";
 
@@ -48,6 +49,7 @@ export function Tracker({
     return () => clearInterval(id);
   }, [refresh]);
 
+  if (order.cancelled_at) return <CancelledState order={order} />;
   if (order.phase === "delivered") return <DeliveredState order={order} />;
   if (isGatePhase(order.phase)) return <ApprovalGateState order={order} onChanged={applyUpdate} />;
   return <InProgressState order={order} events={events} />;

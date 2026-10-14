@@ -14,9 +14,9 @@ import type { NavMenuItem } from "./nav-dropdown";
 
 type MenuId = "browse" | "markets";
 
-/** The glass + orange glow shared with the scrolled header capsule. */
+/** The frosted glass shared with the scrolled header capsule. */
 const GLASS =
-  "border border-accent/20 bg-paper/80 bg-[radial-gradient(260px_160px_at_0%_0%,rgb(237_131_64/0.28),transparent_70%),radial-gradient(260px_200px_at_100%_100%,rgb(237_131_64/0.2),transparent_70%)] shadow-[0_18px_44px_-12px_rgb(221_99_32/0.4)] backdrop-blur-xl backdrop-saturate-150";
+  "border border-line bg-paper/90 shadow-[0_18px_44px_-12px_rgb(38_28_18/0.18)] backdrop-blur-xl backdrop-saturate-150";
 
 /** Height of the header capsule — the card opens from, and closes back to, exactly this. */
 const CAPSULE_H = 58;
@@ -139,7 +139,7 @@ export function MobileMenu({
                       initial={{ rotate: -90, scale: 0.6, opacity: 0 }}
                       animate={{ rotate: 0, scale: 1, opacity: 1, transition: instant ?? { duration: 0.35, delay: 0.05 } }}
                       exit={{ rotate: -90, scale: 0.6, opacity: 0, transition: instant ?? { duration: 0.3, delay: 0.25 } }}
-                      className="grid size-10 place-items-center rounded-full bg-accent text-white shadow-[0_8px_20px_-6px_rgb(221_99_32/0.7)] hover:bg-accent-2"
+                      className="grid size-10 place-items-center rounded-full bg-accent text-white hover:bg-accent-2"
                     >
                       <X className="size-5" />
                     </motion.button>
@@ -148,7 +148,7 @@ export function MobileMenu({
 
                 <span
                   aria-hidden
-                  className="mx-2 mb-2 mt-0.5 block h-px bg-[linear-gradient(90deg,transparent,rgb(221_99_32/0.4),transparent)]"
+                  className="mx-2 mb-2 mt-0.5 block h-px bg-line"
                 />
 
                 <motion.nav variants={list} initial="closed" animate="open" exit="closed" className="flex flex-col gap-0.5">
@@ -216,7 +216,7 @@ export function MobileMenu({
                     <Link
                       href="/contact"
                       onClick={close}
-                      className="flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-[0.95rem] font-bold text-white shadow-[0_10px_24px_-8px_rgb(221_99_32/0.6)] hover:bg-accent-2"
+                      className="flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-[0.95rem] font-bold text-white hover:bg-accent-2"
                     >
                       <Package className="size-4" />
                       {t("cta.quote")}

@@ -80,12 +80,10 @@ export default async function ServicesPage({
 
       <Section tint>
         <div className="mx-auto max-w-[62ch] text-center">
-          <span className="text-[0.9rem] font-bold uppercase tracking-wider text-accent-2">
-            {t("srv.extra.t")}
-          </span>
-          <h2 className="mt-3 text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">
+          <h2 className="text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("srv.extra.t")}</h2>
+          <p className="mt-4 text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
             {t("srv.extra.d")}
-          </h2>
+          </p>
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-2.5">
           {["hero.chip1", "mq.6", "hero.chip3"].map((k) => (
