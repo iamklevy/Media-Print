@@ -20,7 +20,8 @@ import type { Order } from "@/lib/orders/types";
 
 const POLL_MS = 20_000;
 
-// "all" means every active job; cancelled orders only show under their own tab.
+// "all" shows every order (cancelled ones keep their column, with a Cancelled pill);
+// the other tabs are filters, "cancelled" lists only cancelled orders.
 type Filter = "all" | "needs_action" | "waiting" | "overdue" | "cancelled";
 
 const TAB_TRIGGER_CLASS =
@@ -103,7 +104,7 @@ function Board({
 
   const q = query.trim().toLowerCase();
   const visible = withStatus.filter(({ order, status }) => {
-    if ((filter === "cancelled") !== (status === "cancelled")) return false;
+    if (filter === "cancelled" && status !== "cancelled") return false;
     if (filter === "needs_action" && !["not_started", "in_progress", "overdue"].includes(status)) return false;
     if (filter === "waiting" && status !== "waiting_on_customer") return false;
     if (filter === "overdue" && status !== "overdue") return false;

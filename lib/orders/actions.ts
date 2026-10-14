@@ -638,6 +638,9 @@ export async function cancelOrder(orderId: string, reason: string): Promise<{ ok
     .select("id, phase, cancelled_at")
     .eq("id", orderId)
     .single();
+  // PGRST116 = no row; anything else (e.g. a missing column before the
+  // order_cancellation.sql migration) should surface as-is, not as "not found"
+  if (fetchError && fetchError.code !== "PGRST116") return { ok: false, error: fetchError.message };
   if (fetchError || !order) return { ok: false, error: "Order not found." };
   if (order.cancelled_at) return { ok: false, error: "Order is already cancelled." };
   if (order.phase === "delivered") return { ok: false, error: "Delivered orders can't be cancelled." };
