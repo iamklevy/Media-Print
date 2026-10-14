@@ -812,7 +812,10 @@
       "staff_notes": "Staff notes",
       "staff_notes_placeholder": "Calls, agreements, reminders… anything the team should know",
       "staff_notes_info": "Internal notes for the team about this order. Only staff can see them, the customer never does. Press Save to update.",
-      "staff_notes_info_toggle": "Show staff notes info"
+      "staff_notes_info_toggle": "Show staff notes info",
+      "message_whatsapp_short": "WhatsApp",
+      "cancel_order_short": "Cancel",
+      "delete_short": "Delete"
     }
   }
 }

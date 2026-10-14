@@ -812,7 +812,10 @@
       "staff_notes": "ملاحظات الفريق",
       "staff_notes_placeholder": "مكالمات، اتفاقات، تذكيرات… أي شيء يجب أن يعرفه الفريق",
       "staff_notes_info": "ملاحظات داخلية للفريق عن هذا الطلب. يراها الفريق فقط ولا تظهر للعميل أبداً. اضغط حفظ للتحديث.",
-      "staff_notes_info_toggle": "إظهار معلومات ملاحظات الفريق"
+      "staff_notes_info_toggle": "إظهار معلومات ملاحظات الفريق",
+      "message_whatsapp_short": "واتساب",
+      "cancel_order_short": "إلغاء",
+      "delete_short": "حذف"
     }
   }
 }
