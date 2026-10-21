@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Globe, Truck, MapPin, Mail, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 export function BookingForm() {
   const t = useTranslations();
+  const locale = useLocale();
   const [mode, setMode] = useState<Mode>("online");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -38,34 +39,55 @@ export function BookingForm() {
     e.preventDefault();
     setStatus("sending");
     const formData = new FormData(e.currentTarget);
-    const res = await submitBookingRequest(formData);
+    const res = await submitBookingRequest(formData, locale);
     setStatus(res.ok ? "sent" : "error");
   };
 
   return (
     <>
-      <span className="mb-3 block text-[0.78rem] font-bold uppercase tracking-wider text-muted">
+      <span id="bmode-label" className="mb-3 block text-[0.78rem] font-bold uppercase tracking-wider text-muted">
         {t("book.mode")}
       </span>
-      <div className="mb-10 grid gap-4 sm:grid-cols-3">
-        {MODES.map(({ id, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setMode(id)}
-            className={cn(
-              "grid gap-1.5 rounded-card border-[1.5px] bg-paper p-6 text-start transition-all hover:-translate-y-0.5 hover:shadow-soft",
-              mode === id ? "border-accent ring-3 ring-accent/14" : "border-line",
-            )}
-          >
-            <span className="mb-2 grid size-11 place-items-center rounded-xl bg-accent-soft text-accent-2">
-              <Icon className="size-5" />
-            </span>
-            <h3 className="text-[1.05rem]">{t(`book.${id}.t`)}</h3>
-            <p className="text-[0.89rem] leading-relaxed text-muted">{t(`book.${id}.d`)}</p>
-            <span className="text-[0.8rem] font-bold text-accent-2">{t(`book.${id}.m`)}</span>
-          </button>
-        ))}
+      <div role="radiogroup" aria-labelledby="bmode-label" className="mb-10 grid gap-3 sm:grid-cols-3">
+        {MODES.map(({ id, icon: Icon }) => {
+          const selected = mode === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => setMode(id)}
+              className={cn(
+                "relative flex flex-col gap-2 rounded-card border-[1.5px] p-4 text-start transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-accent/30",
+                selected ? "border-accent bg-accent-soft" : "border-line bg-paper hover:border-accent/50",
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute end-4 top-4 grid size-5 place-items-center rounded-full border-[1.5px] transition-colors",
+                  selected ? "border-accent bg-accent text-white" : "border-line bg-paper",
+                )}
+              >
+                {selected && <Check className="size-3" strokeWidth={3} />}
+              </span>
+              <span className="flex items-center gap-2.5 pe-7">
+                <Icon className={cn("size-5 shrink-0", selected ? "text-accent-2" : "text-muted")} />
+                <h3 className="text-[1rem] leading-snug">{t(`book.${id}.t`)}</h3>
+              </span>
+              <p className="text-[0.86rem] leading-relaxed text-muted">{t(`book.${id}.d`)}</p>
+              <span
+                className={cn(
+                  "mt-auto w-fit rounded-full px-2.5 py-1 text-[0.76rem] font-bold",
+                  selected ? "bg-paper text-accent-2" : "bg-accent-soft text-accent-2",
+                )}
+              >
+                {t(`book.${id}.m`)}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <form onSubmit={onSubmit} className="grid gap-4">
@@ -83,22 +105,26 @@ export function BookingForm() {
           <Field id="bphone" label={t("f.phone")} required>
             <Input id="bphone" name="phone" type="tel" dir="ltr" required placeholder={t("f.phone_placeholder")} />
           </Field>
-          <Field id="btopic" label={t("book.topic")}>
-            <select
-              id="btopic"
-              name="topic"
-              defaultValue=""
-              className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
-            >
-              <option value="">{t("book.topic_choose")}</option>
-              {["new", "quote", "artwork", "samples", "other"].map((k) => (
-                <option key={k} value={t(`book.topic_${k}`)}>
-                  {t(`book.topic_${k}`)}
-                </option>
-              ))}
-            </select>
+          <Field id="bemail" label={t("f.email")} required>
+            <Input id="bemail" name="email" type="email" dir="ltr" required placeholder={t("f.email_placeholder")} />
           </Field>
         </div>
+
+        <Field id="btopic" label={t("book.topic")}>
+          <select
+            id="btopic"
+            name="topic"
+            defaultValue=""
+            className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
+          >
+            <option value="">{t("book.topic_choose")}</option>
+            {["new", "quote", "artwork", "samples", "other"].map((k) => (
+              <option key={k} value={t(`book.topic_${k}`)}>
+                {t(`book.topic_${k}`)}
+              </option>
+            ))}
+          </select>
+        </Field>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field id="bdate" label={t("book.date")} required>
