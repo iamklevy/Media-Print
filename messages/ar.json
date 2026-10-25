@@ -816,6 +816,54 @@
       "message_whatsapp_short": "واتساب",
       "cancel_order_short": "إلغاء",
       "delete_short": "حذف"
+    },
+    "nav": {
+      "home": "الرئيسية",
+      "pipeline": "خط الإنتاج",
+      "queue": "المهام"
+    },
+    "home": {
+      "greeting": "أهلاً، {name}.",
+      "subtitle": "ده وضع المطبعة النهارده.",
+      "pipeline_title": "خط الإنتاج بنظرة سريعة",
+      "pipeline_hint": "{count} طلب شغال على ست مراحل",
+      "stage_late": "{count} متأخر",
+      "stage_waiting": "{count} في انتظار العميل",
+      "tile_live": "طلبات شغالة",
+      "tile_waiting": "في انتظار العميل",
+      "waiting_quote": "عرض السعر",
+      "waiting_artwork": "التصميم",
+      "waiting_sample": "العينة",
+      "tile_overdue": "متأخرة",
+      "overdue_worst": "أطول تأخير {days} يوم",
+      "overdue_none": "كل الطلبات في معادها",
+      "tile_due_week": "مستحق الأسبوع ده",
+      "tile_delivered": "اتسلّمت",
+      "delivered_note": "آخر 30 يوم",
+      "tile_rating": "متوسط التقييم",
+      "rating_count": "{count} تقييم",
+      "rating_none": "لسه مفيش تقييمات",
+      "timeline_title": "تسليمات الأسبوع ده",
+      "today": "النهارده",
+      "timeline_empty": "مفيش تسليم في الـ 7 أيام الجاية.",
+      "activity_title": "آخر النشاطات",
+      "activity_empty": "لسه مفيش نشاط.",
+      "view_all": "عرض الكل"
+    },
+    "pipeline": {
+      "subtitle": "كل الطلبات حسب مرحلة الإنتاج."
+    },
+    "queue": {
+      "subtitle": "نشتغل على إيه بعد كده.",
+      "needs_action": "محتاجة إجراء منا",
+      "needs_action_hint": "المتأخر الأول، وبعدين حسب معاد التسليم.",
+      "waiting": "في انتظار العميل",
+      "waiting_hint": "الأطول انتظارًا الأول — ذكّرهم لو الوقت طال.",
+      "empty": "مفيش حاجة متعلّقة.",
+      "no_due": "من غير معاد تسليم",
+      "due_in": "{days, plural, =0 {مستحق النهارده} one {مستحق بكره} other {مستحق بعد # يوم}}",
+      "waiting_for": "{days, plural, =0 {من النهارده} one {مستني من يوم} other {مستني من # يوم}}",
+      "show_all": "عرض الكل ({count})"
     }
   }
 }

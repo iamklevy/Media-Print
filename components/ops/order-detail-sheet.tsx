@@ -256,7 +256,7 @@ export function OrderDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="center" className="gap-0 overflow-x-hidden overflow-y-auto bg-paper text-ink">
+      <SheetContent side="center" className="glass-strong gap-0 overflow-x-hidden overflow-y-auto text-ink sm:rounded-[28px]">
         <SheetHeader className="border-b border-line">
           <SheetTitle className="text-ink">{order.order_number}</SheetTitle>
           <p className="text-xs text-muted">
