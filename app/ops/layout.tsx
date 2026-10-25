@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 // Internal staff tool: no next-intl routing (stays at /ops, never /ar/ops).
 // The board can still switch to Arabic via a cookie-driven locale toggle —
-// see lib/ops-locale.ts and KanbanBoard, which wraps its own content in a
+// see lib/ops-locale.ts and OpsDashboard, which wraps its own content in a
 // NextIntlClientProvider and flips `dir` on an inner wrapper instead of
 // here on <html>, since /ops/login always stays English regardless of the
 // staff board's saved language.

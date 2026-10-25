@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { hasStaffSession } from "@/lib/auth/staff";
-import { supabaseServer } from "@/lib/supabase/server";
+import { loadOpsFeed } from "@/lib/orders/ops-feed";
 
 export const dynamic = "force-dynamic";
 
@@ -10,11 +10,9 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const db = supabaseServer();
-  const { data, error } = await db.from("orders").select("*").order("created_at", { ascending: false });
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    return NextResponse.json(await loadOpsFeed());
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json({ orders: data });
 }

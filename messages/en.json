@@ -816,6 +816,54 @@
       "message_whatsapp_short": "WhatsApp",
       "cancel_order_short": "Cancel",
       "delete_short": "Delete"
+    },
+    "nav": {
+      "home": "Home",
+      "pipeline": "Pipeline",
+      "queue": "Queue"
+    },
+    "home": {
+      "greeting": "Hello, {name}.",
+      "subtitle": "Here's the print floor today.",
+      "pipeline_title": "Pipeline at a glance",
+      "pipeline_hint": "{count, plural, one {# live job} other {# live jobs}} across six stages",
+      "stage_late": "{count} late",
+      "stage_waiting": "{count} waiting",
+      "tile_live": "Live jobs",
+      "tile_waiting": "Waiting on customer",
+      "waiting_quote": "Quote",
+      "waiting_artwork": "Artwork",
+      "waiting_sample": "Sample",
+      "tile_overdue": "Overdue",
+      "overdue_worst": "Longest {days, plural, one {# day} other {# days}} late",
+      "overdue_none": "Everything's on schedule",
+      "tile_due_week": "Due this week",
+      "tile_delivered": "Delivered",
+      "delivered_note": "Last 30 days",
+      "tile_rating": "Avg. rating",
+      "rating_count": "{count, plural, one {# review} other {# reviews}}",
+      "rating_none": "No ratings yet",
+      "timeline_title": "This week's deliveries",
+      "today": "Today",
+      "timeline_empty": "Nothing due in the next 7 days.",
+      "activity_title": "Recent activity",
+      "activity_empty": "No activity yet.",
+      "view_all": "View all"
+    },
+    "pipeline": {
+      "subtitle": "Every job, by production stage."
+    },
+    "queue": {
+      "subtitle": "What to work on next.",
+      "needs_action": "Needs our action",
+      "needs_action_hint": "Overdue first, then by delivery date.",
+      "waiting": "Waiting on customer",
+      "waiting_hint": "Longest wait first — nudge them if it's been a while.",
+      "empty": "All caught up.",
+      "no_due": "No due date",
+      "due_in": "{days, plural, =0 {Due today} one {Due tomorrow} other {Due in # days}}",
+      "waiting_for": "{days, plural, =0 {Since today} one {Waiting # day} other {Waiting # days}}",
+      "show_all": "Show all {count}"
     }
   }
 }

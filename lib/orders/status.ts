@@ -23,3 +23,6 @@ function startOfToday(): Date {
   d.setHours(0, 0, 0, 0);
   return d;
 }
+
+/** Statuses where the next move is ours — the ops Queue, its nav badge, and the "Needs our action" filter. */
+export const NEEDS_ACTION: OrderStatus[] = ["overdue", "not_started", "in_progress"];

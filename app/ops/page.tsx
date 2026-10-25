@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 
 import { getStaffUser } from "@/lib/auth/staff";
-import { supabaseServer } from "@/lib/supabase/server";
 import { getOpsLocale } from "@/lib/ops-locale";
-import { KanbanBoard } from "@/components/ops/kanban-board";
-import type { Order } from "@/lib/orders/types";
+import { loadOpsFeed } from "@/lib/orders/ops-feed";
+import { OpsDashboard } from "@/components/ops/ops-dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +16,15 @@ export default async function OpsPage() {
     redirect("/ops/login");
   }
 
-  const db = supabaseServer();
-  const { data } = await db.from("orders").select("*").order("created_at", { ascending: false });
+  const { orders, activity } = await loadOpsFeed();
 
   const locale = await getOpsLocale();
   const messages = (await import(`@/messages/${locale}.json`)).default;
 
   return (
-    <KanbanBoard
-      initialOrders={(data ?? []) as Order[]}
+    <OpsDashboard
+      initialOrders={orders}
+      initialActivity={activity}
       locale={locale}
       messages={messages}
       staffName={staff.name}

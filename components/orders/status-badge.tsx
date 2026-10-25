@@ -18,13 +18,13 @@ export function StatusBadge({ status, className }: { status: OrderStatus; classN
   return (
     <span
       className={cn(
-        "inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
+        "inline-flex w-fit min-w-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
         STYLES[status],
         className
       )}
     >
       <span className="size-1.5 shrink-0 rounded-full bg-current" />
-      {t(status)}
+      <span className="truncate">{t(status)}</span>
     </span>
   );
 }
