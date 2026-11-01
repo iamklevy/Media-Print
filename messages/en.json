@@ -687,6 +687,8 @@
   "ops": {
     "title": "Media Print Operations",
     "logout": "Log out",
+    "sidebar_open": "Open sidebar",
+    "sidebar_close": "Close sidebar",
     "search_placeholder": "Search order or customer",
     "tabs": {
       "all": "All jobs",
