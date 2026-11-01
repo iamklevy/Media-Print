@@ -18,7 +18,13 @@ const STAFF = [
   { email: "hamodyosama50@gmail.com", name: "Ahmed" },
   { email: "M.mostafa@mediaprint-eg.com", name: "Mohamed" },
   { email: "sales@mediaprint-eg.com", name: "Sales Team" },
+  { email: "yasmine.mediaprint@gmail.com", name: "Yasmine" },
 ];
+
+// Optional: pass one or more emails to only process those staff members, e.g.
+//   node --env-file=.env.local scripts/create-staff-accounts.mjs new.hire@example.com
+// With no arguments, every account in STAFF is processed.
+const ONLY = process.argv.slice(2).map((e) => e.toLowerCase());
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -111,6 +117,11 @@ async function ensureAccount(email, name) {
   console.log(`Password-setup email sent to ${email}`);
 }
 
-for (const { email, name } of STAFF) {
+const targets = ONLY.length ? STAFF.filter((s) => ONLY.includes(s.email.toLowerCase())) : STAFF;
+if (ONLY.length && targets.length !== ONLY.length) {
+  throw new Error(`Not in STAFF list: ${ONLY.filter((e) => !targets.some((t) => t.email.toLowerCase() === e)).join(", ")}`);
+}
+
+for (const { email, name } of targets) {
   await ensureAccount(email, name);
 }

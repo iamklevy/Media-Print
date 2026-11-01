@@ -1,9 +1,11 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getStaffUser } from "@/lib/auth/staff";
 import { getOpsLocale } from "@/lib/ops-locale";
 import { loadOpsFeed } from "@/lib/orders/ops-feed";
 import { OpsDashboard } from "@/components/ops/ops-dashboard";
+import { SIDEBAR_COOKIE } from "@/lib/ops-sidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +22,8 @@ export default async function OpsPage() {
 
   const locale = await getOpsLocale();
   const messages = (await import(`@/messages/${locale}.json`)).default;
+  // Read server-side so the rail renders in its saved state with no flash.
+  const sidebarCollapsed = (await cookies()).get(SIDEBAR_COOKIE)?.value === "collapsed";
 
   return (
     <OpsDashboard
@@ -29,6 +33,7 @@ export default async function OpsPage() {
       messages={messages}
       staffName={staff.name}
       staffEmail={staff.email}
+      initialSidebarCollapsed={sidebarCollapsed}
     />
   );
 }

@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { NextIntlClientProvider, useTranslations } from "next-intl";
-import { Columns3, Globe, House, ListTodo, LogOut, Search, type LucideIcon } from "lucide-react";
+import {
+  Columns3,
+  Globe,
+  House,
+  ListTodo,
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
+  type LucideIcon,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { SIDEBAR_COOKIE } from "@/lib/ops-sidebar";
 import { OpsHome } from "@/components/ops/ops-home";
 import { PipelineBoard, type PipelineFilter } from "@/components/ops/pipeline-board";
 import { OpsQueue } from "@/components/ops/ops-queue";
@@ -25,30 +36,19 @@ export interface OrderWithStatus {
   status: OrderStatus;
 }
 
-export function OpsDashboard({
-  initialOrders,
-  initialActivity,
-  locale,
-  messages,
-  staffName,
-  staffEmail,
-}: {
+interface DashboardProps {
   initialOrders: Order[];
   initialActivity: ActivityItem[];
   locale: OpsLocale;
-  messages: Record<string, unknown>;
   staffName: string;
   staffEmail: string;
-}) {
+  initialSidebarCollapsed: boolean;
+}
+
+export function OpsDashboard({ messages, ...props }: DashboardProps & { messages: Record<string, unknown> }) {
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <Dashboard
-        initialOrders={initialOrders}
-        initialActivity={initialActivity}
-        locale={locale}
-        staffName={staffName}
-        staffEmail={staffEmail}
-      />
+    <NextIntlClientProvider locale={props.locale} messages={messages}>
+      <Dashboard {...props} />
     </NextIntlClientProvider>
   );
 }
@@ -59,13 +59,8 @@ function Dashboard({
   locale,
   staffName,
   staffEmail,
-}: {
-  initialOrders: Order[];
-  initialActivity: ActivityItem[];
-  locale: OpsLocale;
-  staffName: string;
-  staffEmail: string;
-}) {
+  initialSidebarCollapsed,
+}: DashboardProps) {
   const t = useTranslations("ops");
   const router = useRouter();
   const [orders, setOrders] = useState(initialOrders);
@@ -75,6 +70,22 @@ function Dashboard({
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [switching, setSwitching] = useState(false);
+  const [collapsed, setCollapsed] = useState(initialSidebarCollapsed);
+
+  function setSidebar(next: boolean) {
+    setCollapsed(next);
+    // A cookie (not localStorage) so the server renders the saved state on the next load — no flash.
+    document.cookie = `${SIDEBAR_COOKIE}=${next ? "collapsed" : "expanded"}; path=/ops; max-age=31536000; samesite=lax`;
+  }
+
+  // Labels stay in the DOM (clipped by the item) and fade, so the width
+  // animation reveals/hides them smoothly instead of popping.
+  const fade = cn(
+    "whitespace-nowrap transition-opacity duration-200",
+    collapsed ? "pointer-events-none opacity-0" : "opacity-100 delay-100"
+  );
+  const railItem =
+    "flex w-full items-center gap-3 overflow-hidden rounded-2xl px-3 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors";
   // Lazy initializer runs once on mount, so it's exempt from React's
   // no-impure-calls-during-render rule; refreshed alongside each poll tick.
   const [now, setNow] = useState(() => Date.now());
@@ -168,68 +179,140 @@ function Dashboard({
         locale === "ar" ? "font-arabic" : "font-sans"
       )}
     >
-      <aside className="hidden shrink-0 p-3 pe-0 lg:block lg:w-[240px]">
+      {/* Collapsible rail: animating the aside's width (not overlaying it) lets
+          <main> — and the pipeline's flex-1 columns — reflow with it. */}
+      <aside
+        className={cn(
+          // relative z-30: the glass panel's backdrop-filter traps the tooltips' z-index
+          // inside it, so the whole aside must sit above <main>'s (also glass) columns.
+          "relative z-30 hidden shrink-0 p-3 pe-0 lg:block",
+          "transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+          collapsed ? "lg:w-[86px]" : "lg:w-[256px]"
+        )}
+      >
         <div className="glass-strong flex h-full flex-col rounded-[28px] p-4">
-          <div className="flex items-center gap-2.5 px-2 pt-1 pb-5">
-            <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px] shadow-soft">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="" className="size-full object-contain" />
+          <div className="flex items-center gap-2 px-[3px] pt-1 pb-5">
+            {collapsed ? (
+              <Tip label={t("sidebar_open")}>
+                <button
+                  type="button"
+                  onClick={() => setSidebar(false)}
+                  aria-label={t("sidebar_open")}
+                  aria-expanded={false}
+                  className="group/logo relative grid size-9 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px] shadow-soft"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/logo.png" alt="" className="size-full object-contain transition-opacity group-hover/logo:opacity-0" />
+                  <PanelLeftOpen className="absolute size-[18px] text-ink-2 opacity-0 transition-opacity group-hover/logo:opacity-100 rtl:-scale-x-100" />
+                </button>
+              </Tip>
+            ) : (
+              <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-[3px] shadow-soft">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="" className="size-full object-contain" />
+              </span>
+            )}
+            {/* Fixed width + wrapping (not truncate) so the full name shows on two lines,
+                and the row's height doesn't reflow while the rail animates. */}
+            <span
+              className={cn(fade, "w-[120px] shrink-0 text-[0.95rem] leading-tight font-bold whitespace-normal")}
+            >
+              {t("title")}
             </span>
-            <span className="text-[0.95rem] leading-tight font-bold">{t("title")}</span>
+            {!collapsed && (
+              <Tip label={t("sidebar_close")} className="ms-auto">
+                <button
+                  type="button"
+                  onClick={() => setSidebar(true)}
+                  aria-label={t("sidebar_close")}
+                  aria-expanded
+                  className="grid size-8 shrink-0 place-items-center rounded-xl text-ink-2/75 transition-colors hover:bg-white/60 hover:text-ink"
+                >
+                  <PanelLeftClose className="size-[18px] rtl:-scale-x-100" />
+                </button>
+              </Tip>
+            )}
           </div>
 
           <nav className="grid grid-cols-1 gap-1">
             {nav.map(({ key, icon: Icon, badge }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => goTo(key)}
-                aria-current={view === key ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold transition-colors",
-                  view === key ? "bg-white/90 text-ink shadow-soft" : "text-ink-2/75 hover:bg-white/50 hover:text-ink"
-                )}
-              >
-                <Icon className={cn("size-[18px]", view === key && "text-accent")} />
-                {t(`nav.${key}`)}
-                {!!badge && (
-                  <span className="ms-auto rounded-full bg-accent px-2 py-0.5 text-[0.7rem] leading-none font-bold text-white tabular-nums">
-                    {badge}
+              <Tip key={key} label={t(`nav.${key}`)} show={collapsed}>
+                <button
+                  type="button"
+                  onClick={() => goTo(key)}
+                  aria-current={view === key ? "page" : undefined}
+                  aria-label={collapsed ? t(`nav.${key}`) : undefined}
+                  className={cn(
+                    railItem,
+                    view === key ? "bg-white/90 text-ink shadow-soft" : "text-ink-2/75 hover:bg-white/50 hover:text-ink"
+                  )}
+                >
+                  <span className="relative shrink-0">
+                    <Icon className={cn("size-[18px]", view === key && "text-accent")} />
+                    {!!badge && collapsed && (
+                      <span className="absolute -end-1.5 -top-1.5 min-w-4 rounded-full bg-accent px-1 text-center text-[0.6rem] leading-4 font-bold text-white tabular-nums">
+                        {badge}
+                      </span>
+                    )}
                   </span>
-                )}
-              </button>
+                  <span className={fade}>{t(`nav.${key}`)}</span>
+                  {!!badge && (
+                    <span
+                      className={cn(
+                        fade,
+                        "ms-auto rounded-full bg-accent px-2 py-0.5 text-[0.7rem] leading-none font-bold text-white tabular-nums"
+                      )}
+                    >
+                      {badge}
+                    </span>
+                  )}
+                </button>
+              </Tip>
             ))}
           </nav>
 
           {/* grid-cols-1 = minmax(0, 1fr): without it the long email widens the track past the sidebar. */}
           <div className="mt-auto grid grid-cols-1 gap-1">
-            <button
-              type="button"
-              onClick={toggleLocale}
-              disabled={switching}
-              className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-ink-2/75 transition-colors hover:bg-white/50 hover:text-ink disabled:opacity-50"
-            >
-              <Globe className="size-[18px]" />
-              {locale === "ar" ? "English" : "العربية"}
-            </button>
-            <button
-              type="button"
-              onClick={logout}
-              className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-ink-2/75 transition-colors hover:bg-white/50 hover:text-ink"
-            >
-              <LogOut className="size-[18px] rtl:-scale-x-100" />
-              {t("logout")}
-            </button>
-            <div className="mt-2 flex min-w-0 items-center gap-3 rounded-2xl bg-white/60 p-2.5">
-              <Avatar name={staffName} />
-              <div className="min-w-0 leading-tight">
-                <p className="truncate text-sm font-semibold">{staffName}</p>
-                {/* Emails are LTR even on the Arabic board, so they truncate at the end, not the start. */}
-                <p dir="ltr" className={cn("truncate text-xs text-muted", locale === "ar" && "text-right")}>
-                  {staffEmail}
-                </p>
+            <Tip label={locale === "ar" ? "English" : "العربية"} show={collapsed}>
+              <button
+                type="button"
+                onClick={toggleLocale}
+                disabled={switching}
+                aria-label={collapsed ? (locale === "ar" ? "English" : "العربية") : undefined}
+                className={cn(railItem, "text-ink-2/75 hover:bg-white/50 hover:text-ink disabled:opacity-50")}
+              >
+                <Globe className="size-[18px] shrink-0" />
+                <span className={fade}>{locale === "ar" ? "English" : "العربية"}</span>
+              </button>
+            </Tip>
+            <Tip label={t("logout")} show={collapsed}>
+              <button
+                type="button"
+                onClick={logout}
+                aria-label={collapsed ? t("logout") : undefined}
+                className={cn(railItem, "text-ink-2/75 hover:bg-white/50 hover:text-ink")}
+              >
+                <LogOut className="size-[18px] shrink-0 rtl:-scale-x-100" />
+                <span className={fade}>{t("logout")}</span>
+              </button>
+            </Tip>
+            <Tip label={staffName} show={collapsed}>
+              <div
+                className={cn(
+                  "mt-2 flex min-w-0 items-center gap-3 overflow-hidden rounded-2xl transition-[background-color,padding] duration-300",
+                  collapsed ? "bg-transparent p-[3px]" : "bg-white/60 p-2.5"
+                )}
+              >
+                <Avatar name={staffName} />
+                <div className={cn(fade, "min-w-0 leading-tight")}>
+                  <p className="truncate text-sm font-semibold">{staffName}</p>
+                  {/* Emails are LTR even on the Arabic board, so they truncate at the end, not the start. */}
+                  <p dir="ltr" className={cn("truncate text-xs text-muted", locale === "ar" && "text-right")}>
+                    {staffEmail}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Tip>
           </div>
         </div>
       </aside>
@@ -344,6 +427,33 @@ function Dashboard({
           onOpenChange={(open) => !open && setSelectedId(null)}
           onChanged={refresh}
         />
+      )}
+    </div>
+  );
+}
+
+/** Dark hover label to the inline-end of a rail item, like the collapsed-sidebar tooltips in Gemini. */
+function Tip({
+  label,
+  show = true,
+  className,
+  children,
+}: {
+  label: string;
+  show?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={cn("group/tip relative", className)}>
+      {children}
+      {show && (
+        <span
+          role="tooltip"
+          className="pointer-events-none absolute start-full top-1/2 z-50 ms-3 -translate-y-1/2 rounded-lg bg-ink px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-soft transition-opacity group-focus-within/tip:opacity-100 group-hover/tip:opacity-100 group-hover/tip:delay-150"
+        >
+          {label}
+        </span>
       )}
     </div>
   );
