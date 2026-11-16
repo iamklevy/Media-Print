@@ -13,7 +13,7 @@ import { SALES_PHONE, formatPhone } from "@/lib/contact";
 import { createCustomerArtworkUploadUrls, createOrderFromQuote } from "@/lib/orders/actions";
 import { ArtworkInput } from "@/components/site/artwork-input";
 import { putToSignedUrl } from "@/lib/storage/signed-upload";
-import { QUANTITY_RANGES, isQuantityRange } from "@/lib/orders/quantity";
+import { MOQ_DEFAULT, isQuantityRange, quantityRangesFor } from "@/lib/orders/quantity";
 import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
 
 export function QuoteForm() {
@@ -35,6 +35,24 @@ export function QuoteForm() {
   const reorderProduct = searchParams.get("product") ?? "";
   const reorderQtyParam = searchParams.get("qty") ?? "";
   const reorderQty = isQuantityRange(reorderQtyParam) ? reorderQtyParam : "";
+
+  // The product picks the quantity ranges on offer: each product has its own
+  // minimum order (clothing packaging 300, everything else 1,000). The select
+  // posts the translated product name; the slug travels alongside so the
+  // server can enforce the same minimum.
+  const productOther = t("f.product_other");
+  // A ?product= that matches no option (e.g. an order placed in the other
+  // language) starts empty rather than leaving the select out of sync.
+  const knownLabel = reorderProduct === productOther || PRODUCTS.some((p) => t(`${p.key}.t`) === reorderProduct);
+  const [productLabel, setProductLabel] = useState(knownLabel ? reorderProduct : "");
+  const selectedProduct = PRODUCTS.find((p) => t(`${p.key}.t`) === productLabel);
+  const ranges = productLabel ? quantityRangesFor(selectedProduct?.moq ?? MOQ_DEFAULT) : [];
+  const [qty, setQty] = useState<string>(() => (ranges.includes(reorderQty as never) ? reorderQty : ""));
+  const onProductChange = (label: string) => {
+    setProductLabel(label);
+    const p = PRODUCTS.find((x) => t(`${x.key}.t`) === label);
+    if (!quantityRangesFor(p?.moq ?? MOQ_DEFAULT).includes(qty as never)) setQty("");
+  };
   const defaultMessage = reorderOf
     ? ar
       ? `إعادة طلب — زي طلب رقم ${reorderOf} (${reorderProduct})`
@@ -123,42 +141,53 @@ export function QuoteForm() {
         </Field>
       </div>
 
-      <Field id="qty" label={t("f.qty")} required>
-        {/* native select keeps this form usable with zero JS beyond submit */}
-        <select
-          id="qty"
-          name="qty"
-          required
-          defaultValue={reorderQty}
-          className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
-        >
-          <option value="" disabled>
-            {t("f.qty_choose")}
-          </option>
-          {QUANTITY_RANGES.map((code) => (
-            <option key={code} value={code}>
-              {tQty(code)}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field id="product" label={t("f.product")}>
+      <Field id="product" label={t("f.product")} required>
         {/* native select keeps this form usable with zero JS beyond submit */}
         <select
           id="product"
           name="product"
-          defaultValue={reorderProduct}
+          required
+          value={productLabel}
+          onChange={(e) => onProductChange(e.target.value)}
           className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
         >
-          <option value="">{t("f.product_choose")}</option>
+          <option value="" disabled>
+            {t("f.product_choose")}
+          </option>
           {PRODUCTS.map((p) => (
             <option key={p.slug} value={t(`${p.key}.t`)}>
               {t(`${p.key}.t`)}
             </option>
           ))}
-          <option value={t("f.product_other")}>{t("f.product_other")}</option>
+          <option value={productOther}>{productOther}</option>
         </select>
+        <input type="hidden" name="product_slug" value={selectedProduct?.slug ?? ""} />
+      </Field>
+
+      <Field id="qty" label={t("f.qty")} required>
+        <select
+          id="qty"
+          name="qty"
+          required
+          disabled={!productLabel}
+          value={qty}
+          onChange={(e) => setQty(e.target.value)}
+          className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <option value="" disabled>
+            {productLabel ? t("f.qty_choose") : t("f.qty_pick_product")}
+          </option>
+          {ranges.map((code) => (
+            <option key={code} value={code}>
+              {tQty(code)}
+            </option>
+          ))}
+        </select>
+        {productLabel && (
+          <p className="text-[0.82rem] text-muted">
+            {t("f.qty_min", { n: (selectedProduct?.moq ?? MOQ_DEFAULT).toLocaleString("en-US") })}
+          </p>
+        )}
       </Field>
 
       <Field id="message" label={t("f.msg")}>

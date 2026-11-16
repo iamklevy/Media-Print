@@ -5,7 +5,8 @@
  * legacy text rather than a parsing error.
  */
 export const QUANTITY_RANGES = [
-  "100_500",
+  "100_500", // legacy — no longer offered, kept so older orders still display
+  "300_500",
   "500_1000",
   "1000_5000",
   "5000_10000",
@@ -18,8 +19,18 @@ export function isQuantityRange(value: string): value is QuantityRange {
   return (QUANTITY_RANGES as readonly string[]).includes(value);
 }
 
+/** Minimum order quantities: clothing packaging (garment bags, zipper bags, hang tags) starts at 300, everything else at 1,000. */
+export const MOQ_CLOTHING = 300;
+export const MOQ_DEFAULT = 1000;
+
+/** Ranges a customer may pick for a product with the given minimum order quantity. */
+export function quantityRangesFor(moq: number): QuantityRange[] {
+  return QUANTITY_RANGES.filter((code) => code !== "100_500" && quantityRangeLowerBound(code) >= moq);
+}
+
 const ENGLISH_LABELS: Record<QuantityRange, string> = {
   "100_500": "100 – 500",
+  "300_500": "300 – 500",
   "500_1000": "500 – 1,000",
   "1000_5000": "1,000 – 5,000",
   "5000_10000": "5,000 – 10,000",
