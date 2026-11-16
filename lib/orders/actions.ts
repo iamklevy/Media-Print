@@ -11,7 +11,8 @@ import { isGatePhase, nextPhase, prevNonGatePhase } from "@/lib/orders/phases";
 import { setOpsLocaleCookie, type OpsLocale } from "@/lib/ops-locale";
 import { trackingUrl } from "@/lib/orders/tracking";
 import { notifyQuoteReceived, notifyGateReady, notifyDelivered, notifyStaffGateResponse } from "@/lib/email/notify";
-import { isQuantityRange } from "@/lib/orders/quantity";
+import { MOQ_DEFAULT, isQuantityRange, quantityRangesFor } from "@/lib/orders/quantity";
+import { PRODUCTS } from "@/content/products";
 import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
 import { toCustomerOrder } from "@/lib/orders/customer-view";
 import type { Order, OrderEvent, SampleImage, ArtworkFile } from "@/lib/orders/types";
@@ -124,6 +125,11 @@ export async function createOrderFromQuote(
   const email = get("email");
   const qty = get("qty");
   if (!name || !phone || !email || !isQuantityRange(qty)) return null;
+
+  // Same minimum the form applies: the product's own MOQ, or the default
+  // (1,000) for "something else" / unknown products.
+  const moq = PRODUCTS.find((p) => p.slug === get("product_slug"))?.moq ?? MOQ_DEFAULT;
+  if (!quantityRangesFor(moq).includes(qty)) return null;
 
   // Honeypot: the field is hidden off-screen in the form, so only bots that
   // blindly fill every input ever send a value for it.

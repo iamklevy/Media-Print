@@ -14,11 +14,9 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
 const STAFF = [
-  { email: "mediaprint.egypt@gmail.com", name: "Mahmoud" },
   { email: "hamodyosama50@gmail.com", name: "Ahmed" },
   { email: "M.mostafa@mediaprint-eg.com", name: "Mohamed" },
-  { email: "sales@mediaprint-eg.com", name: "Sales Team" },
-  { email: "yasmine.mediaprint@gmail.com", name: "Yasmine" },
+  { email: "Samahm.P14@gmail.com", name: "Samah" },
 ];
 
 // Optional: pass one or more emails to only process those staff members, e.g.

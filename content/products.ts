@@ -1,5 +1,9 @@
+import { MOQ_CLOTHING, MOQ_DEFAULT } from "@/lib/orders/quantity";
+
 export interface CatalogueProduct {
   slug: string;
+  /** Minimum order quantity in pieces — clothing packaging 300, everything else 1,000. */
+  moq: number;
   /** i18n key prefix, e.g. "p.zipper" -> p.zipper.t / .d / .s1 */
   key: string;
   cat: "plastic" | "paper" | "fabric" | "print";
@@ -17,6 +21,7 @@ export interface CatalogueProduct {
 export const PRODUCTS: CatalogueProduct[] = [
   {
     "slug": "zipper",
+    "moq": MOQ_CLOTHING,
     "key": "p.zipper",
     "cat": "plastic",
     "industries": ["food", "clothing"],
@@ -31,6 +36,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "paper-sacks",
+    "moq": MOQ_DEFAULT,
     "key": "p.sacks",
     "cat": "paper",
     "industries": ["food"],
@@ -45,6 +51,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "apparel",
+    "moq": MOQ_CLOTHING,
     "key": "p.apparel",
     "cat": "plastic",
     "industries": ["clothing"],
@@ -65,6 +72,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "nonwoven",
+    "moq": MOQ_DEFAULT,
     "key": "p.nonwoven",
     "cat": "fabric",
     "industries": ["clothing", "food"],
@@ -79,6 +87,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "courier",
+    "moq": MOQ_DEFAULT,
     "key": "p.courier",
     "cat": "plastic",
     "industries": ["ecommerce"],
@@ -93,6 +102,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "paper-bags",
+    "moq": MOQ_DEFAULT,
     "key": "p.paperbags",
     "cat": "paper",
     "industries": ["cosmetics", "food", "clothing"],
@@ -113,6 +123,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "stickers",
+    "moq": MOQ_DEFAULT,
     "key": "p.stickers",
     "cat": "print",
     "industries": ["cosmetics", "food", "clothing", "ecommerce"],
@@ -142,6 +153,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "cartons",
+    "moq": MOQ_DEFAULT,
     "key": "p.cartons",
     "cat": "paper",
     "industries": ["cosmetics", "clothing", "food"],
@@ -178,6 +190,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "tags",
+    "moq": MOQ_CLOTHING,
     "key": "p.tags",
     "cat": "print",
     "industries": ["clothing", "cosmetics", "ecommerce"],
@@ -196,6 +209,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "corrugated",
+    "moq": MOQ_DEFAULT,
     "key": "p.corrugated",
     "cat": "paper",
     "industries": ["ecommerce", "clothing"],
@@ -213,6 +227,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "sacks-5kg",
+    "moq": MOQ_DEFAULT,
     "key": "p.sacks5",
     "cat": "plastic",
     "industries": ["food"],
@@ -227,6 +242,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "aluminium",
+    "moq": MOQ_DEFAULT,
     "key": "p.alu",
     "cat": "plastic",
     "industries": ["food"],
@@ -237,6 +253,7 @@ export const PRODUCTS: CatalogueProduct[] = [
   },
   {
     "slug": "flyers",
+    "moq": MOQ_DEFAULT,
     "key": "p.flyers",
     "cat": "print",
     "industries": ["food", "clothing"],

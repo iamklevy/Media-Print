@@ -47,7 +47,7 @@
     "chip3": "Shipping to every governorate",
     "art_alt": "Printed packaging produced by Media Print Pack",
     "float1": {
-      "n": "1,000",
+      "n": "300",
       "l": "Minimum printed run"
     },
     "float2": {
@@ -96,13 +96,13 @@
       "d": "High-quality printed paper sacks in three plies, with an optional inner plastic layer — and we take small runs.",
       "s1": "Three kraft plies",
       "s2": "Optional inner plastic layer",
-      "s3": "Small quantities accepted"
+      "s3": "From 1,000 sacks"
     },
     "apparel": {
       "t": "Garment & Apparel Bags",
       "d": "Clear polyester garment bags with a frosted 3-mil zip lock, resealable and quick to pack — no extra tape or materials needed.",
       "s1": "Clear polyester, 3 mil",
-      "s2": "Zip lock or snap close",
+      "s2": "Zip lock closure",
       "s3": "Hanger version for display"
     },
     "nonwoven": {
@@ -161,8 +161,8 @@
     "sacks5": {
       "t": "5kg Two-Ply Lunch-Box Sacks",
       "d": "Two-ply sacks for fertilisers, pesticides, coffee, supplements, clothing and chemicals — with a zip, a base and gussets.",
-      "s1": "Printed up to 2 colours from 300 sacks",
-      "s2": "Plain from 100 sacks (black, white, yellow, green, red)",
+      "s1": "Printed up to 2 colours from 1,000 sacks",
+      "s2": "Plain in black, white, yellow, green or red",
       "s3": "Zip, base and side gussets"
     },
     "flyers": {
@@ -179,7 +179,7 @@
     "3": {
       "tag": "Low minimums",
       "t": "Quantities that suit you",
-      "d": "Printed bags start at 1,000 and printed sacks at 300 — you do not have to commit to a container to get your own packaging."
+      "d": "Clothing packaging starts at 300 pieces and everything else at 1,000 — you do not have to commit to a container to get your own packaging."
     },
     "1": {
       "tag": "In-house",
@@ -342,7 +342,7 @@
       "cta": "See all FAQs",
       "moq": {
         "q": "What is your minimum order?",
-        "a": "It depends on the product. Printed bags start at 1,000, printed sacks at 300, corrugated boxes and hang tags at 100, and plain sacks at 100. Every product page shows its own minimum next to the live price."
+        "a": "Clothing packaging — garment bags, zipper bags and hang tags — starts at 300 pieces. All other packaging starts at 1,000 pieces."
       },
       "artwork": {
         "q": "What artwork files do you need?",
@@ -541,6 +541,8 @@
     "lead": "Fill this in and we'll get back to you — no account or sign-up needed.",
     "qty": "Quantity",
     "qty_choose": "Choose a quantity",
+    "qty_pick_product": "Choose a product first",
+    "qty_min": "Minimum order for this product: {n} pieces",
     "product": "Type of packaging",
     "product_choose": "Choose a product",
     "product_other": "Something else",
@@ -560,6 +562,7 @@
   },
   "quantity_ranges": {
     "100_500": "100 – 500",
+    "300_500": "300 – 500",
     "500_1000": "500 – 1,000",
     "1000_5000": "1,000 – 5,000",
     "5000_10000": "5,000 – 10,000",
