@@ -56,12 +56,13 @@
     },
     "v2": {
       "h1": "Packaging that does more",
-      "lead": "That means more sales. More connection with your customers. More options. More flexibility.",
+      "lead": "Custom packaging that sells more and wins over your customers.",
       "s1": "Pick your packaging",
       "s2": "Upload your design",
       "s3": "Approve, then we ship",
       "foot": "*Production starts the moment you approve your sample — then we ship to every governorate.",
-      "cta": "Get pricing"
+      "cta": "Get pricing",
+      "cta2": "Browse products"
     },
     "v3": {}
   },
@@ -411,7 +412,7 @@
   },
   "band": {
     "h2": "Send us your product, we will tell you how to pack it",
-    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 100 575 0973 or +20 114 066 3658."
+    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 104 456 7680 or +20 114 066 3658."
   },
   "ft": {
     "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
@@ -557,7 +558,7 @@
     "artwork_bad_type": "Unsupported file type — use PDF, AI, EPS, SVG, PNG, JPG, WEBP or ZIP.",
     "error_upload": "We couldn't upload your attached files — please check your connection and try again.",
     "submit": "Send quote request",
-    "note": "Or call sales directly on +20 100 575 0973 or +20 114 066 3658 — Saturday to Thursday, 10am to 6pm.",
+    "note": "Or call sales directly on +20 104 456 7680 or +20 114 066 3658 — Saturday to Thursday, 10am to 6pm.",
     "req": "required"
   },
   "quantity_ranges": {
@@ -585,7 +586,7 @@
       "products": "Full catalogue of packaging we manufacture and print: zipper bags, paper sacks, garment bags, courier bags, non-woven totes, paper bags, stickers, printed and corrugated cartons, hang tags and 5kg sacks.",
       "services": "Metalized stickers, notepads, letterheads, duplex boxes, roll-ups, flyers, brochures, catalogues and promotional bags — printed in-house.",
       "book": "Book a meeting with Media Print Pack online, at your office, or at ours in Mohandessin, Giza. Saturday to Thursday, 10am to 6pm.",
-      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 100 575 0973 or +20 114 066 3658 — open Saturday to Thursday, 10am to 6pm.",
+      "contact": "Talk to Media Print Pack: 323 Sudan Street, Mohandessin, Giza. Sales +20 104 456 7680 or +20 114 066 3658 — open Saturday to Thursday, 10am to 6pm.",
       "about": "A printing and packaging workshop in Mohandessin, Giza. Design, printing and finishing under one roof, for brands across Egypt and the Arab world.",
       "faq": "Minimum orders, artwork requirements, sampling, lead times, delivery and design — answered."
     }

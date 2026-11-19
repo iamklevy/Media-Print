@@ -13,7 +13,8 @@ import { Section, SectionHead } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { IndustryShowcase } from "@/components/site/industry-showcase";
 import { CtaBand } from "@/components/site/cta-band";
-import { HomeHero, HeroReflection } from "@/components/site/home-hero";
+import { HomeHero, HeroAfterglow } from "@/components/site/home-hero";
+import { displayFontVars } from "@/components/site/display-font";
 import { ClientMarquee } from "@/components/site/client-marquee";
 import { Reveal, Stagger, StaggerItem, Counter, HoverLift } from "@/components/site/motion";
 
@@ -65,16 +66,17 @@ export default async function HomePage({
   const ourWork = OUR_WORK_SLUGS.map((slug) => PRODUCTS.find((p) => p.slug === slug)!).filter(Boolean);
 
   return (
-    <>
+    // displayFontVars: the headline serif (hero + section titles) — see display-font.ts
+    <div className={`contents ${displayFontVars}`}>
       {/* ============================================ 1. hero */}
       <HomeHero />
 
       {/* ============================================ 3. client wall (dark) */}
-      {/* its background is the hero photo's blurred reflection */}
+      {/* a rose glow at its top picks up from the pink hero */}
       <Section ink className="relative isolate overflow-hidden pb-14! md:pb-20! lg:pb-24!">
-        <HeroReflection />
+        <HeroAfterglow />
         <Reveal>
-          <SectionHead center onInk title={t("home.clients.h2")} lead={t("home.clients.lead")} />
+          <SectionHead display center onInk title={t("home.clients.h2")} lead={t("home.clients.lead")} />
         </Reveal>
         <Reveal delay={0.08}>
           <ClientMarquee />
@@ -84,7 +86,7 @@ export default async function HomePage({
       {/* ============================================ 4. choose your industry */}
       <Section>
         <Reveal>
-          <SectionHead title={t("home.industry.h2")} lead={t("home.industry.lead")} />
+          <SectionHead display title={t("home.industry.h2")} lead={t("home.industry.lead")} />
         </Reveal>
         <Reveal delay={0.08}>
           <IndustryShowcase industries={INDUSTRIES} />
@@ -94,7 +96,7 @@ export default async function HomePage({
       {/* ============================================ 5. browse by type */}
       <Section tint>
         <Reveal>
-          <SectionHead title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
+          <SectionHead display title={t("home.solutions.h2")} lead={t("home.solutions.lead")} />
         </Reveal>
         <Stagger className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {SOLUTION_TYPES.map((s) => (
@@ -130,7 +132,7 @@ export default async function HomePage({
       {/* ============================================ 6. proof in numbers */}
       <Section>
         <Reveal>
-          <SectionHead title={t("home.stats.h2")} lead={t("home.stats.lead")} />
+          <SectionHead display title={t("home.stats.h2")} lead={t("home.stats.lead")} />
         </Reveal>
         <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {STATS.map(({ icon: Icon, value, suffix, k }) => (
@@ -152,7 +154,7 @@ export default async function HomePage({
       {/* ============================================ 7. our work */}
       <Section>
         <Reveal>
-          <SectionHead title={t("home.work.h2")} lead={t("home.work.lead")} />
+          <SectionHead display title={t("home.work.h2")} lead={t("home.work.lead")} />
         </Reveal>
         <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {ourWork.map((p) => (
@@ -174,7 +176,7 @@ export default async function HomePage({
       {/* ============================================ 8. process (rail) */}
       <Section tint>
         <Reveal>
-          <SectionHead title={t("home.process.h2")} lead={t("home.process.lead")} />
+          <SectionHead display title={t("home.process.h2")} lead={t("home.process.lead")} />
         </Reveal>
         <div className="relative">
           {/* the rail the steps sit on — desktop only */}
@@ -201,7 +203,7 @@ export default async function HomePage({
       {/* ============================================ 9. why us (graphic) */}
       <Section>
         <Reveal>
-          <SectionHead title={t("home.why.h2")} />
+          <SectionHead display title={t("home.why.h2")} />
         </Reveal>
         <Stagger className="grid gap-4 md:grid-cols-2">
           {WHY.map((b, i) => (
@@ -278,7 +280,7 @@ export default async function HomePage({
           </Reveal>
           <Reveal delay={0.12}>
             <div>
-              <h2 className="text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">{t("home.finishing.h2")}</h2>
+              <h2 className="font-display text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)] rtl:text-[clamp(2rem,1.4rem+2.4vw,3.15rem)]">{t("home.finishing.h2")}</h2>
               <p className="mt-4 max-w-[52ch] text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
                 {t("home.finishing.lead")}
               </p>
@@ -296,7 +298,7 @@ export default async function HomePage({
       {/* ============================================ 11. testimonials */}
       <Section>
         <Reveal>
-          <SectionHead title={t("home.voices.h2")} lead={t("home.voices.lead")} />
+          <SectionHead display title={t("home.voices.h2")} lead={t("home.voices.lead")} />
         </Reveal>
         <Stagger className="grid gap-5 md:grid-cols-3">
           {VOICES.map((v) => (
@@ -325,7 +327,7 @@ export default async function HomePage({
       {/* ============================================ 12. FAQ */}
       <Section tint>
         <Reveal>
-          <SectionHead title={t("home.faq.h2")} lead={t("home.faq.blurb")} />
+          <SectionHead display title={t("home.faq.h2")} lead={t("home.faq.blurb")} />
         </Reveal>
         <Reveal delay={0.08}>
           <div className="flex justify-center">
@@ -339,7 +341,7 @@ export default async function HomePage({
         </Reveal>
       </Section>
 
-      <CtaBand />
-    </>
+      <CtaBand display />
+    </div>
   );
 }

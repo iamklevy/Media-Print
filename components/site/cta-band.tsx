@@ -6,8 +6,10 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Wrap } from "./section";
 import { SALES_PHONE } from "@/lib/contact";
+import { cn } from "@/lib/utils";
 
-export function CtaBand() {
+/** `display`: title in the homepage display serif (needs displayFontVars on an ancestor). */
+export function CtaBand({ display }: { display?: boolean } = {}) {
   const t = useTranslations();
   return (
     <section className="pb-16 md:pb-24">
@@ -17,7 +19,7 @@ export function CtaBand() {
             aria-hidden
             className="pointer-events-none absolute -top-1/2 -end-[10%] size-[480px] rounded-full bg-[radial-gradient(circle,rgba(221,99,32,0.28),transparent_62%)]"
           />
-          <h2 className="relative max-w-[20ch] text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]">
+          <h2 className={cn("relative max-w-[20ch] text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]", display && "font-display rtl:text-[clamp(2rem,1.4rem+2.4vw,3.15rem)]")}>
             {t("band.h2")}
           </h2>
           <p className="relative mt-4 mb-8 max-w-[54ch] text-paper/72">{t("band.p")}</p>
