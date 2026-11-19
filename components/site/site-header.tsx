@@ -10,6 +10,7 @@ import { PRODUCTS } from "@/content/products";
 import { INDUSTRIES } from "@/content/industries";
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "./mobile-menu";
+import { HOME_HERO_ON_DARK } from "./home-hero";
 
 /** Plain links, shown after the two dropdowns. */
 const LINKS = [
@@ -35,7 +36,11 @@ export function SiteHeader() {
     window.addEventListener("scroll", sync, { passive: true });
     return () => window.removeEventListener("scroll", sync);
   }, []);
-  const overlay = pathname === "/" && !scrolled;
+  // the white "on dark" overlay only makes sense when the hero photo is dark
+  const overlay = HOME_HERO_ON_DARK && pathname === "/" && !scrolled;
+  // at the top of the homepage the hero carries its own "Get pricing" button, so
+  // the header one steps back to an outline until you scroll past the hero
+  const quietCta = pathname === "/" && !scrolled;
 
   // No effect is needed to close on navigation: dropdown links call onClose
   // themselves, mobile-menu links close the menu, and clicking anything else
@@ -169,7 +174,9 @@ export function SiteHeader() {
               "ms-1 hidden whitespace-nowrap rounded-full px-5 py-2.5 text-[0.93rem] font-bold transition-colors sm:inline-flex",
               overlay
                 ? "bg-white text-ink hover:bg-accent hover:text-white"
-                : "bg-accent text-white hover:bg-accent-2",
+                : quietCta
+                  ? "border border-ink/15 bg-white/40 text-ink hover:border-ink hover:bg-ink hover:text-white"
+                  : "bg-accent text-white hover:bg-accent-2",
             )}
           >
             {t("cta.quote")}

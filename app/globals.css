@@ -138,6 +138,49 @@
   }
 }
 
+/* Homepage display serif for headlines — see components/site/display-font.ts.
+   Unlayered on purpose so it wins over the base h1–h4 weight/tracking. */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+html[lang="ar"] .font-display {
+  font-family: var(--font-amiri), "Times New Roman", serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+/* Homepage hero arrival (CSS, not Motion, so it runs on first paint without
+   waiting for hydration). Text: a short rise out of a soft blur, one line
+   after another. Boxes: rise into place a beat later, slower, like product
+   settling onto a stage. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes hero-stage {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /*
  * Scroll-reveal safety net.
  *

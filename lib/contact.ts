@@ -1,4 +1,4 @@
-export const SALES_PHONE = "01005750973";
+export const SALES_PHONE = "01044567680";
 export const SALES_PHONE_2 = "01140663658";
 export const ADMIN_PHONE = "01070226790";
 export const ADMIN_PHONE_2 = "01114537488";
@@ -8,7 +8,7 @@ export const FACEBOOK = "https://www.facebook.com/mediaprint.pack";
 export const INSTAGRAM = "https://www.instagram.com/media.print.egy/";
 export const ADDRESS_EN = "323 Sudan Street, Mohandessin, Giza";
 
-/** Display form of a local Egyptian number: 01005750973 -> +20 100 575 0973. */
+/** Display form of a local Egyptian number: 01044567680 -> +20 104 456 7680. */
 export const formatPhone = (phone: string) =>
   `+20 ${phone.slice(1, 4)} ${phone.slice(4, 7)} ${phone.slice(7)}`;
 
