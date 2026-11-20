@@ -9,6 +9,7 @@ import { routing, isRtl } from "@/i18n/routing";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { BackToTop } from "@/components/site/back-to-top";
+import { displayFontVars } from "@/components/site/display-font";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -73,12 +74,12 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={isRtl(locale) ? "rtl" : "ltr"}
-      className={`${manrope.variable} ${plexArabic.variable}`}
+      className={`${manrope.variable} ${plexArabic.variable} ${displayFontVars}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body
-        className={`bg-paper text-ink antialiased ${isRtl(locale) ? "font-arabic" : "font-sans"}`}
+        className={`theme-warm bg-paper text-ink antialiased ${isRtl(locale) ? "font-arabic" : "font-sans"}`}
         suppressHydrationWarning
       >
         {metaPixelId && (

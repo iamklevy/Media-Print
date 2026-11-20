@@ -41,11 +41,7 @@ export default async function ProductsPage({
 
   return (
     <>
-      <PageHero
-        crumb={t("nav.products")}
-        title={t("ph.products.h1")}
-        lead={t("ph.products.lead")}
-      />
+      <PageHero title={t("ph.products.h1")} lead={t("ph.products.lead")} />
       <Section>
         <Suspense fallback={null}>
           <ProductGrid products={PRODUCTS} />

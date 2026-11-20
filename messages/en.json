@@ -38,22 +38,6 @@
     "products": "Browse products"
   },
   "hero": {
-    "h1a": "Packaging that makes",
-    "h1b": "your brand",
-    "h1c": "stand out",
-    "lead": "We manufacture and print bags, sacks, cartons and labels from our workshop in Mohandessin, Giza. No importing from China, no middlemen — we design it, print it, and ship it anywhere in Egypt and the Arab world.",
-    "chip1": "A sample before production",
-    "chip2": "Printed runs from 1,000 bags",
-    "chip3": "Shipping to every governorate",
-    "art_alt": "Printed packaging produced by Media Print Pack",
-    "float1": {
-      "n": "300",
-      "l": "Minimum printed run"
-    },
-    "float2": {
-      "n": "6 days",
-      "l": "Open every week"
-    },
     "v2": {
       "h1": "Packaging that does more",
       "lead": "Custom packaging that sells more and wins over your customers.",
@@ -63,25 +47,11 @@
       "foot": "*Production starts the moment you approve your sample — then we ship to every governorate.",
       "cta": "Get pricing",
       "cta2": "Browse products"
-    },
-    "v3": {}
-  },
-  "mq": {
-    "1": "Printing up to 4 colours",
-    "2": "Two-ply lamination",
-    "3": "Die-cut shapes",
-    "4": "3 & 5-ply corrugated",
-    "5": "Sample before production",
-    "6": "Artwork designed in-house",
-    "7": "Food-safe materials",
-    "8": "Shipping nationwide"
+    }
   },
   "prod": {
-    "h2": "One workshop, every kind of packaging",
-    "lead": "From a zipper bag for a spice brand to five-ply corrugated cartons for a shipping line — printed, finished and delivered by the same team.",
-    "all": "See the full catalogue",
     "related": {
-      "h2": "Similar packaging you might need"
+      "h2": "You may also like"
     }
   },
   "p": {
@@ -174,30 +144,6 @@
       "s3": "Any size, small or large runs"
     }
   },
-  "why": {
-    "h2": "Fewer people between you and the finished box",
-    "lead": "From the first sample to the pallet leaving our door, this is what actually changes when the workshop printing your packaging is the one that made it.",
-    "3": {
-      "tag": "Low minimums",
-      "t": "Quantities that suit you",
-      "d": "Clothing packaging starts at 300 pieces and everything else at 1,000 — you do not have to commit to a container to get your own packaging."
-    },
-    "1": {
-      "tag": "In-house",
-      "t": "One roof, start to finish",
-      "d": "Design, printing and finishing happen in the same place, so nobody can pass the blame and nothing gets lost between suppliers."
-    },
-    "2": {
-      "tag": "Approved by you",
-      "t": "A sample before the run",
-      "d": "You see and approve a physical sample before we produce the quantity. What you sign off on is what you get."
-    },
-    "4": {
-      "tag": "Nationwide",
-      "t": "Delivered wherever you are",
-      "d": "We ship to every governorate in Egypt, and to the Arab countries."
-    }
-  },
   "clients": {
     "h2": "Brands that already print with us",
     "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for.",
@@ -205,25 +151,6 @@
     "cosmetics": "Cosmetics & Personal Care",
     "clothing": "Clothing & Fashion",
     "appliances": "Home Appliances & Electronics"
-  },
-  "proc": {
-    "h2": "Four steps from enquiry to delivery",
-    "1": {
-      "t": "Tell us what you need",
-      "d": "Message us on WhatsApp or call with the type of packaging, the sizes and roughly how many you want."
-    },
-    "2": {
-      "t": "Design and artwork",
-      "d": "Our team prepares the artwork, or reviews and print-proofs the design you already have."
-    },
-    "3": {
-      "t": "Sample and approval",
-      "d": "We produce a sample. You check the material, the colours and the finish, then approve it."
-    },
-    "4": {
-      "t": "Production and shipping",
-      "d": "The run is produced and shipped to your door anywhere in Egypt or the Arab world."
-    }
   },
   "industry": {
     "chip": {
@@ -262,14 +189,6 @@
     },
     "show": "Show {name}"
   },
-  "solutionDesc": {
-    "labels": "Printed stickers and product labels, on paper or clear film.",
-    "boxes": "Printed cartons and corrugated mailer boxes.",
-    "bags": "Paper bags, fabric totes, courier bags and sacks.",
-    "cards": "Hang tags and printed cards carrying your brand.",
-    "flyers": "Flyers and printed inserts to go in every order.",
-    "zipperpouches": "Resealable zipper bags, including aluminium pouches."
-  },
   "solution": {
     "labels": "Labels",
     "boxes": "Boxes",
@@ -279,46 +198,34 @@
     "zipperpouches": "Zipper Pouches"
   },
   "home": {
-    "industry": {
-      "h2": "Choose your industry",
-      "lead": "Pick the industry closest to your product and we will show you exactly what we make for it."
-    },
-    "solutions": {
-      "h2": "Browse by product type",
-      "lead": "Prefer to start from the product instead of the industry? Every type we make, in one place."
-    },
-    "finishing": {
-      "h2": "Premium finishing",
-      "lead": "UV spot, foil stamping, embossing, lamination and die-cutting — the details that make a pack feel expensive.",
-      "cta": "See our finishing options"
-    },
-    "work": {
-      "h2": "Packaging we have actually shipped",
-      "lead": "A few of the runs that left our workshop, printed and finished for the brands below.",
-      "all": "See the full portfolio"
-    },
-    "why": {
-      "h2": "Why MediaPrint?"
-    },
-    "stats": {
-      "h2": "A workshop, not a middleman",
-      "lead": "Plain facts about how we work — every figure here comes from our own price list and opening hours, not from marketing.",
-      "products_n": "Products we make in-house",
-      "moq_n": "Lowest printed minimum, in pieces",
-      "days_n": "Days a week the workshop runs",
-      "gov_n": "Egyptian governorates we ship to"
-    },
-    "clients": {
-      "h2": "Brands already printing with us",
-      "lead": "From multinationals to growing local labels — a selection of the names we have produced packaging and print for."
-    },
-    "process": {
-      "h2": "From enquiry to delivery in four steps",
-      "lead": "Every job runs the same way, and you approve a physical sample before we print the quantity."
+    "v3": {
+      "clients": {
+        "h2": "Brands that print with us"
+      },
+      "make": {
+        "h2": "What we make",
+        "all": "See all products"
+      },
+      "steps": {
+        "1": {
+          "t": "Tell us what you need",
+          "d": "Product, size and quantity — a WhatsApp message is enough."
+        },
+        "2": {
+          "t": "Approve a sample",
+          "d": "You check the real thing before we print the run."
+        },
+        "3": {
+          "t": "We print and deliver",
+          "d": "Anywhere in Egypt and the Arab world."
+        },
+        "h2": "How it works"
+      },
+      "voices": {
+        "h2": "In their words"
+      }
     },
     "voices": {
-      "h2": "What our customers say",
-      "lead": "Brand owners and procurement teams we print for, on what it's like to work with us.",
       "list": {
         "carina": {
           "quote": "Media Print runs our polybags and hang tags for every drop. The print stays consistent across reorders, the sizing is on spec, and they hold the delivery date even when we pull a launch forward.",
@@ -338,9 +245,6 @@
       }
     },
     "faq": {
-      "h2": "Questions we get every week",
-      "blurb": "Common questions on minimums, artwork, samples and delivery.",
-      "cta": "See all FAQs",
       "moq": {
         "q": "What is your minimum order?",
         "a": "Clothing packaging — garment bags, zipper bags and hang tags — starts at 300 pieces. All other packaging starts at 1,000 pieces."
@@ -365,15 +269,6 @@
         "q": "Can you design the packaging for me?",
         "a": "Yes. Design and artwork are done in-house alongside the printing, so nothing gets lost between suppliers."
       }
-    }
-  },
-  "srv": {
-    "h2": "Commercial printing too",
-    "lead": "The same press that prints your packaging handles the rest of your printed material.",
-    "all": "All printing services",
-    "extra": {
-      "t": "Also included",
-      "d": "Professional design, a sample before final production, and shipping to Egypt's governorates and the Arab countries."
     }
   },
   "s": {
@@ -411,8 +306,8 @@
     }
   },
   "band": {
-    "h2": "Send us your product, we will tell you how to pack it",
-    "p": "A message on WhatsApp with the type of product, the size and the quantity is enough to get a price back. Sales: +20 104 456 7680 or +20 114 066 3658."
+    "h2": "Let’s make your packaging",
+    "p": "Send us your product, size and quantity. We’ll reply with a price."
   },
   "ft": {
     "about": "A printing and packaging workshop in Mohandessin, Giza. We manufacture bags, sacks, cartons and labels, print them, and ship them across Egypt and the Arab world.",
@@ -426,7 +321,8 @@
     "sales": "Sales",
     "inquiries": "Inquiries / Complaints",
     "rights": "© 2026 Media Print Pack. All rights reserved.",
-    "made": "323 Sudan Street, Mohandessin, Giza"
+    "made": "323 Sudan Street, Mohandessin, Giza",
+    "credit": "Designed & developed by <link>Klevy</link>"
   },
   "c": {
     "addr": {
@@ -439,42 +335,39 @@
     },
     "map_title": "Media Print Pack location on the map"
   },
-  "crumb": {
-    "home": "Home"
-  },
   "about": {
     "story_h2": "One workshop, start to finish",
-    "story_p": "Media Print Pack is a printing and packaging workshop in Mohandessin, Giza. We design, print and finish bags, sacks, cartons and labels ourselves — no importing from China, no middlemen — then ship anywhere in Egypt and the Arab world. Every order gets a physical sample before we run the full quantity, so what you approve is what you get.",
+    "story_p": "We design, print and finish everything ourselves in Mohandessin, Giza — no middlemen. You approve a real sample before we print the run, then we ship anywhere in Egypt and the Arab world.",
     "clients_h2": "Brands that print with us"
   },
   "ph": {
     "best": {
       "h1": "Portfolio",
-      "lead": "A look at the packs we have actually printed and shipped — the packs our customers reorder most, with live pricing on every size and quantity."
+      "lead": "The packs our clients reorder most."
     },
     "products": {
       "h1": "Products",
-      "lead": "Everything we manufacture and print, with the materials, finishes and minimums for each. Filter by industry, or ask us and we will point you to the right one."
+      "lead": "Everything we make, with materials and minimums."
     },
     "services": {
-      "h1": "Finishing & Printing Services",
-      "lead": "The finishing touches and commercial printing alongside the packaging — stickers, stationery, marketing print and display."
+      "h1": "Finishing & printing",
+      "lead": "Everything printed alongside your packaging."
     },
     "about": {
-      "h1": "About Us",
-      "lead": "A printing and packaging workshop in Mohandessin, Giza — design, printing and finishing under one roof."
+      "h1": "About us",
+      "lead": "A printing and packaging workshop in Giza."
     },
     "book": {
-      "h1": "Book a Meeting",
-      "lead": "Pick where you want to meet and when, then send your request — we'll email you a copy and confirm the same day."
+      "h1": "Book a meeting",
+      "lead": "Pick a place and a time. We confirm the same day."
     },
     "contact": {
       "h1": "Contact Us",
-      "lead": "Call, message, or fill in the form and it goes straight to our sales line on WhatsApp."
+      "lead": "Tell us what you need. We reply on WhatsApp."
     },
     "faq": {
-      "h1": "Frequently Asked Questions",
-      "lead": "Everything we get asked about minimums, artwork, samples, lead times and delivery."
+      "h1": "Questions",
+      "lead": "Minimums, artwork, samples and delivery."
     }
   },
   "cat": {
@@ -483,7 +376,8 @@
     "print": "Labels & print",
     "fabric": "Fabric",
     "all": "Everything",
-    "empty": "Nothing in this category yet — message us and we'll point you to the right product."
+    "empty": "Nothing in this category yet — message us and we'll point you to the right product.",
+    "count": "{n, plural, one {# product} other {# products}}"
   },
   "best": {
     "note": "Prices exclude VAT and are confirmed on the sample before production."
@@ -538,8 +432,6 @@
     "phone_placeholder": "01xxxxxxxxx",
     "email": "Email address",
     "email_placeholder": "you@company.com",
-    "h2": "Request a quote",
-    "lead": "Fill this in and we'll get back to you — no account or sign-up needed.",
     "qty": "Quantity",
     "qty_choose": "Choose a quantity",
     "qty_pick_product": "Choose a product first",

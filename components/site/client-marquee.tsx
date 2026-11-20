@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 type Client = (typeof CLIENTS)[number]["names"][number];
 
-const ROWS = 3;
+const DEFAULT_ROWS = 3;
 /** bump when files in public/clients are replaced, so browsers drop cached copies */
 const LOGO_VERSION = 2;
 /** seconds per loop, per row — slightly different so the rows never sync up */
@@ -16,10 +16,13 @@ const SPEEDS = [48, 56, 44];
  * exactly -50%, so the loop is seamless. Hovering a row pauses it; with
  * reduced motion the rows sit still and scroll sideways instead.
  */
-export function ClientMarquee() {
+/** `rows`: how many drifting rows (3 by default; the homepage uses 1 to keep it calm). */
+export function ClientMarquee({ rows: rowCount = DEFAULT_ROWS }: { rows?: number } = {}) {
   const all = CLIENTS.flatMap((g) => g.names);
-  const rows: Client[][] = Array.from({ length: ROWS }, () => []);
-  all.forEach((c, i) => rows[i % ROWS].push(c));
+  const rows: Client[][] = Array.from({ length: rowCount }, () => []);
+  all.forEach((c, i) => rows[i % rowCount].push(c));
+  // fewer rows means longer ones, so stretch the loop to keep the same drift speed
+  const slow = DEFAULT_ROWS / rowCount;
 
   return (
     // logos don't read in a direction, so the track is pinned LTR — that keeps
@@ -31,7 +34,7 @@ export function ClientMarquee() {
       {rows.map((row, r) => (
         <div key={r} className="group overflow-hidden motion-reduce:overflow-x-auto">
           <ul
-            style={{ animationDuration: `${SPEEDS[r]}s` }}
+            style={{ animationDuration: `${SPEEDS[r % SPEEDS.length] * slow}s` }}
             className={cn(
               "flex w-max animate-[marquee_48s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none",
               r % 2 === 1 && "[animation-direction:reverse]",

@@ -67,22 +67,20 @@ export const INDUSTRIES: Industry[] = [
   },
 ];
 
-/** The 6 cross-industry types shown in the homepage "Explore our packaging
- * solutions" section — each links to /products?type=<slug>. */
+/** The 6 product types in the homepage "What we make" grid — each links to /products?type=<slug>. */
 export interface SolutionType {
   slug: string;
   /** i18n key -> solution.<slug> */
   key: string;
-  /** i18n key -> solutionDesc.<slug>, the one-liner under the card title */
-  descKey: string;
+  /** square tile, product centred with room around it (public/products/tiles) */
   image: string;
 }
 
 export const SOLUTION_TYPES: SolutionType[] = [
-  { slug: "labels", key: "solution.labels", descKey: "solutionDesc.labels", image: "/products/stickers-clear-label-roll-pair.jpg" },
-  { slug: "boxes", key: "solution.boxes", descKey: "solutionDesc.boxes", image: "/products/cartons-smile-wonders-mouthwash-trio.jpg" },
-  { slug: "bags", key: "solution.bags", descKey: "solutionDesc.bags", image: "/products/paper-bags-biomedica-teal-flat.jpg" },
-  { slug: "cards", key: "solution.cards", descKey: "solutionDesc.cards", image: "/products/tags-nasaq-women-hang-tag.jpg" },
-  { slug: "flyers", key: "solution.flyers", descKey: "solutionDesc.flyers", image: "/products/flyers-nounas-bakery-iced-coffee.jpg" },
-  { slug: "zipper-pouches", key: "solution.zipperpouches", descKey: "solutionDesc.zipperpouches", image: "/products/zipper-loops-travel-bottle-ziplock.jpg" },
+  { slug: "labels", key: "solution.labels", image: "/products/tiles/stickers-aljabal-spice-jar-lineup.jpg" },
+  { slug: "boxes", key: "solution.boxes", image: "/products/tiles/corrugated-nuit-mailer-box-open-perfume.jpg" },
+  { slug: "bags", key: "solution.bags", image: "/products/tiles/paper-bags-favelin-pink-ribbon-pair.jpg" },
+  { slug: "cards", key: "solution.cards", image: "/products/tiles/tags-arena-for-love-floral-tag.jpg" },
+  { slug: "flyers", key: "solution.flyers", image: "/products/tiles/flyers-nounas-bakery-cookie.jpg" },
+  { slug: "zipper-pouches", key: "solution.zipperpouches", image: "/products/tiles/zipper-loops-travel-bottle-ziplock.jpg" },
 ];

@@ -44,18 +44,14 @@ export default async function BestsellersPage({
 
   return (
     <>
-      <PageHero
-        crumb={t("nav.portfolio")}
-        title={t("ph.best.h1")}
-        lead={t("ph.best.lead")}
-      />
+      <PageHero title={t("ph.best.h1")} lead={t("ph.best.lead")} />
       <Section>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
           {ranked.map((p) => (
-            <ProductCard key={p.slug} product={p} showSpecs={false} />
+            <ProductCard key={p.slug} product={p} />
           ))}
         </div>
-        <p className="mt-8 text-[0.85rem] text-muted">{t("best.note")}</p>
+        <p className="mt-14 text-center text-[0.85rem] text-muted">{t("best.note")}</p>
       </Section>
       <CtaBand />
     </>

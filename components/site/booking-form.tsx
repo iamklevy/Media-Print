@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Globe, Truck, MapPin, Mail, Check } from "lucide-react";
+import { Globe, Truck, MapPin, Check } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { btnPrimary } from "./buttons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -152,15 +152,9 @@ export function BookingForm() {
             {t("book.sent")}
           </p>
         ) : (
-          <Button
-            type="submit"
-            size="lg"
-            disabled={status === "sending"}
-            className="w-fit rounded-full bg-accent hover:bg-accent-2"
-          >
-            <Mail className="size-4" />
+          <button type="submit" disabled={status === "sending"} className={cn(btnPrimary, "w-fit")}>
             {status === "sending" ? t("book.sending") : t("book.submit")}
-          </Button>
+          </button>
         )}
 
         {status === "error" && (

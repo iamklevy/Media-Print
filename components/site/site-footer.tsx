@@ -86,7 +86,7 @@ export function SiteFooter() {
             <ul className="grid gap-2.5 text-[0.93rem]">
               {SITE.map(({ href, key }) => (
                 <li key={href}>
-                  <Link href={href} className="transition hover:text-accent">
+                  <Link href={href} className="transition hover:text-[#f4b6ad]">
                     {t(`nav.${key}`)}
                   </Link>
                 </li>
@@ -100,7 +100,7 @@ export function SiteFooter() {
             <ul className="grid gap-x-6 gap-y-2.5 text-[0.93rem] sm:grid-cols-2">
               {PRODUCTS.map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/products/${p.slug}`} className="transition hover:text-accent">
+                  <Link href={`/products/${p.slug}`} className="transition hover:text-[#f4b6ad]">
                     {t(`${p.key}.t`)}
                   </Link>
                 </li>
@@ -114,23 +114,23 @@ export function SiteFooter() {
               <li className="xl:whitespace-nowrap">
                 <span className="me-2 text-paper">{t("ft.sales")}:</span>
                 <span dir="ltr">
-                  <a href={`tel:+2${SALES_PHONE}`} className="transition hover:text-accent">
+                  <a href={`tel:+2${SALES_PHONE}`} className="transition hover:text-[#f4b6ad]">
                     {formatPhone(SALES_PHONE)}
                   </a>
                   <span className="mx-1.5">/</span>
-                  <a href={`tel:+2${SALES_PHONE_2}`} className="transition hover:text-accent">
+                  <a href={`tel:+2${SALES_PHONE_2}`} className="transition hover:text-[#f4b6ad]">
                     {formatPhone(SALES_PHONE_2)}
                   </a>
                 </span>
               </li>
               <li>
                 <span className="me-2 text-paper">{t("ft.inquiries")}:</span>
-                <a href={`tel:+2${ADMIN_PHONE}`} dir="ltr" className="transition hover:text-accent">
+                <a href={`tel:+2${ADMIN_PHONE}`} dir="ltr" className="transition hover:text-[#f4b6ad]">
                   {formatPhone(ADMIN_PHONE)}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${FOOTER_EMAIL}`} dir="ltr" className="transition hover:text-accent">
+                <a href={`mailto:${FOOTER_EMAIL}`} dir="ltr" className="transition hover:text-[#f4b6ad]">
                   {FOOTER_EMAIL}
                 </a>
               </li>
@@ -142,7 +142,20 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-white/10 py-6 text-[0.85rem]">
           <span>{t("ft.rights")}</span>
-          <span>{t("ft.made")}</span>
+          <span>
+            {t.rich("ft.credit", {
+              link: (chunks) => (
+                <a
+                  href="https://portfolio-green-nine-36.vercel.app/"
+                  target="_blank"
+                  rel="noopener"
+                  className="font-semibold text-paper underline-offset-4 transition hover:text-[#f4b6ad] hover:underline"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </span>
         </div>
       </div>
     </footer>

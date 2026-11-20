@@ -13,10 +13,10 @@ const HERO_IMAGE = "/hero/hero-nuit-boxes.png";
  * regular frosted capsule over it instead of the white "on dark" overlay.
  * Flip back to true if the hero ever goes back to a dark photo.
  */
-export const HOME_HERO_ON_DARK = false;
+export const HOME_HERO_ON_DARK = true;
 
 /** Sampled from the photo's plain backdrop, so the section and the image meet without a seam. */
-const HERO_BG = "#f8cfc7";
+export const HERO_BG = "#f8cfc7";
 
 /**
  * Homepage hero: headline, line and buttons on the plain pink at the top, the
@@ -34,7 +34,7 @@ export function HomeHero() {
         // slightly deeper rose toward the edges and corners
         backgroundImage: `radial-gradient(ellipse 70% 75% at 50% 62%, #fde4de 0%, ${HERO_BG} 45%, #eeb3a7 100%)`,
       }}
-      className="relative isolate z-10 -mt-[72px] flex flex-col overflow-hidden text-ink sm:min-h-[max(680px,100svh)]"
+      className="relative isolate z-10 -mt-[72px] flex flex-col overflow-hidden pb-16 text-ink sm:min-h-[max(680px,100svh)] sm:pb-0"
     >
       <div className="relative z-10 mx-auto flex w-[min(880px,100%-2.5rem)] flex-col items-center pt-[calc(72px+2.75rem)] text-center sm:pt-[calc(72px+4rem)]">
         <h1
@@ -68,7 +68,7 @@ export function HomeHero() {
           Larger screens: a frame with the photo's own shape, as tall as the space
           allows (capped so the boxes never outgrow the window width), with its
           left/right edges faded into HERO_BG so the photo dissolves into the section. */}
-      <div className="motion-safe:animate-[hero-stage_1.2s_cubic-bezier(0.22,0.61,0.36,1)_0.3s_both] relative mt-4 aspect-[4/3] w-full [mask-image:linear-gradient(to_bottom,transparent,black_14%)] sm:mt-6 sm:aspect-auto sm:min-h-[400px] sm:flex-1 sm:[mask-image:linear-gradient(to_bottom,transparent,black_10%)]">
+      <div className="motion-safe:animate-[hero-stage_1.2s_cubic-bezier(0.22,0.61,0.36,1)_0.3s_both] relative mt-10 aspect-[4/3] w-full [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_92%,transparent)] sm:mt-6 sm:aspect-auto sm:min-h-[400px] sm:flex-1 sm:[mask-image:linear-gradient(to_bottom,transparent,black_10%)]">
         <div className="absolute inset-0 sm:inset-auto sm:bottom-0 sm:left-1/2 sm:aspect-[1995/850] sm:h-full sm:max-h-[calc(160vw*850/1995)] sm:-translate-x-1/2 sm:[mask-image:linear-gradient(to_right,transparent,black_22%,black_78%,transparent)]">
           <Image
             src={HERO_IMAGE}
@@ -101,16 +101,31 @@ export function HomeHero() {
 }
 
 /**
- * Background for the dark section right under the hero: a soft rose glow at its
- * top edge that fades into ink, so the pink hero hands over to the dark section
- * like light falling off rather than a hard cut. Drop it in as the first child
- * of a `relative isolate overflow-hidden` section; it sits behind the content.
+ * Background for the dark section right under the hero: a reflection of the
+ * hero photo itself — the same picture flipped upside down, blurred into soft
+ * patches of its real colours (the yellow, mint and pink boxes on the rose
+ * backdrop), fading out toward the bottom. The pink hero bleeds into the dark
+ * band like the products are reflected in it. It follows the hero's framing
+ * (4:3 crop on phones, the whole photo centred on larger screens) so each
+ * colour lands roughly under its own box. Drop it in as the first child of a
+ * `relative isolate overflow-hidden` section; it sits behind the content.
  */
 export function HeroAfterglow() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[clamp(320px,40vw,560px)] bg-[radial-gradient(ellipse_75%_100%_at_50%_0%,rgba(214,118,104,0.32),rgba(122,46,59,0.14)_45%,transparent_80%)]"
-    />
+      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden [mask-image:linear-gradient(to_bottom,black,rgba(0,0,0,0.55)_45%,transparent_92%)]"
+    >
+      <div className="absolute left-1/2 top-0 aspect-[4/3] w-full -translate-x-1/2 -scale-y-100 opacity-50 blur-[44px] saturate-150 sm:aspect-[1995/850] sm:w-[min(100%,1300px)] sm:blur-[64px]">
+        <Image
+          src={HERO_IMAGE}
+          alt=""
+          fill
+          // it's blurred into colour patches, so a small file is plenty
+          sizes="480px"
+          className="object-cover object-bottom"
+        />
+      </div>
+    </div>
   );
 }

@@ -39,7 +39,7 @@ export default async function FaqPage({
 
   return (
     <>
-      <PageHero crumb={t("nav.faq")} title={t("ph.faq.h1")} lead={t("ph.faq.lead")} />
+      <PageHero title={t("ph.faq.h1")} lead={t("ph.faq.lead")} />
       <Section>
         <Faq />
       </Section>

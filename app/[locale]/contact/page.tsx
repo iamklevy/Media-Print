@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
 import { PageHero } from "@/components/site/page-hero";
-import { Section, SectionHead } from "@/components/site/section";
+import { Section } from "@/components/site/section";
 import { QuoteForm } from "@/components/site/quote-form";
 import { MapEmbed } from "@/components/site/map-embed";
 
@@ -40,17 +40,16 @@ export default async function ContactPage({
 
   return (
     <>
-      <PageHero crumb={t("nav.contact")} title={t("ph.contact.h1")} lead={t("ph.contact.lead")} />
+      <PageHero title={t("ph.contact.h1")} lead={t("ph.contact.lead")} />
 
       <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-2">
-          <div>
-            <SectionHead title={t("f.h2")} lead={t("f.lead")} />
-            <Suspense fallback={null}>
-              <QuoteForm />
-            </Suspense>
+        <div className="grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+          <Suspense fallback={null}>
+            <QuoteForm />
+          </Suspense>
+          <div className="overflow-hidden rounded-[20px]">
+            <MapEmbed title={t("c.map_title")} />
           </div>
-          <MapEmbed title={t("c.map_title")} />
         </div>
       </Section>
     </>

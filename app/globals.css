@@ -11,13 +11,15 @@
   --color-ink-2: #2c251d;
   --color-muted: #6e645a;
   --color-faint: #a8a098;
-  --color-line: #e9e2d7;
-  --color-paper: #fffdfa;
-  --color-paper-2: #f7f2ea;
+  /* surfaces + accent read CSS variables (see :root / .theme-warm below) so the
+     public site can swap to the warm berry palette while ops keeps the orange */
+  --color-line: var(--c-line);
+  --color-paper: var(--c-paper);
+  --color-paper-2: var(--c-paper-2);
   --color-kraft: #eadcc5;
-  --color-accent: #dd6320;
-  --color-accent-2: #b3480f;
-  --color-accent-soft: #fdf1e7;
+  --color-accent: var(--c-accent);
+  --color-accent-2: var(--c-accent-2);
+  --color-accent-soft: var(--c-accent-soft);
   --color-leaf: #2f6b4f;
   --color-leaf-soft: #e8f3ed;
   --color-amber: #c67c08;
@@ -40,28 +42,49 @@
      Sheet/Select/Card/Tabs etc. render with a solid, legible surface
      instead of falling back to a transparent bg-{token} with nothing
      defined for it. */
-  --color-background: var(--color-paper);
+  --color-background: var(--c-paper);
   --color-foreground: var(--color-ink);
-  --color-card: var(--color-paper);
+  --color-card: var(--c-paper);
   --color-card-foreground: var(--color-ink);
-  --color-popover: var(--color-paper);
+  --color-popover: var(--c-paper);
   --color-popover-foreground: var(--color-ink);
   --color-primary: var(--color-ink);
-  --color-primary-foreground: var(--color-paper);
-  --color-secondary: var(--color-paper-2);
+  --color-primary-foreground: var(--c-paper);
+  --color-secondary: var(--c-paper-2);
   --color-secondary-foreground: var(--color-ink);
   --color-muted-foreground: var(--color-muted);
   --color-destructive: var(--color-danger);
-  --color-destructive-foreground: var(--color-paper);
-  --color-border: var(--color-line);
-  --color-input: var(--color-line);
-  --color-ring: var(--color-accent);
+  --color-destructive-foreground: var(--c-paper);
+  --color-border: var(--c-line);
+  --color-input: var(--c-line);
+  --color-ring: var(--c-accent);
 }
 
 :root {
+  /* original palette: ops dashboard */
+  --c-line: #e9e2d7;
+  --c-paper: #fffdfa;
+  --c-paper-2: #f7f2ea;
+  --c-accent: #dd6320;
+  --c-accent-2: #b3480f;
+  --c-accent-soft: #fdf1e7;
   --background: #fffdfa;
   --foreground: #16130f;
   --radius: 0.625rem;
+}
+
+/*  Public site palette (set on <body> by app/[locale]/layout.tsx): the warm,
+    cozy look of the homepage hero. Cream and soft rose surfaces, the berry from
+    the hero's "Get pricing" button as the accent (accent-2 is its deeper shade
+    for text and hover). */
+.theme-warm {
+  --c-line: #eeddd6;
+  --c-paper: #fdf8f4;
+  --c-paper-2: #f9ebe6;
+  --c-accent: #8b3343;
+  --c-accent-2: #6e2634;
+  --c-accent-soft: #f9ebe6;
+  --background: #fdf8f4;
 }
 
 @layer base {
@@ -114,31 +137,7 @@
   }
 }
 
-/* "Why MediaPrint" cards on mobile: since there's no hover there, these
-   replace the desktop hover-ring with an always-on ambient presence. */
-@keyframes glow-pulse {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 0.75;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes icon-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Homepage display serif for headlines — see components/site/display-font.ts.
+/* Display serif for the public site's headlines — see components/site/display-font.ts.
    Unlayered on purpose so it wins over the base h1–h4 weight/tracking. */
 .font-display {
   font-family: var(--font-fraunces), Georgia, serif;

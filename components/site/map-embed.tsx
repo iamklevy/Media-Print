@@ -1,6 +1,6 @@
 export function MapEmbed({ title }: { title: string }) {
   return (
-    <div className="min-h-[320px] overflow-hidden rounded-card border border-line">
+    <div className="min-h-[320px] overflow-hidden rounded-[20px]">
       <iframe
         src="https://maps.google.com/maps?cid=1886169677804910620&z=17&output=embed"
         loading="lazy"
