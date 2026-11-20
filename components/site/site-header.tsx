@@ -37,10 +37,12 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", sync);
   }, []);
   // the white "on dark" overlay only makes sense when the hero photo is dark
-  const overlay = HOME_HERO_ON_DARK && pathname === "/" && !scrolled;
-  // at the top of the homepage the hero carries its own "Get pricing" button, so
-  // the header one steps back to an outline until you scroll past the hero
-  const quietCta = pathname === "/" && !scrolled;
+  const atHeroTop = pathname === "/" && !scrolled;
+  // shape: a flat full-width bar over the hero that morphs into the floating
+  // capsule once you scroll — runs whatever the hero's colour
+  const flat = atHeroTop;
+  // colour: white "on dark" text only makes sense when the hero photo is dark
+  const overlay = HOME_HERO_ON_DARK && atHeroTop;
 
   // No effect is needed to close on navigation: dropdown links call onClose
   // themselves, mobile-menu links close the menu, and clicking anything else
@@ -80,8 +82,14 @@ export function SiteHeader() {
       <div
         className={cn(
           "pointer-events-auto mx-auto flex items-center gap-4 border transition-all duration-500 ease-out",
-          overlay
-            ? "mt-0 h-[72px] w-[min(1200px,100%-2.5rem)] rounded-none border-transparent px-0"
+          flat
+            ? cn(
+                "mt-1.5 h-[60px] w-[min(1200px,100%-2.5rem)] rounded-full ps-2.5 pe-2",
+                // same glass as the nav-links pill, stretched across the whole bar
+                overlay
+                  ? "border-white/35 bg-white/15 shadow-[0_4px_18px_-6px_rgb(0_0_0/0.18)] backdrop-blur-md"
+                  : "border-transparent",
+              )
             : "mt-2 h-[58px] w-[min(1240px,100%-1rem)] rounded-full border-line bg-paper/75 ps-2.5 pe-2 shadow-soft backdrop-blur-xl backdrop-saturate-150",
         )}
       >
@@ -109,7 +117,8 @@ export function SiteHeader() {
         <nav
           className={cn(
             "hidden items-center gap-0.5 rounded-full border p-1 transition-colors duration-300 lg:flex",
-            overlay ? "border-white/15 bg-white/10 backdrop-blur-md" : "border-transparent",
+            // the outer bar now carries the glass, so the links don't get a second outline
+            "border-transparent",
           )}
         >
           {MENUS.map((m) => (
@@ -171,12 +180,8 @@ export function SiteHeader() {
           <Link
             href="/contact"
             className={cn(
-              "ms-1 hidden whitespace-nowrap rounded-full px-5 py-2.5 text-[0.93rem] font-bold transition-colors sm:inline-flex",
-              overlay
-                ? "bg-white text-ink hover:bg-accent hover:text-white"
-                : quietCta
-                  ? "border border-ink/15 bg-white/40 text-ink hover:border-ink hover:bg-ink hover:text-white"
-                  : "bg-accent text-white hover:bg-accent-2",
+              // the same berry as the hero's and the homepage's "Get pricing"
+              "ms-1 hidden whitespace-nowrap rounded-full bg-[#8b3343] px-5 py-2.5 text-[0.93rem] font-bold text-white shadow-[0_8px_24px_-10px_rgba(139,51,67,0.6)] transition-colors hover:bg-[#a33e51] sm:inline-flex",
             )}
           >
             {t("cta.quote")}

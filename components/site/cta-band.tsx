@@ -1,59 +1,43 @@
 import { useTranslations } from "next-intl";
-import { ArrowRight, Phone } from "lucide-react";
-import { WhatsAppIcon } from "./brand-icons";
 
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
-import { Wrap } from "./section";
 import { SALES_PHONE } from "@/lib/contact";
-import { cn } from "@/lib/utils";
+import { WhatsAppIcon } from "./brand-icons";
+import { Wrap } from "./section";
+import { Reveal } from "./motion";
+import { HERO_BG } from "./home-hero";
+import { btnPrimary, btnQuiet } from "./buttons";
 
-/** `display`: title in the homepage display serif (needs displayFontVars on an ancestor). */
-export function CtaBand({ display }: { display?: boolean } = {}) {
+/**
+ * The closing section on every public page: back to the hero's pink, one line
+ * and two ways to reach us (pricing form, WhatsApp).
+ */
+export function CtaBand() {
   const t = useTranslations();
   return (
-    <section className="pb-16 md:pb-24">
+    <section
+      style={{
+        backgroundColor: HERO_BG,
+        backgroundImage: `radial-gradient(ellipse 70% 90% at 50% 100%, #fde4de 0%, ${HERO_BG} 55%, #eeb3a7 100%)`,
+      }}
+      className="py-24 md:py-32"
+    >
       <Wrap>
-        <div className="relative isolate overflow-hidden rounded-[30px] bg-ink px-7 py-10 text-paper md:px-16 md:py-16">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-1/2 -end-[10%] size-[480px] rounded-full bg-[radial-gradient(circle,rgba(221,99,32,0.28),transparent_62%)]"
-          />
-          <h2 className={cn("relative max-w-[20ch] text-[clamp(1.75rem,1.2rem+2.2vw,2.85rem)]", display && "font-display rtl:text-[clamp(2rem,1.4rem+2.4vw,3.15rem)]")}>
+        <Reveal y={16} className="mx-auto flex max-w-[640px] flex-col items-center text-center">
+          <h2 className="font-display text-[clamp(1.95rem,1.35rem+2.4vw,3.1rem)] text-balance text-ink rtl:text-[clamp(2.2rem,1.55rem+2.6vw,3.4rem)]">
             {t("band.h2")}
           </h2>
-          <p className="relative mt-4 mb-8 max-w-[54ch] text-paper/72">{t("band.p")}</p>
-          <div className="relative flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-full bg-paper text-ink hover:bg-white">
-              <Link href="/contact">
-                {t("cta.quote")}
-                <ArrowRight className="size-4 rtl:rotate-180" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="rounded-full border-white/30 bg-transparent text-paper hover:bg-white/10 hover:text-paper"
-            >
-              <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener">
-                <WhatsAppIcon className="size-4" />
-                {t("cta.whatsapp")}
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="ghost"
-              className="rounded-full text-paper hover:bg-white/10 hover:text-paper"
-            >
-              <a href={`tel:+2${SALES_PHONE}`}>
-                <Phone className="size-4" />
-                {t("cta.call")}
-              </a>
-            </Button>
+          <p className="mt-4 max-w-[46ch] text-[1rem] leading-relaxed text-[#7a2e3b]/85">{t("band.p")}</p>
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <Link href="/contact" className={btnPrimary}>
+              {t("cta.quote")}
+            </Link>
+            <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener" className={btnQuiet}>
+              <WhatsAppIcon className="size-4" />
+              {t("cta.whatsapp")}
+            </a>
           </div>
-        </div>
+        </Reveal>
       </Wrap>
     </section>
   );

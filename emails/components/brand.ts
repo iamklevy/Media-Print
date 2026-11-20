@@ -1,15 +1,16 @@
-// Brand tokens for email. Mirrors the @theme palette in app/globals.css —
+// Brand tokens for email. Mirrors the public site's warm palette (.theme-warm
+// in app/globals.css) —
 // emails can't read CSS variables, so the hex values are repeated here.
 export const color = {
   ink: "#16130f",
   muted: "#6e645a",
   faint: "#a8a098",
-  line: "#e9e2d7",
-  paper: "#fffdfa",
-  paper2: "#f7f2ea",
-  accent: "#dd6320",
-  accent2: "#b3480f",
-  accentSoft: "#fdf1e7",
+  line: "#eeddd6",
+  paper: "#fdf8f4",
+  paper2: "#f9ebe6",
+  accent: "#8b3343",
+  accent2: "#6e2634",
+  accentSoft: "#f9ebe6",
   leaf: "#2f6b4f",
   leafSoft: "#e8f3ed",
 };

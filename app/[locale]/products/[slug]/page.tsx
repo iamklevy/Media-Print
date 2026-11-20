@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Check, ChevronRight, ShieldCheck, Truck, Palette, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { PRODUCTS, type CatalogueProduct } from "@/content/products";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { Wrap, Section, SectionHead } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { ProductGallery } from "@/components/site/product-gallery";
 import { CtaBand } from "@/components/site/cta-band";
+import { Reveal } from "@/components/site/motion";
+import { btnPrimary } from "@/components/site/buttons";
+import { cn } from "@/lib/utils";
 
 /** Same-category products first, then whichever others share the most industries/types
  * with it — so every product (even a category's sole member, like nonwoven) always
@@ -89,77 +91,49 @@ export default async function ProductPage({
         }}
       />
 
-      <section className="border-b border-line bg-paper-2 py-10 md:py-14">
+      <section className="pb-16 pt-8 md:pb-24 md:pt-12">
         <Wrap>
-          <div className="mb-5 flex flex-wrap items-center gap-2 text-[0.87rem] text-muted">
-            <Link href="/" className="hover:text-accent-2">
-              {t("crumb.home")}
-            </Link>
-            <ChevronRight className="size-3.5 opacity-50 rtl:rotate-180" />
-            <Link href="/products" className="hover:text-accent-2">
-              {t("nav.products")}
-            </Link>
-            <ChevronRight className="size-3.5 opacity-50 rtl:rotate-180" />
-            <span className="text-ink">{title}</span>
-          </div>
+          <Link
+            href="/products"
+            className="mb-8 inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-muted transition-colors hover:text-accent"
+          >
+            <ArrowLeft className="size-4 rtl:rotate-180" />
+            {t("nav.browse")}
+          </Link>
 
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
             <ProductGallery images={product.images} alt={title} />
 
-            <div>
-              <span className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-[0.8rem] font-bold text-accent-2">
-                {t(`cat.${product.cat}`)}
-              </span>
-              <h1 className="mt-4 text-[clamp(1.9rem,1.3rem+2.2vw,3rem)]">{title}</h1>
-              <p className="mt-4 text-[1.05rem] leading-relaxed text-muted">
-                {t(`${product.key}.d`)}
-              </p>
+            <Reveal y={16}>
+              <h1 className="font-display text-[clamp(2rem,1.4rem+2.4vw,3.2rem)] text-balance rtl:text-[clamp(2.3rem,1.6rem+2.6vw,3.5rem)]">
+                {title}
+              </h1>
+              <p className="mt-4 max-w-[52ch] text-[1.02rem] leading-relaxed text-muted">{t(`${product.key}.d`)}</p>
 
               {product.specs.length > 0 && (
-                <ul className="mt-6 grid gap-2.5">
+                <ul className="mt-8 grid max-w-[52ch] border-t border-line">
                   {product.specs.map((s) => (
-                    <li key={s} className="flex items-start gap-2.5">
-                      <Check className="mt-1 size-4 shrink-0 text-leaf" />
-                      <span>{t(s)}</span>
+                    <li key={s} className="border-b border-line py-3 text-[0.95rem] text-ink-2">
+                      {t(s)}
                     </li>
                   ))}
                 </ul>
               )}
 
-              <Button
-                asChild
-                size="lg"
-                className="mt-6 w-fit rounded-full bg-accent hover:bg-accent-2"
-              >
-                <Link href={`/contact?product=${encodeURIComponent(title)}`}>
-                  {t("cta.quote")}
-                  <ArrowRight className="size-4 rtl:rotate-180" />
-                </Link>
-              </Button>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {[
-                  { icon: ShieldCheck, k: "why.2.t" },
-                  { icon: Palette, k: "mq.6" },
-                  { icon: Truck, k: "why.4.t" },
-                ].map(({ icon: Icon, k }) => (
-                  <div key={k} className="flex items-center gap-2.5 rounded-lg bg-paper px-3 py-2.5">
-                    <Icon className="size-4 shrink-0 text-accent-2" />
-                    <span className="text-[0.86rem] font-semibold">{t(k)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+              <Link href={`/contact?product=${encodeURIComponent(title)}`} className={cn(btnPrimary, "mt-9")}>
+                {t("cta.quote")}
+              </Link>
+            </Reveal>
           </div>
         </Wrap>
       </section>
 
       {related.length > 0 && (
-        <Section>
+        <Section tint>
           <SectionHead title={t("prod.related.h2")} />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
             {related.map((p) => (
-              <ProductCard key={p.slug} product={p} showSpecs={false} />
+              <ProductCard key={p.slug} product={p} />
             ))}
           </div>
         </Section>

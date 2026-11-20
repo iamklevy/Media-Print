@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 
 import { PRODUCTS } from "@/content/products";
-import { Button } from "@/components/ui/button";
+import { btnPrimary } from "./buttons";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -206,9 +207,9 @@ export function QuoteForm() {
         className="sr-only"
       />
 
-      <Button type="submit" size="lg" disabled={submitting} className="w-fit rounded-full bg-accent hover:bg-accent-2">
+      <button type="submit" disabled={submitting} className={cn(btnPrimary, "w-fit")}>
         {submitting ? (ar ? "جاري الإرسال…" : "Sending…") : t("f.submit")}
-      </Button>
+      </button>
 
       {error === "upload" && (
         <p className="rounded-lg bg-danger-soft px-4 py-3 text-[0.9rem] font-semibold text-danger">

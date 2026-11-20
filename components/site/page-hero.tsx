@@ -1,33 +1,26 @@
-import { ChevronRight } from "lucide-react";
-import { useTranslations } from "next-intl";
-
-import { Link } from "@/i18n/navigation";
 import { Wrap } from "./section";
+import { HERO_BG } from "./home-hero";
 
-export function PageHero({
-  crumb,
-  title,
-  lead,
-}: {
-  crumb: string;
-  title: string;
-  lead?: string;
-}) {
-  const t = useTranslations();
+/**
+ * Top of every inner page: the homepage hero's pink, a centred display-serif
+ * title and at most one short line. Pulled up under the floating header so the
+ * pink runs to the top of the screen.
+ */
+export function PageHero({ title, lead }: { title: string; lead?: string }) {
   return (
-    // pulled up under the floating header capsule so the tint runs to the top
-    <section className="-mt-[72px] border-b border-line bg-paper-2 pb-12 pt-[calc(72px+3rem)] md:pb-16 md:pt-[calc(72px+4rem)]">
-      <Wrap>
-        <div className="mb-4 flex items-center gap-2 text-[0.87rem] text-muted">
-          <Link href="/" className="hover:text-accent-2">
-            {t("crumb.home")}
-          </Link>
-          <ChevronRight className="size-3.5 opacity-50 rtl:rotate-180" />
-          <span>{crumb}</span>
-        </div>
-        <h1 className="text-[clamp(2.15rem,1.35rem+3.4vw,4rem)]">{title}</h1>
+    <section
+      style={{
+        backgroundColor: HERO_BG,
+        backgroundImage: `radial-gradient(ellipse 70% 100% at 50% 100%, #fde4de 0%, ${HERO_BG} 55%, #eeb3a7 100%)`,
+      }}
+      className="-mt-[72px] pb-16 pt-[calc(72px+4rem)] md:pb-20 md:pt-[calc(72px+5.5rem)]"
+    >
+      <Wrap className="flex flex-col items-center text-center">
+        <h1 className="motion-safe:animate-[hero-rise_0.9s_cubic-bezier(0.22,0.61,0.36,1)_both] font-display text-[clamp(2.2rem,1.5rem+3vw,3.6rem)] text-balance text-ink rtl:text-[clamp(2.5rem,1.7rem+3.2vw,4rem)]">
+          {title}
+        </h1>
         {lead && (
-          <p className="mt-4 max-w-[60ch] text-[clamp(1.02rem,0.96rem+0.3vw,1.2rem)] text-muted">
+          <p className="motion-safe:animate-[hero-rise_0.9s_cubic-bezier(0.22,0.61,0.36,1)_0.12s_both] mt-4 max-w-[46ch] text-[1rem] leading-relaxed text-[#7a2e3b]/85 text-pretty">
             {lead}
           </p>
         )}

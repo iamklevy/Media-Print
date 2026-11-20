@@ -15,27 +15,24 @@ export function Faq() {
   const [open, setOpen] = useState<string | null>(IDS[0]);
 
   return (
-    <div className="mx-auto grid max-w-[760px] gap-3">
+    <div className="mx-auto max-w-[760px] border-t border-line">
       {IDS.map((id) => {
         const isOpen = open === id;
         return (
           <div
             key={id}
-            className={cn(
-              "overflow-hidden rounded-card border bg-paper transition-colors",
-              isOpen ? "border-accent/35 shadow-soft" : "border-line",
-            )}
+            className="overflow-hidden border-b border-line"
           >
             <button
               type="button"
               aria-expanded={isOpen}
               onClick={() => setOpen(isOpen ? null : id)}
-              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-start"
+              className="flex w-full items-center justify-between gap-6 py-6 text-start"
             >
-              <span className="text-[1.02rem] font-bold">{t(`${id}.q`)}</span>
+              <span className={cn("font-display text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] transition-colors", isOpen && "text-accent")}>{t(`${id}.q`)}</span>
               <Plus
                 className={cn(
-                  "size-5 shrink-0 text-accent-2 transition-transform duration-300",
+                  "size-5 shrink-0 text-accent transition-transform duration-300",
                   isOpen && "rotate-45",
                 )}
               />
@@ -49,7 +46,7 @@ export function Faq() {
                   exit={reduce ? undefined : { height: 0, opacity: 0 }}
                   transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
                 >
-                  <p className="px-6 pb-6 text-[0.96rem] leading-relaxed text-muted">
+                  <p className="max-w-[60ch] pb-7 text-[0.96rem] leading-relaxed text-muted">
                     {t(`${id}.a`)}
                   </p>
                 </motion.div>
