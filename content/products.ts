@@ -281,6 +281,10 @@ export interface ClientGroup {
     darkPlate?: boolean;
     /** detailed/multi-colour mark that turns into a blob when flattened to white — show it in colour */
     keepColor?: boolean;
+    /** logo width ÷ height, so the marquee can size tall marks up to match wide ones */
+    ratio?: number;
+    /** manual size override for the marquee, replacing the ratio-based one */
+    scale?: number;
   }[];
 }
 
@@ -288,46 +292,48 @@ export const CLIENTS: ClientGroup[] = [
   {
     labelKey: "clients.food",
     names: [
-      { name: "Haj Arafa", logo: "/clients/haj-arafa.png", keepColor: true },
-      { name: "Coca-Cola", logo: "/clients/coca-cola.png" },
-      { name: "Gomla Market", logo: "/clients/gomla-market.png", keepColor: true },
-      { name: "TASTE PURE", logo: "/clients/taste-pure.png", keepColor: true },
-      { name: "Fridal", logo: "/clients/frida.png", darkPlate: true },
+      { name: "Haj Arafa", logo: "/clients/haj-arafa-ondark.png", ratio: 1.64, keepColor: true },
+      { name: "Coca-Cola", logo: "/clients/coca-cola.png", ratio: 3.19 },
+      // gomlamarket.com's own badge, with the black lettering and outline turned white for the dark band
+      { name: "Gomla Market", logo: "/clients/gomla-market-ondark.png", ratio: 0.66, keepColor: true },
+      { name: "TASTE PURE", logo: "/clients/taste-pure.png", ratio: 2.30, keepColor: true },
+      // thin, widely spaced lettering: sized up so "FRIDAL" stays legible
+      { name: "Fridal", logo: "/clients/frida.png", ratio: 5.06, darkPlate: true, scale: 1.25 },
     ],
   },
   {
     labelKey: "clients.cosmetics",
     names: [
-      { name: "Parkvilla", logo: "/clients/parkvilla.png" },
-      { name: "Capixy", logo: "/clients/capixy.png" },
-      { name: "Marico", sub: "Fiancée · Hair Code", logo: "/clients/marico.png" },
-      { name: "RawAfrica", logo: "/clients/rawafrica.png", keepColor: true },
-      { name: "FEVELIN", logo: "/clients/fevelin.png" },
-      { name: "LUNA", logo: "/clients/luna.png" },
-      { name: "Willy", logo: "/clients/willy.png" },
-      { name: "Joviality", logo: "/clients/joviality.png" },
-      { name: "Nuit Fragrance", logo: "/clients/nuit.png" },
-      { name: "Era Care", logo: "/clients/era-care.png" },
-      { name: "SORELLA", logo: "/clients/sorella.png" },
+      { name: "Parkvilla", logo: "/clients/parkvilla.png", ratio: 5.62 },
+      { name: "Capixy", logo: "/clients/capixy.png", ratio: 3.18 },
+      { name: "Marico", sub: "Fiancée · Hair Code", logo: "/clients/marico.png", ratio: 1.00 },
+      { name: "RawAfrica", logo: "/clients/rawafrica-ondark.png", ratio: 1.50, keepColor: true },
+      { name: "FEVELIN", logo: "/clients/fevelin.png", ratio: 2.70 },
+      { name: "LUNA", logo: "/clients/luna.png", ratio: 1.65 },
+      { name: "Willy", logo: "/clients/willy.png", ratio: 2.59 },
+      { name: "Joviality", logo: "/clients/joviality.png", ratio: 2.81 },
+      { name: "Nuit Fragrance", logo: "/clients/nuit.png", ratio: 2.19 },
+      { name: "Era Care", logo: "/clients/era-care.png", ratio: 0.81 },
+      { name: "SORELLA", logo: "/clients/sorella.png", ratio: 0.59 },
     ],
   },
   {
     labelKey: "clients.clothing",
     names: [
-      { name: "Carina", logo: "/clients/carina.png" },
-      { name: "DXLR", logo: "/clients/dxlr.png" },
-      { name: "SLEEKZ", logo: "/clients/sleekz.png" },
+      { name: "Carina", logo: "/clients/carina.png", ratio: 4.45 },
+      { name: "DXLR", logo: "/clients/dxlr.png", ratio: 4.27 },
+      { name: "SLEEKZ", logo: "/clients/sleekz.png", ratio: 2.95 },
       { name: "FATM" },
       { name: "ELIGHT" },
-      { name: "JEANZY", logo: "/clients/jeanzy.svg" },
+      { name: "JEANZY", logo: "/clients/jeanzy.svg", ratio: 3.62 },
     ],
   },
   {
     labelKey: "clients.appliances",
     names: [
       // Both logos are white-on-transparent — need the dark plate, not the shared white one.
-      { name: "Beko", logo: "/clients/beko.png", darkPlate: true },
-      { name: "Elaraby Group", logo: "/clients/elaraby.png", darkPlate: true },
+      { name: "Beko", logo: "/clients/beko.png", ratio: 2.85, darkPlate: true },
+      { name: "Elaraby Group", logo: "/clients/elaraby.png", ratio: 2.33, darkPlate: true },
     ],
   },
 ];

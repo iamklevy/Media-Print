@@ -1,14 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
+import { Ellipsis } from "lucide-react";
 
 import { PRODUCTS } from "@/content/products";
 import { btnPrimary } from "./buttons";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { SALES_PHONE, formatPhone } from "@/lib/contact";
 import { createCustomerArtworkUploadUrls, createOrderFromQuote } from "@/lib/orders/actions";
@@ -16,6 +19,10 @@ import { ArtworkInput } from "@/components/site/artwork-input";
 import { putToSignedUrl } from "@/lib/storage/signed-upload";
 import { MOQ_DEFAULT, isQuantityRange, quantityRangesFor } from "@/lib/orders/quantity";
 import { QUOTE_HONEYPOT_FIELD } from "@/lib/orders/quote";
+
+// one row of the packaging picker: thumbnail + name, soft berry highlight
+const PRODUCT_ITEM =
+  "gap-3 rounded-lg py-1.5 ps-1.5 text-[0.95rem] text-ink focus:bg-accent-soft focus:text-ink data-[state=checked]:font-semibold";
 
 export function QuoteForm() {
   const t = useTranslations();
@@ -143,25 +150,41 @@ export function QuoteForm() {
       </div>
 
       <Field id="product" label={t("f.product")} required>
-        {/* native select keeps this form usable with zero JS beyond submit */}
-        <select
-          id="product"
-          name="product"
-          required
-          value={productLabel}
-          onChange={(e) => onProductChange(e.target.value)}
-          className="h-10 rounded-lg border border-line bg-paper px-3 text-[0.96rem] outline-none focus:border-accent focus:ring-3 focus:ring-accent/12"
-        >
-          <option value="" disabled>
-            {t("f.product_choose")}
-          </option>
-          {PRODUCTS.map((p) => (
-            <option key={p.slug} value={t(`${p.key}.t`)}>
-              {t(`${p.key}.t`)}
-            </option>
-          ))}
-          <option value={productOther}>{productOther}</option>
-        </select>
+        {/* a picture per option needs a custom list; Radix still renders a hidden
+            native <select name="product">, so the field posts and validates as before */}
+        <Select name="product" required value={productLabel} onValueChange={onProductChange} dir={ar ? "rtl" : "ltr"}>
+          <SelectTrigger
+            id="product"
+            className="h-11 w-full rounded-lg border-line bg-paper ps-2 data-[size=default]:h-11 text-[0.96rem] focus-visible:border-accent focus-visible:ring-accent/12 data-placeholder:text-muted"
+          >
+            <SelectValue placeholder={t("f.product_choose")} />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            sideOffset={6}
+            className="max-h-[min(22rem,var(--radix-select-content-available-height))] rounded-xl bg-paper p-1"
+          >
+            {PRODUCTS.map((p) => (
+              <SelectItem key={p.slug} value={t(`${p.key}.t`)} className={PRODUCT_ITEM}>
+                <Image
+                  src={p.images[0]}
+                  alt=""
+                  width={32}
+                  height={32}
+                  sizes="32px"
+                  className="size-8 shrink-0 rounded-md bg-paper-2 object-cover"
+                />
+                {t(`${p.key}.t`)}
+              </SelectItem>
+            ))}
+            <SelectItem value={productOther} className={PRODUCT_ITEM}>
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-paper-2 text-muted">
+                <Ellipsis className="size-4" />
+              </span>
+              {productOther}
+            </SelectItem>
+          </SelectContent>
+        </Select>
         <input type="hidden" name="product_slug" value={selectedProduct?.slug ?? ""} />
       </Field>
 
