@@ -272,6 +272,9 @@ export const PRODUCTS: CatalogueProduct[] = [
   }
 ];
 
+/** Most-reordered products, best first: the bestsellers page and the footer's short product list. */
+export const BESTSELLERS = ["apparel", "paper-bags", "corrugated", "tags", "aluminium", "nonwoven"];
+
 export interface ClientGroup {
   labelKey: string;
   names: {

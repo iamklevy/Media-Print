@@ -131,11 +131,15 @@ export default async function ProductPage({
       {related.length > 0 && (
         <Section tint>
           <SectionHead title={t("prod.related.h2")} />
-          <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+          {/* phones: one swipeable row running to the screen edges, snapping card
+              by card with the next one peeking in; from sm up: a plain grid */}
+          <ul className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 lg:gap-x-8">
             {related.map((p) => (
-              <ProductCard key={p.slug} product={p} />
+              <li key={p.slug} className="w-[72%] shrink-0 snap-start sm:w-auto">
+                <ProductCard product={p} />
+              </li>
             ))}
-          </div>
+          </ul>
         </Section>
       )}
 
