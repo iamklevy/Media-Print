@@ -1,4 +1,4 @@
-import { Amiri, Fraunces } from "next/font/google";
+import { Amiri, Caveat, Fraunces, Marhey } from "next/font/google";
 
 /*
  * Display serifs for the public site's headlines (hero, page and section titles).
@@ -24,4 +24,26 @@ const amiri = Amiri({
   variable: "--font-amiri",
 });
 
-export const displayFontVars = `${fraunces.variable} ${amiri.variable}`;
+/*
+ * Handwritten "signature" accent (the footer's "made in Giza"): marker-pen
+ * handwriting in both scripts — Caveat for Latin, Marhey for Arabic — chosen
+ * to stay legible small and to look like the same hand. Only used below the fold,
+ * so not preloaded. Usage: the `font-signature` class (globals.css).
+ */
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["600"],
+  display: "swap",
+  preload: false,
+  variable: "--font-signature",
+});
+
+const marhey = Marhey({
+  subsets: ["arabic"],
+  weight: ["600"],
+  display: "swap",
+  preload: false,
+  variable: "--font-signature-ar",
+});
+
+export const displayFontVars = `${fraunces.variable} ${amiri.variable} ${caveat.variable} ${marhey.variable}`;

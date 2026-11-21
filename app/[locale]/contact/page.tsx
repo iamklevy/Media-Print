@@ -40,7 +40,7 @@ export default async function ContactPage({
 
   return (
     <>
-      <PageHero title={t("ph.contact.h1")} lead={t("ph.contact.lead")} />
+      <PageHero title={t("ph.contact.h1")} lead={t("ph.contact.lead")} wideLead />
 
       <Section>
         <div className="grid items-start gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">

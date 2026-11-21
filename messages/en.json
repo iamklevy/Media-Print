@@ -315,7 +315,11 @@
     "in_arialabel": "Instagram page",
     "wa_arialabel": "WhatsApp",
     "tel_arialabel": "Phone",
-    "nav": "Site",
+    "nav": "Explore",
+    "headline": "Printing & packaging,",
+    "signature": "made in Giza.",
+    "all_products": "See all products",
+    "social": "Follow us",
     "prod": "Products",
     "contact": "Get in touch",
     "sales": "Sales",
@@ -363,7 +367,7 @@
     },
     "contact": {
       "h1": "Contact Us",
-      "lead": "Tell us what you need. We reply on WhatsApp."
+      "lead": "Tell us what you need. We review your request and send you a price quote. Once you approve it, you can follow every step of your order, from artwork to delivery, through the tracking link we email you."
     },
     "faq": {
       "h1": "Questions",
@@ -393,7 +397,6 @@
     "moq": "Min."
   },
   "book": {
-    "mode": "Where would you like to meet?",
     "online": {
       "t": "Online meeting",
       "d": "A video or WhatsApp call. Best for running through artwork and prices quickly.",
@@ -410,21 +413,30 @@
       "m": "Sat–Thu, 10am – 6pm"
     },
     "topic": "What is it about?",
-    "topic_choose": "Choose a topic",
     "topic_new": "A new packaging order",
     "topic_quote": "Reviewing a quote",
     "topic_artwork": "Design and artwork",
     "topic_samples": "Seeing samples and materials",
     "topic_other": "Something else",
-    "date": "Preferred date",
-    "time": "Preferred time",
     "notes": "Notes",
     "notes_placeholder": "Anything you would like us to prepare before the meeting…",
-    "submit": "Send booking request",
+    "submit": "Book the meeting",
     "sending": "Sending…",
-    "sent": "Thanks — we've received your request and will confirm shortly.",
+    "sent": "We'll confirm the time with you on WhatsApp, the same day.",
     "error": "Something went wrong sending your request — please try again or call us directly.",
-    "note": "Bookings are confirmed by our sales team. We are open Saturday to Thursday, 10am to 6pm."
+    "note": "Our sales team confirms every booking the same day.",
+    "step_how": "How would you like to meet?",
+    "step_when": "When suits you?",
+    "step_who": "Your details",
+    "day": "Day",
+    "slot": "Time",
+    "when_hint": "We're open Saturday to Thursday, 10am to 6pm (Cairo time).",
+    "summary": "Your meeting",
+    "pick_time": "Pick a day and a time",
+    "sum_online": "We'll send you a WhatsApp or video call link before the meeting.",
+    "sum_yours": "Our sales rep brings material and size samples to your office.",
+    "sent_t": "Your request is in",
+    "edit": "Book another meeting"
   },
   "f": {
     "name": "Your name",

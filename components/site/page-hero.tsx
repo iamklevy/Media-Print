@@ -1,12 +1,14 @@
 import { Wrap } from "./section";
+import { cn } from "@/lib/utils";
 import { HERO_BG } from "./home-hero";
 
 /**
  * Top of every inner page: the homepage hero's pink, a centred display-serif
  * title and at most one short line. Pulled up under the floating header so the
- * pink runs to the top of the screen.
+ * pink runs to the top of the screen. `wideLead` lets a longer lead run wider,
+ * split into two even lines on desktop (the contact page's process summary).
  */
-export function PageHero({ title, lead }: { title: string; lead?: string }) {
+export function PageHero({ title, lead, wideLead }: { title: string; lead?: string; wideLead?: boolean }) {
   return (
     <section
       style={{
@@ -20,7 +22,12 @@ export function PageHero({ title, lead }: { title: string; lead?: string }) {
           {title}
         </h1>
         {lead && (
-          <p className="motion-safe:animate-[hero-rise_0.9s_cubic-bezier(0.22,0.61,0.36,1)_0.12s_both] mt-4 max-w-[46ch] text-[1rem] leading-relaxed text-[#7a2e3b]/85 text-pretty">
+          <p
+            className={cn(
+              "motion-safe:animate-[hero-rise_0.9s_cubic-bezier(0.22,0.61,0.36,1)_0.12s_both] mt-4 max-w-[46ch] text-[1rem] leading-relaxed text-[#7a2e3b]/85 text-pretty",
+              wideLead && "lg:max-w-[104ch] lg:text-balance",
+            )}
+          >
             {lead}
           </p>
         )}

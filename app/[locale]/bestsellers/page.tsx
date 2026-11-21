@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { PRODUCTS } from "@/content/products";
+import { PRODUCTS, BESTSELLERS } from "@/content/products";
 import { routing } from "@/i18n/routing";
 import { PageHero } from "@/components/site/page-hero";
 import { Section } from "@/components/site/section";
 import { ProductCard } from "@/components/site/product-card";
 import { CtaBand } from "@/components/site/cta-band";
-
-const RANKED = ["apparel", "paper-bags", "corrugated", "tags", "aluminium", "nonwoven"];
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -40,7 +38,7 @@ export default async function BestsellersPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const ranked = RANKED.map((slug) => PRODUCTS.find((p) => p.slug === slug)!).filter(Boolean);
+  const ranked = BESTSELLERS.map((slug) => PRODUCTS.find((p) => p.slug === slug)!).filter(Boolean);
 
   return (
     <>
