@@ -1,8 +1,9 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { X } from "lucide-react";
+import { Grid2x2, Grid3x3, X } from "lucide-react";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { ProductCard } from "./product-card";
@@ -16,6 +17,46 @@ const INDUSTRY_SLUGS = INDUSTRIES.map((i) => i.slug);
 const CHIP = "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[0.9rem] font-semibold transition-colors";
 const CHIP_ON = "border-accent bg-accent text-white";
 const CHIP_OFF = "border-ink/15 bg-white/50 text-ink hover:border-ink/30 hover:bg-white/80";
+
+// grid density: "large" is 1 / 2 / 3 columns (phone / tablet / desktop),
+// "compact" is 2 / 3 / 4. A visitor who hasn't picked one gets "auto": compact
+// on phones (2 columns), large from sm up. It's pure CSS, so the server render
+// is already right for every screen. A pick is kept in localStorage.
+type View = "large" | "compact";
+type ViewState = View | "auto";
+const VIEW_KEY = "mp.catalogue.view";
+const GRID: Record<ViewState, string> = {
+  large: "grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14",
+  compact: "grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-10",
+  auto: "grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14",
+};
+const PHONE_MQ = "(max-width: 639.98px)";
+const VIEW_BTN = "grid size-9 place-items-center rounded-full transition-colors";
+
+const viewListeners = new Set<() => void>();
+function readView(): ViewState {
+  try {
+    const saved = localStorage.getItem(VIEW_KEY);
+    return saved === "compact" || saved === "large" ? saved : "auto";
+  } catch {
+    return "auto";
+  }
+}
+function writeView(v: View) {
+  try {
+    localStorage.setItem(VIEW_KEY, v);
+  } catch {}
+  viewListeners.forEach((l) => l());
+}
+function subscribeView(l: () => void) {
+  viewListeners.add(l);
+  return () => viewListeners.delete(l);
+}
+function subscribePhone(l: () => void) {
+  const mq = window.matchMedia(PHONE_MQ);
+  mq.addEventListener("change", l);
+  return () => mq.removeEventListener("change", l);
+}
 
 /**
  * The catalogue with its filter pills. The URL is the single source of truth,
@@ -31,6 +72,10 @@ export function ProductGrid({ products }: { products: CatalogueProduct[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const view = useSyncExternalStore(subscribeView, readView, () => "auto" as ViewState);
+  const isPhone = useSyncExternalStore(subscribePhone, () => window.matchMedia(PHONE_MQ).matches, () => false);
+  // which toggle button shows as selected; "auto" means whatever this screen gets
+  const active: View = view === "auto" ? (isPhone ? "compact" : "large") : view;
 
   const industryParam = searchParams.get("industry");
   const industry = industryParam && INDUSTRY_SLUGS.includes(industryParam) ? industryParam : null;
@@ -86,14 +131,36 @@ export function ProductGrid({ products }: { products: CatalogueProduct[] }) {
       </div>
 
       {/* how many products the current filter shows; announced when it changes */}
-      <p aria-live="polite" className="mb-5 mt-10 text-start text-[0.9rem] text-muted md:mt-14">
-        {t("cat.count", { n: shown.length })}
-      </p>
+      <div className="mb-5 mt-10 flex items-center justify-between gap-4 md:mt-14">
+        <p aria-live="polite" className="text-start text-[0.9rem] text-muted">
+          {t("cat.count", { n: shown.length })}
+        </p>
+        <div role="group" aria-label={t("cat.view")} className="flex gap-1 rounded-full border border-ink/15 bg-white/50 p-1">
+          {(
+            [
+              ["large", Grid2x2, t("cat.viewLarge")],
+              ["compact", Grid3x3, t("cat.viewCompact")],
+            ] as const
+          ).map(([v, Icon, label]) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={active === v}
+              aria-label={label}
+              title={label}
+              onClick={() => writeView(v)}
+              className={cn(VIEW_BTN, active === v ? "bg-accent text-white" : "text-ink/60 hover:text-ink")}
+            >
+              <Icon className="size-4" />
+            </button>
+          ))}
+        </div>
+      </div>
 
       {shown.length > 0 ? (
-        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
+        <div className={cn("grid", GRID[view])}>
           {shown.map((p) => (
-            <ProductCard key={p.slug} product={p} />
+            <ProductCard key={p.slug} product={p} variant={view} />
           ))}
         </div>
       ) : (

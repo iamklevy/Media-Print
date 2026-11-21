@@ -377,7 +377,10 @@
     "fabric": "Fabric",
     "all": "Everything",
     "empty": "Nothing in this category yet — message us and we'll point you to the right product.",
-    "count": "{n, plural, one {# product} other {# products}}"
+    "count": "{n, plural, one {# product} other {# products}}",
+    "view": "Grid view",
+    "viewLarge": "Large tiles",
+    "viewCompact": "Compact tiles"
   },
   "best": {
     "note": "Prices exclude VAT and are confirmed on the sample before production."
