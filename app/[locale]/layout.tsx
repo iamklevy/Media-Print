@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 
 import { routing, isRtl } from "@/i18n/routing";
 import { SiteHeader } from "@/components/site/site-header";
@@ -119,6 +120,7 @@ export default async function LocaleLayout({
           <SiteFooter />
           <BackToTop />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
