@@ -1,5 +1,7 @@
 export const SALES_PHONE = "01044567680";
 export const SALES_PHONE_2 = "01140663658";
+/** The sales line that receives WhatsApp messages from the site. */
+export const WHATSAPP_PHONE = SALES_PHONE_2;
 export const ADMIN_PHONE = "01070226790";
 export const ADMIN_PHONE_2 = "01114537488";
 export const FOOTER_EMAIL = "m.mostafa@mediaprint-eg.com";

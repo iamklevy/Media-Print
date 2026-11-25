@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
-import { SALES_PHONE } from "@/lib/contact";
+import { WHATSAPP_PHONE } from "@/lib/contact";
 import { WhatsAppIcon } from "./brand-icons";
 import { Wrap } from "./section";
 import { Reveal } from "./motion";
@@ -32,7 +32,7 @@ export function CtaBand() {
             <Link href="/contact" className={btnPrimary}>
               {t("cta.quote")}
             </Link>
-            <a href={`https://wa.me/20${SALES_PHONE}`} target="_blank" rel="noopener" className={btnQuiet}>
+            <a href={`https://wa.me/20${WHATSAPP_PHONE}`} target="_blank" rel="noopener" className={btnQuiet}>
               <WhatsAppIcon className="size-4" />
               {t("cta.whatsapp")}
             </a>

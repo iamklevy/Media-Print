@@ -8,7 +8,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { SALES_PHONE } from "@/lib/contact";
+import { WHATSAPP_PHONE } from "@/lib/contact";
 import { WhatsAppIcon } from "./brand-icons";
 import type { NavMenuItem } from "./nav-dropdown";
 
@@ -232,7 +232,7 @@ export function MobileMenu({
 
                   <motion.div variants={item} className="mt-2">
                     <a
-                      href={`https://wa.me/20${SALES_PHONE}`}
+                      href={`https://wa.me/20${WHATSAPP_PHONE}`}
                       target="_blank"
                       rel="noopener"
                       onClick={close}

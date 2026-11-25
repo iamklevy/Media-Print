@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   SALES_PHONE,
   SALES_PHONE_2,
+  WHATSAPP_PHONE,
   ADMIN_PHONE,
   formatPhone,
   FOOTER_EMAIL,
@@ -89,7 +90,7 @@ export function SiteFooter() {
                 <InstagramIcon className="size-[18px]" />
               </a>
               <a
-                href={`https://wa.me/20${SALES_PHONE}`}
+                href={`https://wa.me/20${WHATSAPP_PHONE}`}
                 target="_blank"
                 rel="noopener"
                 aria-label={t("ft.wa_arialabel")}
